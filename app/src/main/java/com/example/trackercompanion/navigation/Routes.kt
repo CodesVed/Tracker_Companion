@@ -9,5 +9,17 @@ sealed class Navigation{
 
 sealed class Routes {
     @Serializable
-    object Home: Routes()
+    object Dashboard: Routes()
+
+    @Serializable
+    object Roster: Routes()
+
+    @Serializable
+    object Shows: Routes()
+
+    @Serializable
+    object Championships: Routes()
+
+    @Serializable
+    object Calendar: Routes()
 }

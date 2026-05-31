@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.example.trackercompanion.navigation.App
 import com.example.trackercompanion.navigation.BottomNavigationBar
 import com.example.trackercompanion.ui.theme.TrackerCompanionTheme
 
@@ -17,11 +18,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TrackerCompanionTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val modifier = Modifier.padding(innerPadding)
-
-                    BottomNavigationBar()
-                }
+                App()
             }
         }
     }
