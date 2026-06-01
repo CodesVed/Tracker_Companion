@@ -1,4 +1,4 @@
-package com.example.trackercompanion.model.data
+package com.example.trackercompanion.model
 
 import com.example.trackercompanion.model.enums.CardSlot
 import com.example.trackercompanion.model.enums.Show
@@ -11,6 +11,7 @@ data class Match(
     val participants: String,
     val stipulation: String,
     val winnerId: Int?,
-    val isTagMatch: Boolean,
-    val notes: String?
+    val winnerLabel: String?,
+    val isTagMatch: Boolean = false,
+    val notes: String = ""
 )
