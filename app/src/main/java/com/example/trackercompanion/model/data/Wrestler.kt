@@ -12,7 +12,7 @@ data class Wrestler(
     val type: Type,
     val wins: Int,
     val loss: Int,
-    val totalMatches: Int,
+    val totalMatches: Int = wins + loss,
     val teamWins: Int,
     val points: Int,
     val notes: String?

@@ -1,10 +1,5 @@
 package com.example.trackercompanion.navigation
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Dashboard
@@ -17,8 +12,6 @@ import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.LiveTv
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,20 +21,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.bottombar.AnimatedBottomBar
 import com.example.bottombar.components.BottomBarItem
 import com.example.bottombar.model.IndicatorDirection
 import com.example.bottombar.model.IndicatorStyle
-import com.example.trackercompanion.ui.dashboard.DashboardScreen
-import com.example.trackercompanion.ui.roster.RosterScreen
 
 data class BottomNavigationItem(val name: String, val icon: ImageVector, val unselectedIcon: ImageVector)
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController){
-    var selectedItem by remember { mutableIntStateOf(0) }
+    var selectedItem by remember { mutableIntStateOf(2) }
     val bottomNavItem = listOf(
         BottomNavigationItem("Championships", Icons.Default.EmojiEvents, Icons.Outlined.EmojiEvents),
         BottomNavigationItem("Roster", Icons.Default.Groups, Icons.Outlined.Groups),
