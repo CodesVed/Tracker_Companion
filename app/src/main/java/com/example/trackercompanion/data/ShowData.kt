@@ -1,4 +1,4 @@
-package com.example.trackercompanion.model.data
+package com.example.trackercompanion.data
 
 import com.example.trackercompanion.model.Match
 import com.example.trackercompanion.model.PPVEvent
@@ -23,15 +23,15 @@ object ShowData {
 
     val matches: List<Match> = listOf(
         Match(id = 1, showId = 1, showType = Show.SHOW, slot = CardSlot.OPEN,
-            participants = "Goldberg vs Goldust", stipulation = "Normal", winnerId = 5, winnerLabel = "Goldberg"),
+            participants = "Goldberg vs Goldust", stipulation = "Normal", winnerId = 19, winnerLabel = "Goldberg"),
         Match(id = 2, showId = 1, showType = Show.SHOW, slot = CardSlot.MID,
             participants = "Booker T vs Matt Hardy", stipulation = "Normal", winnerId = 6, winnerLabel = "Booker T"),
         Match(id = 3, showId = 1, showType = Show.SHOW, slot = CardSlot.MID,
-            participants = "The Dudley Boys vs Los Guerreros", stipulation = "Normal", winnerId = 7, winnerLabel = "The Dudley Boys", isTagMatch = true),
+            participants = "The Dudley Boys vs Los Guerreros", stipulation = "Normal", winnerId = 8, winnerLabel = "The Dudley Boys", isTagMatch = true),
         Match(id = 4, showId = 1, showType = Show.SHOW, slot = CardSlot.UPPER,
-            participants = "Kane vs RVD", stipulation = "Normal", winnerId = 4, winnerLabel = "Kane"),
+            participants = "Kane vs RVD", stipulation = "Normal", winnerId = 27, winnerLabel = "Kane"),
         Match(id = 5, showId = 1, showType = Show.SHOW, slot = CardSlot.MAIN,
-            participants = "Steve Austin vs Shawn Michaels", stipulation = "Normal", winnerId = 1, winnerLabel = "Steve Austin", notes = "WHC Tournament Round 1"),
+            participants = "Steve Austin vs Shawn Michaels", stipulation = "Normal", winnerId = 51, winnerLabel = "Steve Austin", notes = "WHC Tournament Round 1"),
     )
 
     fun getMatchesForShow(showId: Int) = matches.filter { it.showId == showId }

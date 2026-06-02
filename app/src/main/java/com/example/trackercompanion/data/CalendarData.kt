@@ -1,4 +1,4 @@
-package com.example.trackercompanion.model.data
+package com.example.trackercompanion.data
 
 import com.example.trackercompanion.model.CalendarWeek
 
