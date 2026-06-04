@@ -14,52 +14,51 @@ import androidx.compose.material.icons.outlined.LiveTv
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.bottombar.AnimatedBottomBar
 import com.example.bottombar.components.BottomBarItem
 import com.example.bottombar.model.IndicatorDirection
 import com.example.bottombar.model.IndicatorStyle
+import com.example.trackercompanion.navigation.Routes.*
 
-data class BottomNavigationItem(val name: String, val icon: ImageVector, val unselectedIcon: ImageVector)
+data class BottomNavigationItem(val name: String, val icon: ImageVector, val unselectedIcon: ImageVector, val route: String?, val routeObject: Any)
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController){
-    var selectedItem by remember { mutableIntStateOf(2) }
-    val bottomNavItem = listOf(
-        BottomNavigationItem("Championships", Icons.Default.EmojiEvents, Icons.Outlined.EmojiEvents),
-        BottomNavigationItem("Roster", Icons.Default.Groups, Icons.Outlined.Groups),
-        BottomNavigationItem("Dashboard", Icons.Default.Dashboard, Icons.Outlined.Dashboard),
-        BottomNavigationItem("Shows", Icons.Default.LiveTv, Icons.Outlined.LiveTv),
-        BottomNavigationItem("Calendar", Icons.Default.CalendarMonth, Icons.Outlined.CalendarMonth),
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val bottomNavItems = listOf(
+        BottomNavigationItem("Championships", Icons.Default.EmojiEvents, Icons.Outlined.EmojiEvents, Championships::class.qualifiedName, Championships),
+        BottomNavigationItem("Roster", Icons.Default.Groups, Icons.Outlined.Groups, Roster::class.qualifiedName, Roster),
+        BottomNavigationItem("Dashboard", Icons.Default.Dashboard, Icons.Outlined.Dashboard, Dashboard::class.qualifiedName, Dashboard),
+        BottomNavigationItem("Shows", Icons.Default.LiveTv, Icons.Outlined.LiveTv, Shows::class.qualifiedName, Shows),
+        BottomNavigationItem("Calendar", Icons.Default.CalendarMonth, Icons.Outlined.CalendarMonth, Calendar::class.qualifiedName, Calendar),
     )
+    var selectedItem = bottomNavItems.indexOfFirst { it.route == currentRoute}
+        .takeIf { it >= 0 } ?: 2
 
     AnimatedBottomBar(
         selectedItem = selectedItem,
-        itemSize = bottomNavItem.size,
+        itemSize = bottomNavItems.size,
         containerColor = Color.Transparent,
         indicatorColor = MaterialTheme.colorScheme.primary,
         indicatorDirection = IndicatorDirection.TOP,
         indicatorStyle = IndicatorStyle.LINE
     ) {
-        bottomNavItem.forEachIndexed { index, item ->
+        bottomNavItems.forEachIndexed { index, item ->
             BottomBarItem(
                 modifier = Modifier.align(alignment = Alignment.Top),
                 selected = selectedItem == index,
                 onClick = {
-                    selectedItem = index
-                    when(selectedItem){
-                        0 -> navController.navigate(Routes.Championships)
-                        1 -> navController.navigate(Routes.Roster)
-                        2 -> navController.navigate(Routes.Dashboard)
-                        3 -> navController.navigate(Routes.Shows)
-                        4 -> navController.navigate(Routes.Calendar)
+                    navController.navigate(item.routeObject) {
+                        popUpTo<Dashboard> {inclusive = false}
+                        launchSingleTop = true
                     }
                 },
                 imageVector = item.icon,

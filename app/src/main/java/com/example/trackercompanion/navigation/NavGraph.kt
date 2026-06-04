@@ -3,11 +3,14 @@ package com.example.trackercompanion.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.ui.calendar.CalendarScreen
 import com.example.trackercompanion.ui.championships.ChampionshipScreen
 import com.example.trackercompanion.ui.dashboard.DashboardScreen
@@ -17,6 +20,8 @@ import com.example.trackercompanion.ui.shows.ShowScreen
 @Composable
 fun App() {
     val navController = rememberNavController()
+
+    val wrestlers = remember { mutableStateListOf(*WrestlerData.roster.toTypedArray()) }
 
     Scaffold(
         bottomBar = {
@@ -32,7 +37,9 @@ fun App() {
                     DashboardScreen()
                 }
                 composable<Routes.Roster> {
-                    RosterScreen()
+                    RosterScreen(
+                        wrestlers = wrestlers
+                    )
                 }
                 composable<Routes.Shows> {
                     ShowScreen()

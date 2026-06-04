@@ -4,21 +4,24 @@ import kotlinx.serialization.Serializable
 
 sealed class Navigation{
     @Serializable
-    object Main: Navigation()
+    object Main
 }
 
 sealed class Routes {
     @Serializable
-    object Dashboard: Routes()
+    object Dashboard
 
     @Serializable
-    object Roster: Routes()
+    object Roster
 
     @Serializable
-    object Shows: Routes()
+    object WrestlerDetail
 
     @Serializable
-    object Championships: Routes()
+    object Shows
+
+    @Serializable
+    object Championships
 
     @Serializable
     object Calendar: Routes()
