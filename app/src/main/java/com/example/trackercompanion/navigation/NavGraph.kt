@@ -10,12 +10,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.ui.calendar.CalendarScreen
 import com.example.trackercompanion.ui.championships.ChampionshipScreen
 import com.example.trackercompanion.ui.dashboard.DashboardScreen
 import com.example.trackercompanion.ui.roster.RosterScreen
+import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
+import com.example.trackercompanion.navigation.Routes.*
+import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
 
 @Composable
 fun App() {
@@ -24,30 +28,64 @@ fun App() {
     val wrestlers = remember { mutableStateListOf(*WrestlerData.roster.toTypedArray()) }
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
+        bottomBar = { BottomNavigationBar(navController) }
     ) {innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Navigation.Main,
             modifier = Modifier.padding(innerPadding)) {
-            navigation<Navigation.Main>(startDestination = Routes.Dashboard) {
-                composable<Routes.Dashboard> {
+            navigation<Navigation.Main>(startDestination = Dashboard) {
+                composable<Dashboard> {
                     DashboardScreen()
                 }
-                composable<Routes.Roster> {
+
+                composable<Roster> {
                     RosterScreen(
-                        wrestlers = wrestlers
+                        wrestlers = wrestlers,
+                        onWrestlerClick = {id ->
+                            navController.navigate(route = WrestlerDetail(id))
+                        },
+                        onAddWrestlerClick = {
+                            navController.navigate(route = AddEditWrestler)
+                        }
                     )
                 }
-                composable<Routes.Shows> {
+
+                composable<WrestlerDetail> {backStackEntry ->
+                    val detail = backStackEntry.toRoute<WrestlerDetail>()
+                    val wrestler = wrestlers.find { it.id == detail.wrestlerId }
+                    if (wrestler != null) {
+                        WrestlerDetailScreen(
+                            wrestler = wrestler,
+                            onEditClick = {
+                                navController.navigate(AddEditWrestler)
+                            },
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                }
+
+                composable<AddEditWrestler> {
+                    AddEditWrestlerScreen(
+                        onSave = {newWrestler ->
+                            wrestlers.add(newWrestler)
+                            navController.popBackStack()
+                        },
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable<Shows> {
                     ShowScreen()
                 }
-                composable<Routes.Championships> {
+                composable<Championships> {
                     ChampionshipScreen()
                 }
-                composable<Routes.Calendar> {
+                composable<Calendar> {
                     CalendarScreen()
                 }
             }

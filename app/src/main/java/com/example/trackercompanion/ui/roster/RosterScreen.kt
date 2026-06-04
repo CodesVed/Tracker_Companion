@@ -2,6 +2,7 @@ package com.example.trackercompanion.ui.roster
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,15 +42,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.Wrestler
+import com.example.trackercompanion.navigation.Routes
 import com.example.trackercompanion.ui.theme.Blue
 import com.example.trackercompanion.ui.theme.Grey
 import com.example.trackercompanion.ui.theme.Red
 
 
 @Composable
-fun RosterScreen(wrestlers: List<Wrestler>) {
+fun RosterScreen(wrestlers: List<Wrestler>, onWrestlerClick: (Int)->Unit, onAddWrestlerClick: ()->Unit) {
     Box(
         modifier = Modifier.fillMaxSize().padding(10.dp)
     ) {
@@ -64,14 +68,17 @@ fun RosterScreen(wrestlers: List<Wrestler>) {
 
             LazyColumn {
                 items(wrestlers) {wrestler ->
-                    WrestlerCard(wrestler = wrestler)
+                    WrestlerCard(
+                        wrestler = wrestler,
+                        onClick = { onWrestlerClick(wrestler.id) }
+                    )
                 }
             }
         }
 
         FloatingActionButton(
             modifier = Modifier.align(Alignment.BottomEnd).width(140.dp).height(70.dp),
-            onClick = {/* navigates to AddEditWrestlerScreen */}
+            onClick = {onAddWrestlerClick}
         ) {
             Row {
                 Icon(modifier = Modifier.size(28.dp), imageVector = Icons.Default.Add, contentDescription = null)
@@ -86,10 +93,10 @@ fun RosterScreen(wrestlers: List<Wrestler>) {
 }
 
 @Composable
-fun WrestlerCard(wrestler: Wrestler) {
+fun WrestlerCard(wrestler: Wrestler, onClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth().padding(10.dp),
-        onClick = {/* navigates to WrestlerDetailScreen */}
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -189,5 +196,5 @@ fun StatCell(label: String, value: String, modifier: Modifier = Modifier) {
 @Preview(showSystemUi = true)
 @Composable
 fun RosterPreview() {
-    RosterScreen(WrestlerData.roster)
+    RosterScreen(WrestlerData.roster, onWrestlerClick = {}, onAddWrestlerClick = {})
 }

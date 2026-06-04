@@ -33,6 +33,12 @@ fun BottomNavigationBar(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val activeRoute = when {
+        currentRoute == WrestlerDetail::class.qualifiedName -> Roster::class.qualifiedName
+        currentRoute == AddEditWrestler::class.qualifiedName -> Roster::class.qualifiedName
+        else -> currentRoute
+    }
+
     val bottomNavItems = listOf(
         BottomNavigationItem("Championships", Icons.Default.EmojiEvents, Icons.Outlined.EmojiEvents, Championships::class.qualifiedName, Championships),
         BottomNavigationItem("Roster", Icons.Default.Groups, Icons.Outlined.Groups, Roster::class.qualifiedName, Roster),
@@ -40,7 +46,7 @@ fun BottomNavigationBar(navController: NavHostController){
         BottomNavigationItem("Shows", Icons.Default.LiveTv, Icons.Outlined.LiveTv, Shows::class.qualifiedName, Shows),
         BottomNavigationItem("Calendar", Icons.Default.CalendarMonth, Icons.Outlined.CalendarMonth, Calendar::class.qualifiedName, Calendar),
     )
-    var selectedItem = bottomNavItems.indexOfFirst { it.route == currentRoute}
+    val selectedItem = bottomNavItems.indexOfFirst { it.route == activeRoute}
         .takeIf { it >= 0 } ?: 2
 
     AnimatedBottomBar(

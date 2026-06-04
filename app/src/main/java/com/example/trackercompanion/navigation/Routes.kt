@@ -1,5 +1,6 @@
 package com.example.trackercompanion.navigation
 
+import com.example.trackercompanion.model.Wrestler
 import kotlinx.serialization.Serializable
 
 sealed class Navigation{
@@ -15,7 +16,10 @@ sealed class Routes {
     object Roster
 
     @Serializable
-    object WrestlerDetail
+    data class WrestlerDetail(val wrestlerId: Int)
+
+    @Serializable
+    object AddEditWrestler
 
     @Serializable
     object Shows
@@ -24,5 +28,5 @@ sealed class Routes {
     object Championships
 
     @Serializable
-    object Calendar: Routes()
+    object Calendar
 }
