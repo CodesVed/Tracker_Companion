@@ -4,6 +4,7 @@ import com.example.trackercompanion.model.Wrestler
 import com.example.trackercompanion.model.enums.Brand
 import com.example.trackercompanion.model.enums.Status
 import com.example.trackercompanion.model.enums.Type
+import com.example.trackercompanion.R
 
 object WrestlerData {
     val roster: List<Wrestler> = listOf(
@@ -18,7 +19,7 @@ object WrestlerData {
             wins = 2,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_batista"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 6,
@@ -29,7 +30,7 @@ object WrestlerData {
             wins = 2,
             loss = 1,
             teamWins = 2,
-            imageRes = "img_booker_t",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 8,
@@ -40,7 +41,7 @@ object WrestlerData {
             wins = 3,
             loss = 0,
             teamWins = 3,
-            imageRes = "img_bubba_ray_dudley",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 12,
@@ -51,7 +52,7 @@ object WrestlerData {
             wins = 2,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_chris_jericho",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 14,
@@ -62,7 +63,7 @@ object WrestlerData {
             wins = 3,
             loss = 0,
             teamWins = 3,
-            imageRes = "img_d_von_dudley",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 17,
@@ -73,7 +74,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_eric_bischoff",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 19,
@@ -84,7 +85,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_goldberg",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 20,
@@ -95,7 +96,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_goldust",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 22,
@@ -106,7 +107,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_hillbilly_jim",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 27,
@@ -117,7 +118,7 @@ object WrestlerData {
             wins = 4,
             loss = 3,
             teamWins = 2,
-            imageRes = "img_kane",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 30,
@@ -128,7 +129,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_lance_storm",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 32,
@@ -139,7 +140,7 @@ object WrestlerData {
             wins = 2,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_matt_hardy",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 33,
@@ -150,7 +151,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_nicholai_volkoff",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 34,
@@ -161,7 +162,7 @@ object WrestlerData {
             wins = 1,
             loss = 2,
             teamWins = 0,
-            imageRes = "img_randy_orton",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 37,
@@ -172,7 +173,7 @@ object WrestlerData {
             wins = 2,
             loss = 2,
             teamWins = 0,
-            imageRes = "img_ric_flair",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 38,
@@ -183,7 +184,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_rico",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 42,
@@ -194,7 +195,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_rvd",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 44,
@@ -205,7 +206,7 @@ object WrestlerData {
             wins = 3,
             loss = 3,
             teamWins = 0,
-            imageRes = "img_scott_steiner",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 45,
@@ -216,7 +217,7 @@ object WrestlerData {
             wins = 0,
             loss = 2,
             teamWins = 2,
-            imageRes = "img_sean_o_haire",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 47,
@@ -227,7 +228,7 @@ object WrestlerData {
             wins = 3,
             loss = 2,
             teamWins = 0,
-            imageRes = "img_shawn_michaels",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 51,
@@ -238,7 +239,7 @@ object WrestlerData {
             wins = 6,
             loss = 0,
             teamWins = 0,
-            imageRes = "img_steve_austin",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 54,
@@ -249,7 +250,7 @@ object WrestlerData {
             wins = 0,
             loss = 3,
             teamWins = 0,
-            imageRes = "img_ted_dibiase",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 55,
@@ -260,7 +261,7 @@ object WrestlerData {
             wins = 0,
             loss = 4,
             teamWins = 0,
-            imageRes = "img_test",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 58,
@@ -271,7 +272,7 @@ object WrestlerData {
             wins = 5,
             loss = 3,
             teamWins = 2,
-            imageRes = "img_the_undertaker",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 60,
@@ -282,7 +283,7 @@ object WrestlerData {
             wins = 3,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_triple_h",
+            imageRes = R.drawable.wrestler_placeholder,
             notes = "#1 Contender - WHC"
         ),
         Wrestler(
@@ -294,7 +295,7 @@ object WrestlerData {
             wins = 0,
             loss = 2,
             teamWins = 0,
-            imageRes = "img_val_venis",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 66,
@@ -305,7 +306,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_boss",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
 
         // ── Smackdown ────────────────────────────────────
@@ -318,7 +319,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_animal"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 3,
@@ -329,7 +330,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_a_train"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 5,
@@ -340,7 +341,7 @@ object WrestlerData {
             wins = 4,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_big_show",
+            imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 7,
@@ -351,7 +352,7 @@ object WrestlerData {
             wins = 6,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_brock_lesnar",
+            imageRes = R.drawable.wrestler_placeholder,
             notes = "WWE Champion - Reign #2"
         ),
         Wrestler(
@@ -363,7 +364,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 1,
-            imageRes = "img_charlie_haas"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 10,
@@ -374,7 +375,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_chavo_guerrero"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 11,
@@ -385,7 +386,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_chris_benoit"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 13,
@@ -396,7 +397,7 @@ object WrestlerData {
             wins = 3,
             loss = 2,
             teamWins = 3,
-            imageRes = "img_christian"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 15,
@@ -407,7 +408,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_eddie_guerrero"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 16,
@@ -418,7 +419,7 @@ object WrestlerData {
             wins = 3,
             loss = 1,
             teamWins = 3,
-            imageRes = "img_edge"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 18,
@@ -429,7 +430,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 1,
-            imageRes = "img_george_steele"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 21,
@@ -440,7 +441,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_hawk"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 23,
@@ -451,7 +452,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 1,
-            imageRes = "img_iron_sheik"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 25,
@@ -462,7 +463,7 @@ object WrestlerData {
             wins = 2,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_jimmy_snuka"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 26,
@@ -473,7 +474,7 @@ object WrestlerData {
             wins = 3,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_john_cena",
+            imageRes = R.drawable.wrestler_placeholder,
             notes = "Broke Lesnar's undefeated streak, winning WWE Championship tourney"
         ),
         Wrestler(
@@ -485,7 +486,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_kevin_nash"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 29,
@@ -496,7 +497,7 @@ object WrestlerData {
             wins = 2,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_kurt_angle"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 35,
@@ -507,7 +508,7 @@ object WrestlerData {
             wins = 0,
             loss = 2,
             teamWins = 0,
-            imageRes = "img_rey_mysterio"
+            imageRes = R.drawable.wrestler_placeholder
         ),Wrestler(
             id = 36,
             name = "Rhyno",
@@ -517,7 +518,7 @@ object WrestlerData {
             wins = 1,
             loss = 3,
             teamWins = 0,
-            imageRes = "img_rhyno"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 39,
@@ -528,7 +529,7 @@ object WrestlerData {
             wins = 1,
             loss = 3,
             teamWins = 0,
-            imageRes = "img_rikishi"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 40,
@@ -539,7 +540,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_roddy_piper"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 41,
@@ -550,7 +551,7 @@ object WrestlerData {
             wins = 0,
             loss = 2,
             teamWins = 0,
-            imageRes = "img_rodney_mack"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 46,
@@ -561,7 +562,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_sgt_slaughter"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 48,
@@ -572,7 +573,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 1,
-            imageRes = "img_shelton_benjamin"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 52,
@@ -583,7 +584,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_steven_richards"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 53,
@@ -594,7 +595,7 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_tajiri"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 56,
@@ -605,7 +606,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_hurricane"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 57,
@@ -616,7 +617,7 @@ object WrestlerData {
             wins = 5,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_rock",
+            imageRes = R.drawable.wrestler_placeholder,
             notes = "WWE Championship - #1 Contender"
         ),
         Wrestler(
@@ -628,7 +629,7 @@ object WrestlerData {
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_ultimo_dragon"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 63,
@@ -639,97 +640,98 @@ object WrestlerData {
             wins = 1,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_undertaker"
+            imageRes = R.drawable.wrestler_placeholder
         ),
 
         // ── Free (Divas) ────────────────────────────────────
         Wrestler(
             id = 24,
             name = "Jazz",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_trish_stratus"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 31,
             name = "Lita",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 1,
             loss = 0,
             teamWins = 0,
-            imageRes = "img_lita"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 43,
             name = "Sable",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 1,
             loss = 0,
             teamWins = 0,
-            imageRes = "img_sable"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 49,
             name = "Stacy Keibler",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_stacy_keibler"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 50,
             name = "Stephanie McMahon",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 0,
             loss = 0,
             teamWins = 0,
-            imageRes = "img_stephanie_mcmahon"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 59,
             name = "Torrie Wilson",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 1,
             loss = 0,
             teamWins = 0,
-            imageRes = "img_torrie_wilson"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 61,
             name = "Trish Stratus",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 0,
             loss = 0,
             teamWins = 0,
-            imageRes = "img_trish_stratus"
+            imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
             id = 65,
             name = "Victoria",
-            brand = Brand.FREE,
+            brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
             wins = 0,
             loss = 1,
             teamWins = 0,
-            imageRes = "img_victoria"
+            imageRes = R.drawable.wrestler_placeholder
+
         ),
     )
 

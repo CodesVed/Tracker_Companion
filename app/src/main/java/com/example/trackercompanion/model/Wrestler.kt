@@ -1,5 +1,6 @@
 package com.example.trackercompanion.model
 
+import androidx.annotation.DrawableRes
 import com.example.trackercompanion.model.enums.Brand
 import com.example.trackercompanion.model.enums.Status
 import com.example.trackercompanion.model.enums.Type
@@ -13,7 +14,7 @@ data class Wrestler(
     val wins: Int,
     val loss: Int,
     val teamWins: Int,
-    val imageRes: String,
+    val imageRes: Int,
     val notes: String = "",
 ) {
     val totalMatches: Int

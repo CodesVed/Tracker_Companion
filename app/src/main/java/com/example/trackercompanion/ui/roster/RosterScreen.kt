@@ -2,7 +2,6 @@ package com.example.trackercompanion.ui.roster
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,50 +19,48 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.Wrestler
-import com.example.trackercompanion.navigation.Routes
 import com.example.trackercompanion.ui.theme.Blue
 import com.example.trackercompanion.ui.theme.Grey
+import com.example.trackercompanion.ui.theme.Pink
 import com.example.trackercompanion.ui.theme.Red
 
 
 @Composable
 fun RosterScreen(wrestlers: List<Wrestler>, onWrestlerClick: (Int)->Unit, onAddWrestlerClick: ()->Unit) {
     Box(
-        modifier = Modifier.fillMaxSize().padding(10.dp)
+        modifier = Modifier.fillMaxSize().padding(12.dp)
     ) {
         Column {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Locker Room",
                 textAlign = TextAlign.Center,
                 fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                text = "Locker Room",
 
             )
+
+            HorizontalDivider(modifier = Modifier.padding(5.dp))
 
             LazyColumn {
                 items(wrestlers) {wrestler ->
@@ -77,11 +73,11 @@ fun RosterScreen(wrestlers: List<Wrestler>, onWrestlerClick: (Int)->Unit, onAddW
         }
 
         FloatingActionButton(
-            modifier = Modifier.align(Alignment.BottomEnd).width(140.dp).height(70.dp),
-            onClick = {onAddWrestlerClick}
+            modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp).width(140.dp).height(70.dp),
+            onClick = {onAddWrestlerClick.invoke()}
         ) {
             Row {
-                Icon(modifier = Modifier.size(28.dp), imageVector = Icons.Default.Add, contentDescription = null)
+                Icon(modifier = Modifier.size(28.dp), imageVector = Icons.Default.Add, contentDescription = "Add Wrestler")
 
                 Text(
                     fontSize = 20.sp,
@@ -102,7 +98,7 @@ fun WrestlerCard(wrestler: Wrestler, onClick: () -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            WrestlerAvatar(name = wrestler.name)
+            WrestlerAvatar(name = wrestler.name, modifier = Modifier.clip(CircleShape))
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -121,7 +117,7 @@ fun WrestlerCard(wrestler: Wrestler, onClick: () -> Unit) {
                         text = wrestler.name
                     )
 
-                    BrandChip(wrestler.brand.toString())
+                    BrandChip(brand = wrestler.brand.toString(), fontSize = 15.sp)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -129,9 +125,9 @@ fun WrestlerCard(wrestler: Wrestler, onClick: () -> Unit) {
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    StatCell(label = "W", value = wrestler.wins.toString(), modifier = Modifier.weight(1f))
-                    StatCell(label = "L", value = wrestler.loss.toString(), modifier = Modifier.weight(1f))
-                    StatCell(label = "Pts", value = wrestler.points.toString(), modifier = Modifier.weight(1f))
+                    StatCell(label = "W", value = wrestler.wins.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
+                    StatCell(label = "L", value = wrestler.loss.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
+                    StatCell(label = "Pts", value = wrestler.points.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
                 }
             }
 
@@ -146,23 +142,24 @@ fun WrestlerAvatar(name: String, modifier: Modifier = Modifier) {
         .joinToString("") { it.first().uppercase() }
 
     Box(
-        modifier = modifier.size(80.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary),
+        modifier = modifier.size(80.dp).background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = initials,
             color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            text = initials
         )
     }
 }
 
 @Composable
-fun BrandChip(brand: String) {
+fun BrandChip(brand: String, fontSize: TextUnit, modifier: Modifier = Modifier) {
     val brandColor = when (brand) {
         "RAW" -> Red
         "SD" -> Blue
+        "DIVA" -> Pink
         else -> Grey
     }
 
@@ -170,30 +167,31 @@ fun BrandChip(brand: String) {
         selected = true,
         onClick = {},
         label = {
-            Text(text = brand, maxLines = 1, fontSize = 15.sp)
+            Text(text = brand, maxLines = 1, fontSize = fontSize)
         },
         colors = InputChipDefaults.inputChipColors(
             selectedContainerColor = brandColor.copy(alpha = 0.15f),
             selectedLabelColor = brandColor
         ),
         leadingIcon = {
-            Image(imageVector = Icons.Default.Badge, contentDescription = null)
+            Image(imageVector = Icons.Default.Badge, contentDescription = "Brand Badge", modifier = modifier)
         }
     )
 }
 
 @Composable
-fun StatCell(label: String, value: String, modifier: Modifier = Modifier) {
+fun StatCell(label: String, value: String, fontSize: TextUnit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = label, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(text = value, fontSize = 16.sp)
+        Text(text = label, fontSize = fontSize, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(text = value, fontSize = fontSize, color = MaterialTheme.colorScheme.onTertiaryContainer)
     }
 }
 
-@Preview(showSystemUi = true)
+
+@Preview(showBackground = true)
 @Composable
 fun RosterPreview() {
     RosterScreen(WrestlerData.roster, onWrestlerClick = {}, onAddWrestlerClick = {})

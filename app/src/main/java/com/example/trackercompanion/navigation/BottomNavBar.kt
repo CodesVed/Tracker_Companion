@@ -18,8 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.bottombar.AnimatedBottomBar
 import com.example.bottombar.components.BottomBarItem
 import com.example.bottombar.model.IndicatorDirection
@@ -46,6 +48,7 @@ fun BottomNavigationBar(navController: NavHostController){
         BottomNavigationItem("Shows", Icons.Default.LiveTv, Icons.Outlined.LiveTv, Shows::class.qualifiedName, Shows),
         BottomNavigationItem("Calendar", Icons.Default.CalendarMonth, Icons.Outlined.CalendarMonth, Calendar::class.qualifiedName, Calendar),
     )
+
     val selectedItem = bottomNavItems.indexOfFirst { it.route == activeRoute}
         .takeIf { it >= 0 } ?: 2
 
@@ -75,8 +78,8 @@ fun BottomNavigationBar(navController: NavHostController){
     }
 }
 
-//@Preview(showSystemUi = true)
-//@Composable
-//fun BottomNavBarPreview(){
-//    BottomNavigationBar()
-//}
+@Preview(showBackground = true)
+@Composable
+fun BottomNavBarPreview(){
+    BottomNavigationBar(navController = rememberNavController())
+}
