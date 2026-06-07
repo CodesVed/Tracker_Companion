@@ -13,5 +13,7 @@ data class Match(
     val winnerId: Int?,
     val winnerLabel: String?,
     val isTagMatch: Boolean = false,
+    val participantIds: List<Int> = emptyList(),    //for tag matches
+    val winnerIds: List<Int> = emptyList(),         //for tag match winners
     val notes: String = ""
 )

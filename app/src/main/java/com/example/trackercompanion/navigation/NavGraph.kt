@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.trackercompanion.data.ChampionshipData
+import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.ui.calendar.CalendarScreen
 import com.example.trackercompanion.ui.championships.ChampionshipScreen
@@ -26,6 +28,8 @@ fun App() {
     val navController = rememberNavController()
 
     val wrestlers = remember { mutableStateListOf(*WrestlerData.roster.toTypedArray()) }
+    val matches = remember { mutableStateListOf(*ShowData.matches.toTypedArray()) }
+    val titles = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
@@ -54,9 +58,12 @@ fun App() {
                 composable<WrestlerDetail> {backStackEntry ->
                     val detail = backStackEntry.toRoute<WrestlerDetail>()
                     val wrestler = wrestlers.find { it.id == detail.wrestlerId }
+
                     if (wrestler != null) {
                         WrestlerDetailScreen(
                             wrestler = wrestler,
+                            matchHistory = matches.filter { wrestler.name in it.participants },
+                            titleHistory = titles.filter { it.championName == wrestler.name },
                             onEditClick = {
                                 navController.navigate(AddEditWrestler)
                             },
