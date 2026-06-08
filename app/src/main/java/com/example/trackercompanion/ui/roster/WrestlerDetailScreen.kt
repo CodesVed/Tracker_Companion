@@ -1,5 +1,6 @@
 package com.example.trackercompanion.ui.roster
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -210,8 +211,6 @@ fun WrestlerDetailScreen(
             }
         }
 
-        // resolving champion history properly.
-        // Right now the history is not being displayed correctly or as intended
         item {
             HorizontalDivider(modifier = Modifier.padding(8.dp))
 
@@ -229,7 +228,7 @@ fun WrestlerDetailScreen(
             }
         } else {
             items(titleHistory) {title ->
-                TitleHistoryRow(title = title)
+                TitleHistoryRow(title = title, currentWrestlerName = wrestler?.name?:"")
             }
         }
 
@@ -320,8 +319,6 @@ fun EmptyState(message: String) {
 
 @Composable
 fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
-    wrestlerId in match.participantIds || match.participants.contains(wrestlerName, ignoreCase = true)
-
     val isWinner = if (match.winnerIds.isNotEmpty()) {
         wrestlerId in match.winnerIds
     } else {
@@ -343,7 +340,7 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
-                modifier = Modifier.size(width = 32.dp, height = 32.dp),
+                modifier = Modifier.size(32.dp),
                 shape = MaterialTheme.shapes.small,
                 color = resultColor.copy(alpha = 0.15f),
             ) {
@@ -377,6 +374,14 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
 
                         Spacer(modifier = Modifier.width(4.dp))
                     }
+
+                    Text(
+                        maxLines = 1,
+                        text = match.participants,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
 
                 Text(
@@ -384,18 +389,10 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
-                match.winnerLabel?.let {
-                    Text(
-                        text = "Winner: $it",
-                        fontSize = 12.sp,
-                        color = if (isWinner) Green else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             }
 
             Text(
-                text = "Show #${match.showId}",
+                text = ShowData.getShowLabel(match.showId, match.showType),
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -404,22 +401,41 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
 }
 
 @Composable
-fun TitleHistoryRow(title: Championship) {
+fun TitleHistoryRow(title: Championship, currentWrestlerName: String = "") {
+    val isCurrentChampion = title.reignEndEpisode == null
+    val isTagTitle = title.partnerName != null || title.title.contains("Tag", ignoreCase = true)
+
+    val partnerDisplay = if (isTagTitle && title.partnerName != null) {
+        if (title.partnerName == currentWrestlerName) {
+            "w/ ${title.championName?.replace("& $currentWrestlerName", "")
+                ?.replace("$currentWrestlerName &", "")?.trim()}"
+        } else {
+            "w/ ${title.partnerName}"
+        }
+    } else null
+
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-        )
+            containerColor = if (isCurrentChampion) {
+                Gold.copy(alpha = 0.08f)
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+            }
+        ),
+        border = if (isCurrentChampion) {
+            BorderStroke(1.dp, Gold.copy(alpha = 0.4f))
+        } else null
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(28.dp),
                 imageVector = Icons.Default.EmojiEvents,
                 contentDescription = null,
-                tint = Gold
+                tint = if (isCurrentChampion) Gold else MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -430,7 +446,7 @@ fun TitleHistoryRow(title: Championship) {
                 Text(
                     text = title.title,
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold
                 )
 
                 Text(
@@ -438,26 +454,58 @@ fun TitleHistoryRow(title: Championship) {
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
+                if (!isCurrentChampion && title.reignEndEpisode != null) {
+                    Text(
+                        text = "Lost: ${title.reignEndEpisode}",
+                        fontSize = 12.sp,
+                        color = Red.copy(alpha = 0.8f)
+                    )
+                }
+
+                if (partnerDisplay != null) {
+                    Text(
+                        text = partnerDisplay,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                if (title.defenses > 0) {
+                    Text(
+                        text = "${title.defenses} successful defenses${if (title.defenses > 1) "s" else ""}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
 
-            if (title.championId != null) {
+            if (isCurrentChampion) {
                 Surface(
                     shape = MaterialTheme.shapes.small,
-                    color = Green.copy(alpha = 0.15f)
+                    color = Gold.copy(alpha = 0.2f)
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        text = "Current",
+                        text = "Champion",
                         fontSize = 11.sp,
-                        color = Green
+                        fontWeight = FontWeight.Bold,
+                        color = Gold
                     )
                 }
             } else {
-                Text(
-                    text = "${title.defenses} def.",
-                    fontSize = 12.sp,
+                Surface(
+                    shape = MaterialTheme.shapes.small,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        text = "Former",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

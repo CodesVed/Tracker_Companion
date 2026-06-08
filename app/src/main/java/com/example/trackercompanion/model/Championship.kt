@@ -7,6 +7,8 @@ data class Championship(
     val championName: String?,
     val reignNumber: Int,
     val reignStartEpisode: String,
+    val reignEndEpisode: String? = null,
     val defenses: Int = 0,
+    val partnerName: String? = null,    //for tag titles
     val notes: String = ""
 )

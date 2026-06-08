@@ -12,6 +12,7 @@ object ChampionshipData {
             championName = "Brock Lesnar",
             reignNumber = 2,
             reignStartEpisode = "Royal Rumble",
+            reignEndEpisode = null,
             defenses = 0,
             notes = "Won back from John Cena after Cena's tourney victory"
         ),
@@ -22,29 +23,35 @@ object ChampionshipData {
             championName = "Steve Austin",
             reignNumber = 1,
             reignStartEpisode = "Royal Rumble",
+            reignEndEpisode = null,
             defenses = 0,
             notes = "Won HIAC vs Shawn Michaels — tourney final"
         ),
         Championship(
             id = 3,
             title = "WWE Tag Championship",
-            championId = 16,
+            championId = null,
             championName = "Edge & Christian",
             reignNumber = 1,
             reignStartEpisode = "Royal Rumble",
+            reignEndEpisode = null,
             defenses = 0,
+            partnerName = "Christian",
             notes = "Won against Dudleys in Ladder match"
         ),
         Championship(
             id = 4,
             title = "World Tag Championship",
-            championId = 8,
+            championId = null,
             championName = "The Dudley Boys",
             reignNumber = 1,
             reignStartEpisode = "Royal Rumble",
+            reignEndEpisode = null,
             defenses = 0,
+            partnerName = "Bubba Ray Dudley",
             notes = "Won against BOD in a Normal Tag match"
-        ),Championship(
+        ),
+        Championship(
             id = 5,
             title = "WWE US Championship",
             championId = null,
@@ -53,7 +60,8 @@ object ChampionshipData {
             reignStartEpisode = "N/A",
             defenses = 0,
             notes = "In progress"
-        ),Championship(
+        ),
+        Championship(
             id = 6,
             title = "WWE IC Championship",
             championId = null,

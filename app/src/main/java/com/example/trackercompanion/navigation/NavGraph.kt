@@ -62,8 +62,18 @@ fun App() {
                     if (wrestler != null) {
                         WrestlerDetailScreen(
                             wrestler = wrestler,
-                            matchHistory = matches.filter { wrestler.name in it.participants },
-                            titleHistory = titles.filter { it.championName == wrestler.name },
+                            matchHistory = matches.filter {match ->
+                                if (match.isTagMatch) {
+                                    wrestler.id in match.participantIds
+                                } else {
+                                    wrestler.name in match.participants
+                                }
+                            },
+                            titleHistory = titles.filter {title ->
+                                title.championName == wrestler.name ||
+                                title.championName?.contains(wrestler.name) == true ||
+                                title.partnerName == wrestler.name
+                            },
                             onEditClick = {
                                 navController.navigate(AddEditWrestler)
                             },

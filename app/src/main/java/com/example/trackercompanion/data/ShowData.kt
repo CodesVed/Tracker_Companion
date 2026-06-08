@@ -53,13 +53,14 @@ object ShowData {
     val matches: List<Match> = listOf(
         Match(
             id = 1,
-            showId = 1,
+            showId = 7,
             showType = Show.SHOW,
             slot = CardSlot.OPEN,
-            participants = "Goldberg vs Goldust",
+            participants = "BOD vs Jim & Volkoff",
             stipulation = "Normal",
             winnerId = 19,
             winnerLabel = "Goldberg",
+            notes = "Tag Tourney Round 1"
         ),
         Match(
             id = 2,
@@ -107,11 +108,29 @@ object ShowData {
         ),
     )
 
+    fun getShowLabel(showId: Int, showType:Show): String {
+        return when (showType) {
+            Show.PPV -> ppvEvents.find { it.id == showId }?.name?:"PPV #${showId}"
+            Show.SHOW -> {
+                val episode = episodes.find { it.id == showId }
+                if (episode != null) {
+                    val brandLabel = when (episode.brand) {
+                        Brand.RAW -> "RAW"
+                        Brand.SD -> "SD"
+                        else -> {}
+                    }
+                    "$brandLabel ${episode.episodeNumber}"
+                } else {
+                    "Show #$showId"
+                }
+            }
+        }
+    }
+
     fun getMatchesForShow(showId: Int) = matches.filter { it.showId == showId }
     fun getMatchesForEpisode(episodeId: Int) = matches.filter {
         it.showId == episodeId && it.showType.toString() == "SHOW"
     }
-
     fun getMatchesForPPV(ppvId: Int) = matches.filter {
         it.showId == ppvId && it.showType.toString() == "PPV"
     }
