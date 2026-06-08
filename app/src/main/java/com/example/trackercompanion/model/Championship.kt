@@ -3,12 +3,5 @@ package com.example.trackercompanion.model
 data class Championship(
     val id: Int,
     val title: String,
-    val championId: Int?,
-    val championName: String?,
-    val reignNumber: Int,
-    val reignStartEpisode: String,
-    val reignEndEpisode: String? = null,
-    val defenses: Int = 0,
-    val partnerName: String? = null,    //for tag titles
-    val notes: String = ""
+    val currentChampionId: Int?
 )

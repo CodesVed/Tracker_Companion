@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,11 +45,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.R
-import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
-import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.Match
+import com.example.trackercompanion.model.TitleReign
 import com.example.trackercompanion.model.Wrestler
 import com.example.trackercompanion.model.enums.Type
 import com.example.trackercompanion.ui.theme.Gold
@@ -61,7 +61,7 @@ import com.example.trackercompanion.ui.theme.TrackerCompanionTheme
 fun WrestlerDetailScreen(
     wrestler: Wrestler?,
     matchHistory: List<Match> = emptyList(),
-    titleHistory: List<Championship> = emptyList(),
+    titleReigns: List<TitleReign> = emptyList(),
     onEditClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -216,19 +216,19 @@ fun WrestlerDetailScreen(
 
             SectionHeader(
                 title = "Championship History",
-                count = titleHistory.size
+                count = titleReigns.size
             )
 
             Spacer(modifier = Modifier.height(4.dp))
         }
 
-        if (titleHistory.isEmpty()) {
+        if (titleReigns.isEmpty()) {
             item {
                 EmptyState("No title reigns recorded.")
             }
         } else {
-            items(titleHistory) {title ->
-                TitleHistoryRow(title = title, currentWrestlerName = wrestler?.name?:"")
+            items(titleReigns) {reign ->
+                TitleReignRow(reign = reign, currentWrestlerName = wrestler?.name?:"")
             }
         }
 
@@ -401,17 +401,13 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
 }
 
 @Composable
-fun TitleHistoryRow(title: Championship, currentWrestlerName: String = "") {
-    val isCurrentChampion = title.reignEndEpisode == null
-    val isTagTitle = title.partnerName != null || title.title.contains("Tag", ignoreCase = true)
+fun TitleReignRow(reign: TitleReign, currentWrestlerName: String) {
+    val isCurrentChampion = reign.lostAtEpisode == null
+    val isTagReign = reign.holderIds.size > 1
 
-    val partnerDisplay = if (isTagTitle && title.partnerName != null) {
-        if (title.partnerName == currentWrestlerName) {
-            "w/ ${title.championName?.replace("& $currentWrestlerName", "")
-                ?.replace("$currentWrestlerName &", "")?.trim()}"
-        } else {
-            "w/ ${title.partnerName}"
-        }
+    val partners = reign.holderNames.filter { it != currentWrestlerName }
+    val partnerDisplay = if (isTagReign && partners.isNotEmpty()) {
+        "w/ ${partners.joinToString(" & ") }"
     } else null
 
     Card(
@@ -435,7 +431,8 @@ fun TitleHistoryRow(title: Championship, currentWrestlerName: String = "") {
                 modifier = Modifier.size(28.dp),
                 imageVector = Icons.Default.EmojiEvents,
                 contentDescription = null,
-                tint = if (isCurrentChampion) Gold else MaterialTheme.colorScheme.onSurfaceVariant
+                tint = if (isCurrentChampion) Gold
+                       else MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -444,20 +441,26 @@ fun TitleHistoryRow(title: Championship, currentWrestlerName: String = "") {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = title.title,
+                    text = reign.titleName,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
-                    text = "Reign #${title.reignNumber}  ·  Won: ${title.reignStartEpisode}",
+                    text = "Reign #${reign.reignNumber}",
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                if (!isCurrentChampion && title.reignEndEpisode != null) {
+                Text(
+                    text = "Won: ${reign.wonAtEpisode}",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                if (!isCurrentChampion) {
                     Text(
-                        text = "Lost: ${title.reignEndEpisode}",
+                        text = "Lost: ${reign.lostAtEpisode}",
                         fontSize = 12.sp,
                         color = Red.copy(alpha = 0.8f)
                     )
@@ -472,40 +475,37 @@ fun TitleHistoryRow(title: Championship, currentWrestlerName: String = "") {
                     )
                 }
 
-                if (title.defenses > 0) {
+                if (reign.defenses > 0) {
                     Text(
-                        text = "${title.defenses} successful defenses${if (title.defenses > 1) "s" else ""}",
+                        text = "${reign.defenses} defenses${if (reign.defenses > 1) "s" else ""}",
                         fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                if (reign.notes.isNotBlank()) {
+                    Text(
+                        text = reign.notes,
+                        fontSize = 11.sp,
+                        fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
-            if (isCurrentChampion) {
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    color = Gold.copy(alpha = 0.2f)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        text = "Champion",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Gold
-                    )
-                }
-            } else {
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        text = "Former",
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                color = if (isCurrentChampion) Gold.copy(alpha = 0.2f)
+                        else MaterialTheme.colorScheme.onSurfaceVariant
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    text = if (isCurrentChampion) "Champion" else "Former",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isCurrentChampion) Gold
+                            else MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
@@ -520,7 +520,7 @@ fun WrestlerDetailPreview() {
             onEditClick = {},
             onBackClick = {},
             matchHistory = emptyList(),
-            titleHistory = emptyList()
+            titleReigns = emptyList()
         )
     }
 }

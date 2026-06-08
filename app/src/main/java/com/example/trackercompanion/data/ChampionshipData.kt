@@ -1,107 +1,133 @@
 package com.example.trackercompanion.data
 
+import androidx.collection.longSetOf
 import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.Contendership
+import com.example.trackercompanion.model.TitleReign
 
 object ChampionshipData {
     val titles: List<Championship> = listOf(
-        Championship(
+        Championship(id = 1, title = "WWE Championship", currentChampionId = 7),
+        Championship(id = 2, title = "World Heavyweight Championship", currentChampionId = 51),
+        Championship(id = 3, title = "WWE Tag Team Championship", currentChampionId = 8),
+        Championship(id = 4, title = "World Tag Team Championship", currentChampionId = 16),
+        Championship(id = 5, title = "WWE Intercontinental Championship", currentChampionId = null),
+        Championship(id = 6, title = "WWE United States Championship", currentChampionId = null),
+        Championship(id = 7, title = "WWE Women's Championship", currentChampionId = null)
+    )
+
+    val reigns: List<TitleReign> = listOf(
+        // WWE Championship
+        TitleReign(
             id = 1,
-            title = "WWE Championship",
-            championId = 7,
-            championName = "Brock Lesnar",
-            reignNumber = 2,
-            reignStartEpisode = "Royal Rumble",
-            reignEndEpisode = null,
+            titleId = 1,
+            titleName = "WWE Championship",
+            reignNumber = 1,
+            holderIds = listOf(26),
+            holderNames = listOf("John Cena"),
+            wonAtEpisode = "SD 5",
+            lostAtEpisode = "Royal Rumble",
             defenses = 0,
-            notes = "Won back from John Cena after Cena's tourney victory"
+            notes = "Won in tournament final — biggest match in history"
         ),
-        Championship(
+        TitleReign(
             id = 2,
-            title = "World Heavyweight Championship",
-            championId = 51,
-            championName = "Steve Austin",
-            reignNumber = 1,
-            reignStartEpisode = "Royal Rumble",
-            reignEndEpisode = null,
+            titleId = 1,
+            titleName = "WWE Championship",
+            reignNumber = 2,
+            holderIds = listOf(7),
+            holderNames = listOf("Brock Lesnar"),
+            wonAtEpisode = "Royal Rumble",
+            lostAtEpisode = null,
             defenses = 0,
-            notes = "Won HIAC vs Shawn Michaels — tourney final"
+            notes = "Won from Cena after losing from him at tournament"
         ),
-        Championship(
+
+        // World Heavyweight Championship
+        TitleReign(
             id = 3,
-            title = "WWE Tag Championship",
-            championId = null,
-            championName = "Edge & Christian",
+            titleId = 2,
+            titleName = "World Heavyweight Championship",
             reignNumber = 1,
-            reignStartEpisode = "Royal Rumble",
-            reignEndEpisode = null,
+            holderIds = listOf(51),
+            holderNames = listOf("Steve Austin"),
+            wonAtEpisode = "Royal Rumble",
+            lostAtEpisode = null,
             defenses = 0,
-            partnerName = "Christian",
-            notes = "Won against Dudleys in Ladder match"
+            notes = "Won HIAC vs HBK — tourney final"
         ),
-        Championship(
+
+        // WWE Tag Team Championship
+        TitleReign(
             id = 4,
-            title = "World Tag Championship",
-            championId = null,
-            championName = "The Dudley Boys",
+            titleId = 3,
+            titleName = "WWE Tag Team Championship",
             reignNumber = 1,
-            reignStartEpisode = "Royal Rumble",
-            reignEndEpisode = null,
+            holderIds = listOf(26, 7),
+            holderNames = listOf("John Cena", "Brock Lesnar"),
+            wonAtEpisode = "SD 2",
+            lostAtEpisode = "Royal Rumble",
             defenses = 0,
-            partnerName = "Bubba Ray Dudley",
-            notes = "Won against BOD in a Normal Tag match"
         ),
-        Championship(
-            id = 5,
-            title = "WWE US Championship",
-            championId = null,
-            championName = "N/A",
-            reignNumber = 0,
-            reignStartEpisode = "N/A",
+        TitleReign(
+            id = 1,
+            titleId = 3,
+            titleName = "WWE Tag Team Championship",
+            reignNumber = 2,
+            holderIds = listOf(16, 13),
+            holderNames = listOf("Edge", "Christian"),
+            wonAtEpisode = "Royal Rumble",
+            lostAtEpisode = null,
             defenses = 0,
-            notes = "In progress"
+            notes = "Won ladder match final vs Sheik & Steele"
         ),
-        Championship(
-            id = 6,
-            title = "WWE IC Championship",
-            championId = null,
-            championName = "N/A",
-            reignNumber = 0,
-            reignStartEpisode = "N/A",
+
+        // World Tag Team Championship
+        TitleReign(
+            id = 10,
+            titleId = 4,
+            titleName = "World Tag Team Championship",
+            reignNumber = 1,
+            holderIds = listOf(8, 14),
+            holderNames = listOf("Bubba Ray Dudley", "D-Von Dudley"),
+            wonAtEpisode = "Royal Rumble",
+            lostAtEpisode = null,
             defenses = 0,
-            notes = "In progress"
-        ),
-        Championship(
-            id = 7,
-            title = "WWE Women's Championship",
-            championId = null,
-            championName = null,
-            reignNumber = 0,
-            reignStartEpisode = "N/A",
-            defenses = 0,
-            notes = "Tournament in progress"
+            notes = "Won ladder match final vs BOD"
         ),
     )
 
     val contenderships: List<Contendership> = listOf(
         // WWE Championship contenders
-        Contendership(id = 1,  titleId = 1, wrestlerId = 57, wrestlerName = "The Rock", rank = 1),
-        Contendership(id = 2,  titleId = 1, wrestlerId = 26, wrestlerName = "John Cena", rank = 2),
-        Contendership(id = 3,  titleId = 1, wrestlerId = 16, wrestlerName = "Edge", rank = 3),
-        Contendership(id = 4,  titleId = 1, wrestlerId = 5, wrestlerName = "Big Show", rank = 4),
-        Contendership(id = 5,  titleId = 1, wrestlerId = 29, wrestlerName = "Kurt Angle", rank = 5),
-        Contendership(id = 6,  titleId = 1, wrestlerId = 13, wrestlerName = "Christian", rank = 6),
-        Contendership(id = 7,  titleId = 1, wrestlerId = 36, wrestlerName = "Rhyno", rank = 7),
+        Contendership(id = 1, titleId = 1, wrestlerId = 57, wrestlerName = "The Rock", rank = 1),
+        Contendership(id = 2, titleId = 1, wrestlerId = 26, wrestlerName = "John Cena", rank = 2),
+        Contendership(id = 3, titleId = 1, wrestlerId = 16, wrestlerName = "Edge", rank = 3),
+        Contendership(id = 4, titleId = 1, wrestlerId = 5, wrestlerName = "Big Show", rank = 4),
+        Contendership(id = 5, titleId = 1, wrestlerId = 29, wrestlerName = "Kurt Angle", rank = 5),
+        Contendership(id = 6, titleId = 1, wrestlerId = 13, wrestlerName = "Christian", rank = 6),
+        Contendership(id = 7, titleId = 1, wrestlerId = 36, wrestlerName = "Rhyno", rank = 7),
 
         // World Heavyweight Championship contenders
-        Contendership(id = 5,  titleId = 2, wrestlerId = 60, wrestlerName = "Triple H", rank = 1),
-        Contendership(id = 6,  titleId = 2, wrestlerId = 47, wrestlerName = "Shawn Michaels", rank = 2),
-        Contendership(id = 7,  titleId = 2, wrestlerId = 27, wrestlerName = "Kane", rank = 3),
-        Contendership(id = 8,  titleId = 2, wrestlerId = 58, wrestlerName = "The Undertaker", rank = 4),
-        Contendership(id = 8,  titleId = 2, wrestlerId = 44, wrestlerName = "Scott Steiner", rank = 5),
-        Contendership(id = 8,  titleId = 2, wrestlerId = 6, wrestlerName = "Booker T", rank = 6),
-        Contendership(id = 8,  titleId = 2, wrestlerId = 32, wrestlerName = "Matt Hardy", rank = 7),
+        Contendership(id = 5, titleId = 2, wrestlerId = 60, wrestlerName = "Triple H", rank = 1),
+        Contendership(id = 6, titleId = 2, wrestlerId = 47, wrestlerName = "Shawn Michaels", rank = 2),
+        Contendership(id = 7, titleId = 2, wrestlerId = 27, wrestlerName = "Kane", rank = 3),
+        Contendership(id = 8, titleId = 2, wrestlerId = 58, wrestlerName = "The Undertaker", rank = 4),
+        Contendership(id = 8, titleId = 2, wrestlerId = 44, wrestlerName = "Scott Steiner", rank = 5),
+        Contendership(id = 8, titleId = 2, wrestlerId = 6, wrestlerName = "Booker T", rank = 6),
+        Contendership(id = 8, titleId = 2, wrestlerId = 32, wrestlerName = "Matt Hardy", rank = 7),
     )
+
+    fun getReignsForWrestler(wrestlerId: Int): List<TitleReign> =
+        reigns.filter { wrestlerId in it.holderIds }
+
+    fun getReignsForTitle(titleId: Int): List<TitleReign> =
+        reigns.filter { it.titleId == titleId }.sortedBy { it.reignNumber }
+
+    fun getCurrentReign(titleId: Int): TitleReign? =
+        reigns.find { it.titleId == titleId && it.lostAtEpisode == null}
+
+    fun getTitleById(id: Int): Championship? =
+        titles.find { it.id == id }
 
     fun getContendersForTitle(titleId: Int) =
         contenderships.filter { it.titleId == titleId }.sortedBy { it.rank }

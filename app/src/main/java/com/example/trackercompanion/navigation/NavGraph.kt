@@ -69,11 +69,7 @@ fun App() {
                                     wrestler.name in match.participants
                                 }
                             },
-                            titleHistory = titles.filter {title ->
-                                title.championName == wrestler.name ||
-                                title.championName?.contains(wrestler.name) == true ||
-                                title.partnerName == wrestler.name
-                            },
+                            titleReigns = ChampionshipData.getReignsForWrestler(wrestler.id),
                             onEditClick = {
                                 navController.navigate(AddEditWrestler)
                             },
