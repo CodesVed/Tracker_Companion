@@ -16,10 +16,8 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 2,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
+
         ),
         Wrestler(
             id = 6,
@@ -27,9 +25,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 2,
-            loss = 1,
-            teamWins = 2,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -38,9 +33,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 3,
-            loss = 0,
-            teamWins = 3,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -49,9 +41,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 2,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -60,9 +49,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 3,
-            loss = 0,
-            teamWins = 3,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -71,9 +57,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -82,9 +65,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -93,9 +73,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -104,9 +81,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -115,9 +89,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 4,
-            loss = 3,
-            teamWins = 2,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -126,9 +97,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -137,9 +105,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 2,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -148,9 +113,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -159,9 +121,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 1,
-            loss = 2,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -170,9 +129,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 2,
-            loss = 2,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -181,20 +137,14 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 42,
-            name = "Rob Van Dam",
+            name = "Rob Van Dam (RVD)",
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -203,9 +153,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 3,
-            loss = 3,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -214,20 +161,14 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 2,
-            teamWins = 2,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
             id = 47,
-            name = "Shawn Michaels",
+            name = "Shawn Michaels (HBK)",
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 3,
-            loss = 2,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -236,9 +177,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 6,
-            loss = 0,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -247,9 +185,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 3,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -258,9 +193,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 4,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -269,9 +201,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 5,
-            loss = 3,
-            teamWins = 2,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -280,9 +209,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 3,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
             notes = "#1 Contender - WHC"
         ),
@@ -292,9 +218,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 2,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -303,9 +226,6 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
 
@@ -316,9 +236,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -327,9 +244,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -338,9 +252,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 4,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
         ),
         Wrestler(
@@ -349,9 +260,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 6,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
             notes = "WWE Champion - Reign #2"
         ),
@@ -361,9 +269,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 1,
-            loss = 1,
-            teamWins = 1,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -372,9 +277,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -383,9 +285,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -394,9 +293,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 3,
-            loss = 2,
-            teamWins = 3,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -405,9 +301,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -416,9 +309,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            wins = 3,
-            loss = 1,
-            teamWins = 3,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -427,9 +317,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 1,
-            loss = 1,
-            teamWins = 1,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -438,9 +325,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -449,9 +333,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 1,
-            loss = 1,
-            teamWins = 1,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -460,9 +341,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 2,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -471,9 +349,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 3,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
             notes = "Broke Lesnar's undefeated streak, winning WWE Championship tourney"
         ),
@@ -483,9 +358,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -494,9 +366,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 2,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -505,9 +374,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 2,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),Wrestler(
             id = 36,
@@ -515,9 +381,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 3,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -526,9 +389,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 3,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -537,9 +397,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -548,9 +405,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 2,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -559,9 +413,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -570,9 +421,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            wins = 1,
-            loss = 1,
-            teamWins = 1,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -581,9 +429,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -592,9 +437,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -603,9 +445,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -614,9 +453,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 5,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder,
             notes = "WWE Championship - #1 Contender"
         ),
@@ -626,9 +462,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -637,9 +470,6 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
 
@@ -650,9 +480,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -661,9 +488,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 0,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -672,9 +496,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 0,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -683,9 +504,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -694,9 +512,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 0,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -705,9 +520,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 1,
-            loss = 0,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -716,9 +528,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 0,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
         ),
         Wrestler(
@@ -727,9 +536,6 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            wins = 0,
-            loss = 1,
-            teamWins = 0,
             imageRes = R.drawable.wrestler_placeholder
 
         ),

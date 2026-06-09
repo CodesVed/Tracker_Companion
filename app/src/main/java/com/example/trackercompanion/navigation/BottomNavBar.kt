@@ -1,5 +1,6 @@
 package com.example.trackercompanion.navigation
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Dashboard
@@ -34,6 +35,7 @@ data class BottomNavigationItem(val name: String, val icon: ImageVector, val uns
 fun BottomNavigationBar(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    Log.d("NAV_DEBUG", "currentRoute = $currentRoute")
 
     val activeRoute = when {
         currentRoute == WrestlerDetail::class.qualifiedName -> Roster::class.qualifiedName

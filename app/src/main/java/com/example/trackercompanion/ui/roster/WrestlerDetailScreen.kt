@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.R
+import com.example.trackercompanion.data.MatchStats
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.Match
@@ -60,12 +61,13 @@ import com.example.trackercompanion.ui.theme.TrackerCompanionTheme
 @Composable
 fun WrestlerDetailScreen(
     wrestler: Wrestler?,
+    stats: MatchStats = MatchStats(0, 0, 0, 0, 0f, 0),
     matchHistory: List<Match> = emptyList(),
     titleReigns: List<TitleReign> = emptyList(),
     onEditClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    val formattedWinPercent = "%.2f".format(wrestler?.winPercentage?:0f)
+    val formattedWinPercent = "%.2f".format(stats.winPercent)
 
 
     LazyColumn(
@@ -136,10 +138,10 @@ fun WrestlerDetailScreen(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                StatCell(label = "Wins", value = wrestler?.wins.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
-                StatCell(label = "Loss", value = wrestler?.loss.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
+                StatCell(label = "Wins", value = stats.wins.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
+                StatCell(label = "Loss", value = stats.losses.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
                 StatCell(label = "Win Rate", value = formattedWinPercent, fontSize = 20.sp, modifier = Modifier.weight(1f))
-                StatCell(label = "Points", value = wrestler?.points.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
+                StatCell(label = "Points", value = stats.points.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
             }
 
             HorizontalDivider(modifier = Modifier.padding(8.dp))
@@ -402,7 +404,7 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
 
 @Composable
 fun TitleReignRow(reign: TitleReign, currentWrestlerName: String) {
-    val isCurrentChampion = reign.lostAtEpisode == null
+    val isCurrentChampion = reign.lostAtEvent == null
     val isTagReign = reign.holderIds.size > 1
 
     val partners = reign.holderNames.filter { it != currentWrestlerName }
@@ -453,14 +455,14 @@ fun TitleReignRow(reign: TitleReign, currentWrestlerName: String) {
                 )
 
                 Text(
-                    text = "Won: ${reign.wonAtEpisode}",
+                    text = "Won: ${reign.wonAtEvent}",
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 if (!isCurrentChampion) {
                     Text(
-                        text = "Lost: ${reign.lostAtEpisode}",
+                        text = "Lost: ${reign.lostAtEvent}",
                         fontSize = 12.sp,
                         color = Red.copy(alpha = 0.8f)
                     )
@@ -504,7 +506,7 @@ fun TitleReignRow(reign: TitleReign, currentWrestlerName: String) {
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (isCurrentChampion) Gold
-                            else MaterialTheme.colorScheme.onSurfaceVariant
+                            else MaterialTheme.colorScheme.inverseOnSurface
                 )
             }
         }

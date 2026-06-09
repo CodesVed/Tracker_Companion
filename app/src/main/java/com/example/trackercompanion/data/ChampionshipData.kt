@@ -1,6 +1,5 @@
 package com.example.trackercompanion.data
 
-import androidx.collection.longSetOf
 import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.TitleReign
@@ -25,10 +24,10 @@ object ChampionshipData {
             reignNumber = 1,
             holderIds = listOf(26),
             holderNames = listOf("John Cena"),
-            wonAtEpisode = "SD 5",
-            lostAtEpisode = "Royal Rumble",
+            wonAtEvent = "SD 5",
+            lostAtEvent = "Royal Rumble",
             defenses = 0,
-            notes = "Won in tournament final — biggest match in history"
+            notes = "Won tournament against Lesnar — breaking his undefeated streak.\nBiggest match in history"
         ),
         TitleReign(
             id = 2,
@@ -37,8 +36,8 @@ object ChampionshipData {
             reignNumber = 2,
             holderIds = listOf(7),
             holderNames = listOf("Brock Lesnar"),
-            wonAtEpisode = "Royal Rumble",
-            lostAtEpisode = null,
+            wonAtEvent = "Royal Rumble",
+            lostAtEvent = null,
             defenses = 0,
             notes = "Won from Cena after losing from him at tournament"
         ),
@@ -51,8 +50,8 @@ object ChampionshipData {
             reignNumber = 1,
             holderIds = listOf(51),
             holderNames = listOf("Steve Austin"),
-            wonAtEpisode = "Royal Rumble",
-            lostAtEpisode = null,
+            wonAtEvent = "RAW 5",
+            lostAtEvent = null,
             defenses = 0,
             notes = "Won HIAC vs HBK — tourney final"
         ),
@@ -63,21 +62,10 @@ object ChampionshipData {
             titleId = 3,
             titleName = "WWE Tag Team Championship",
             reignNumber = 1,
-            holderIds = listOf(26, 7),
-            holderNames = listOf("John Cena", "Brock Lesnar"),
-            wonAtEpisode = "SD 2",
-            lostAtEpisode = "Royal Rumble",
-            defenses = 0,
-        ),
-        TitleReign(
-            id = 1,
-            titleId = 3,
-            titleName = "WWE Tag Team Championship",
-            reignNumber = 2,
             holderIds = listOf(16, 13),
             holderNames = listOf("Edge", "Christian"),
-            wonAtEpisode = "Royal Rumble",
-            lostAtEpisode = null,
+            wonAtEvent = "SD 5",
+            lostAtEvent = null,
             defenses = 0,
             notes = "Won ladder match final vs Sheik & Steele"
         ),
@@ -90,8 +78,8 @@ object ChampionshipData {
             reignNumber = 1,
             holderIds = listOf(8, 14),
             holderNames = listOf("Bubba Ray Dudley", "D-Von Dudley"),
-            wonAtEpisode = "Royal Rumble",
-            lostAtEpisode = null,
+            wonAtEvent = "RAW 5",
+            lostAtEvent = null,
             defenses = 0,
             notes = "Won ladder match final vs BOD"
         ),
@@ -124,7 +112,7 @@ object ChampionshipData {
         reigns.filter { it.titleId == titleId }.sortedBy { it.reignNumber }
 
     fun getCurrentReign(titleId: Int): TitleReign? =
-        reigns.find { it.titleId == titleId && it.lostAtEpisode == null}
+        reigns.find { it.titleId == titleId && it.lostAtEvent == null}
 
     fun getTitleById(id: Int): Championship? =
         titles.find { it.id == id }

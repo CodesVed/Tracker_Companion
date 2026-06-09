@@ -2,6 +2,7 @@ package com.example.trackercompanion.ui.roster
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,12 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,7 +32,13 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +49,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
+import com.example.trackercompanion.data.computeStatsForWrestler
+import com.example.trackercompanion.model.Match
 import com.example.trackercompanion.model.Wrestler
 import com.example.trackercompanion.ui.theme.Blue
 import com.example.trackercompanion.ui.theme.Grey
@@ -46,7 +61,21 @@ import com.example.trackercompanion.ui.theme.Red
 
 
 @Composable
-fun RosterScreen(wrestlers: List<Wrestler>, onWrestlerClick: (Int)->Unit, onAddWrestlerClick: ()->Unit) {
+fun RosterScreen(
+    wrestlers: List<Wrestler>,
+    selectedBrand: String,
+    selectedSort: String,
+    onBrandSelected: (String) -> Unit,
+    onSortSelected: (String) -> Unit,
+    onWrestlerClick: (Int) -> Unit,
+    onAddWrestlerClick: () -> Unit,
+    matchesSources: List<Match>
+) {
+    val brandTypes = listOf("ALL", "RAW", "SD", "DIVA", "FREE")
+    val sorts = listOf("Name", "Points", "Win Rate")
+    var sortMenuExpanded by remember { mutableStateOf(false) }
+
+
     Box(
         modifier = Modifier.fillMaxSize().padding(12.dp)
     ) {
@@ -62,11 +91,79 @@ fun RosterScreen(wrestlers: List<Wrestler>, onWrestlerClick: (Int)->Unit, onAddW
 
             HorizontalDivider(modifier = Modifier.padding(5.dp))
 
+            // ── Brand Filter Chips ────────────────────────────────────
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(brandTypes) {brand ->
+                    FilterChip(
+                        selected = selectedBrand == brand,
+                        onClick = { onBrandSelected(brand) },
+                        label = { Text(brand) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // ── Sort row ────────────────────────────────────
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Sort: ",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Box {
+                    TextButton(
+                        onClick = { sortMenuExpanded = true}
+                    ) {
+                        Text(text = selectedSort, fontSize = 13.sp)
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = sortMenuExpanded,
+                        onDismissRequest = { sortMenuExpanded = false}
+                    ) {
+                        sorts.forEach { sort ->
+                            DropdownMenuItem(
+                                text = { Text(sort) },
+                                onClick = {
+                                    onSortSelected(sort)
+                                    sortMenuExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // ── Wrestler Count ────────────────────────────────────
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = "${wrestlers.size} wrestler${if (wrestlers.size != 1) "s" else ""}",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            // ── List ────────────────────────────────────
             LazyColumn {
-                items(wrestlers) {wrestler ->
+                items(wrestlers, key = { it.id }) {wrestler ->
                     WrestlerCard(
                         wrestler = wrestler,
-                        onClick = { onWrestlerClick(wrestler.id) }
+                        onClick = { onWrestlerClick(wrestler.id) },
+                        matches = matchesSources
                     )
                 }
             }
@@ -89,7 +186,11 @@ fun RosterScreen(wrestlers: List<Wrestler>, onWrestlerClick: (Int)->Unit, onAddW
 }
 
 @Composable
-fun WrestlerCard(wrestler: Wrestler, onClick: () -> Unit) {
+fun WrestlerCard(wrestler: Wrestler, matches: List<Match>, onClick: () -> Unit) {
+    val stats = remember(matches) {
+        computeStatsForWrestler(wrestler.id, matches)
+    }
+
     ElevatedCard(
         modifier = Modifier.fillMaxWidth().padding(10.dp),
         onClick = onClick
@@ -125,9 +226,9 @@ fun WrestlerCard(wrestler: Wrestler, onClick: () -> Unit) {
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    StatCell(label = "W", value = wrestler.wins.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
-                    StatCell(label = "L", value = wrestler.loss.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
-                    StatCell(label = "Pts", value = wrestler.points.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
+                    StatCell(label = "W", value = stats.wins.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
+                    StatCell(label = "L", value = stats.losses.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
+                    StatCell(label = "Pts", value = stats.points.toString(), fontSize = 16.sp, modifier = Modifier.weight(1f))
                 }
             }
 
@@ -194,5 +295,14 @@ fun StatCell(label: String, value: String, fontSize: TextUnit, modifier: Modifie
 @Preview(showBackground = true)
 @Composable
 fun RosterPreview() {
-    RosterScreen(WrestlerData.roster, onWrestlerClick = {}, onAddWrestlerClick = {})
+    RosterScreen(
+        WrestlerData.roster,
+        matchesSources = ShowData.matches,
+        selectedBrand = "ALL",
+        selectedSort = "Name",
+        onBrandSelected = {},
+        onSortSelected = {},
+        onWrestlerClick = {},
+        onAddWrestlerClick = {}
+    )
 }
