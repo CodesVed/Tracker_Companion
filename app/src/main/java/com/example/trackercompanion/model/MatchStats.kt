@@ -1,6 +1,4 @@
-package com.example.trackercompanion.data
-
-import com.example.trackercompanion.model.Match
+package com.example.trackercompanion.model
 
 data class MatchStats(
     val wins: Int,
@@ -15,8 +13,8 @@ fun computeStatsForWrestler(wrestlerId: Int, matches: List<Match>): MatchStats {
     val participatedMatches = matches.filter { wrestlerId in it.participantIds }
 
     val wins = participatedMatches.count { match ->
-        if (match.winnerIds.isNotEmpty()) wrestlerId !in match.winnerIds
-        else match.winnerId != wrestlerId
+        if (match.winnerIds.isNotEmpty()) wrestlerId in match.winnerIds
+        else match.winnerId == wrestlerId
     }
 
     val losses = participatedMatches.count { match ->

@@ -17,7 +17,7 @@ import androidx.navigation.toRoute
 import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
-import com.example.trackercompanion.data.computeStatsForWrestler
+import com.example.trackercompanion.model.computeStatsForWrestler
 import com.example.trackercompanion.ui.calendar.CalendarScreen
 import com.example.trackercompanion.ui.championships.ChampionshipScreen
 import com.example.trackercompanion.ui.dashboard.DashboardScreen
@@ -97,7 +97,7 @@ fun App() {
                             matchHistory = matches.filter { wrestler.id in it.participantIds },
                             titleReigns = ChampionshipData.getReignsForWrestler(wrestler.id),
                             onEditClick = {
-                                navController.navigate(AddEditWrestler)
+                                navController.navigate(route = AddEditWrestler)
                             },
                             onBackClick = {
                                 navController.popBackStack()

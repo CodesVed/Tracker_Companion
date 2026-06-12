@@ -38,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
-import com.example.trackercompanion.data.computeStatsForWrestler
+import com.example.trackercompanion.model.computeStatsForWrestler
 import com.example.trackercompanion.model.Match
 import com.example.trackercompanion.model.Wrestler
 import com.example.trackercompanion.ui.theme.Blue

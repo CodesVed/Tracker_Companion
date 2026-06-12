@@ -45,7 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.R
-import com.example.trackercompanion.data.MatchStats
+import com.example.trackercompanion.model.MatchStats
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.Match

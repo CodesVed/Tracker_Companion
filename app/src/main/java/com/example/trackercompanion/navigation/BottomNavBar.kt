@@ -38,8 +38,8 @@ fun BottomNavigationBar(navController: NavHostController){
     Log.d("NAV_DEBUG", "currentRoute = $currentRoute")
 
     val activeRoute = when {
-        currentRoute == WrestlerDetail::class.qualifiedName -> Roster::class.qualifiedName
-        currentRoute == AddEditWrestler::class.qualifiedName -> Roster::class.qualifiedName
+        currentRoute?.startsWith(WrestlerDetail::class.qualifiedName?:"") == true -> Roster::class.qualifiedName
+        currentRoute?.startsWith(AddEditWrestler::class.qualifiedName?:"") == true -> Roster::class.qualifiedName
         else -> currentRoute
     }
 
