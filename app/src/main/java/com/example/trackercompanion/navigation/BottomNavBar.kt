@@ -35,11 +35,12 @@ data class BottomNavigationItem(val name: String, val icon: ImageVector, val uns
 fun BottomNavigationBar(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    Log.d("NAV_DEBUG", "currentRoute = $currentRoute")
 
     val activeRoute = when {
         currentRoute?.startsWith(WrestlerDetail::class.qualifiedName?:"") == true -> Roster::class.qualifiedName
         currentRoute?.startsWith(AddEditWrestler::class.qualifiedName?:"") == true -> Roster::class.qualifiedName
+        currentRoute?.startsWith(EpisodeDetail::class.qualifiedName?:"") == true -> Shows::class.qualifiedName
+        currentRoute == AddEpisode::class.qualifiedName -> Shows::class.qualifiedName
         else -> currentRoute
     }
 

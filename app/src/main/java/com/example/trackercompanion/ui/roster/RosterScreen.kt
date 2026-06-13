@@ -21,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
@@ -28,9 +30,11 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -64,11 +68,13 @@ fun RosterScreen(
     wrestlers: List<Wrestler>,
     selectedBrand: String,
     selectedSort: String,
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit,
     onBrandSelected: (String) -> Unit,
     onSortSelected: (String) -> Unit,
     onWrestlerClick: (Int) -> Unit,
     onAddWrestlerClick: () -> Unit,
-    matchesSources: List<Match>
+    matcheSources: List<Match>
 ) {
     val brandTypes = listOf("ALL", "RAW", "SD", "DIVA", "FREE")
     val sorts = listOf("Name", "Points", "Win Rate")
@@ -88,7 +94,33 @@ fun RosterScreen(
 
             )
 
-            HorizontalDivider(modifier = Modifier.padding(5.dp))
+            // ── Search bar ─────────────────────────────────
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = onSearchQueryChanged,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Search wrestlers...") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search"
+                    )
+                },
+                trailingIcon = {
+                    if (searchQuery.isNotBlank()) {
+                        IconButton(onClick = { onSearchQueryChanged("") }) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear search"
+                            )
+                        }
+                    }
+                },
+                singleLine = true,
+                shape = MaterialTheme.shapes.large
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             // ── Brand Filter Chips ────────────────────────────────────
             LazyRow(
@@ -109,76 +141,106 @@ fun RosterScreen(
             // ── Sort row ────────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Sort: ",
-                    fontSize = 13.sp,
+                    text = "${wrestlers.size} wrestler${if (wrestlers.size != 1) "s" else ""}",
+                    fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                Box {
-                    TextButton(
-                        onClick = { sortMenuExpanded = true}
-                    ) {
-                        Text(text = selectedSort, fontSize = 13.sp)
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = sortMenuExpanded,
-                        onDismissRequest = { sortMenuExpanded = false}
-                    ) {
-                        sorts.forEach { sort ->
-                            DropdownMenuItem(
-                                text = { Text(sort) },
-                                onClick = {
-                                    onSortSelected(sort)
-                                    sortMenuExpanded = false
-                                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Sort: ",
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Box {
+                        TextButton(
+                            onClick = { sortMenuExpanded = true}
+                        ) {
+                            Text(text = selectedSort, fontSize = 13.sp)
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
                             )
+                        }
+
+                        DropdownMenu(
+                            expanded = sortMenuExpanded,
+                            onDismissRequest = { sortMenuExpanded = false}
+                        ) {
+                            sorts.forEach { sort ->
+                                DropdownMenuItem(
+                                    text = { Text(sort) },
+                                    onClick = {
+                                        onSortSelected(sort)
+                                        sortMenuExpanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // ── Wrestler Count ────────────────────────────────────
-            Text(
-                modifier = Modifier.padding(bottom = 4.dp),
-                text = "${wrestlers.size} wrestler${if (wrestlers.size != 1) "s" else ""}",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            // ── List ────────────────────────────────────
-            LazyColumn {
-                items(wrestlers, key = { it.id }) {wrestler ->
-                    WrestlerCard(
-                        wrestler = wrestler,
-                        onClick = { onWrestlerClick(wrestler.id) },
-                        matches = matchesSources
-                    )
+            // ── Empty state for search ─────────────────────
+            if (wrestlers.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = if (searchQuery.isNotBlank())
+                                "No wrestlers match \"$searchQuery\""
+                            else
+                                "No wrestlers in this brand.",
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            } else {
+                // ── List ────────────────────────────────────
+                LazyColumn {
+                    items(wrestlers, key = { it.id }) {wrestler ->
+                        WrestlerCard(
+                            wrestler = wrestler,
+                            onClick = { onWrestlerClick(wrestler.id) },
+                            matches = matcheSources
+                        )
+                    }
                 }
             }
         }
 
         FloatingActionButton(
-            modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp).width(140.dp).height(70.dp),
-            onClick = {onAddWrestlerClick.invoke()}
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            onClick = { onAddWrestlerClick.invoke() }
         ) {
-            Row {
-                Icon(modifier = Modifier.size(28.dp), imageVector = Icons.Default.Add, contentDescription = "Add Wrestler")
-
-                Text(
-                    fontSize = 20.sp,
-                    text = "Add\nWrestler"
-                )
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                Text(text = "Add Wrestler", fontSize = 16.sp)
             }
         }
     }
@@ -295,10 +357,12 @@ fun StatCell(label: String, value: String, fontSize: TextUnit, modifier: Modifie
 @Composable
 fun RosterPreview() {
     RosterScreen(
-        WrestlerData.roster,
-        matchesSources = ShowData.matches,
+        wrestlers = WrestlerData.roster,
+        matcheSources = ShowData.matches,
         selectedBrand = "ALL",
         selectedSort = "Name",
+        searchQuery = "",
+        onSearchQueryChanged = {},
         onBrandSelected = {},
         onSortSelected = {},
         onWrestlerClick = {},

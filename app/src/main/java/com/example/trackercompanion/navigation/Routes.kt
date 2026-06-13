@@ -25,6 +25,12 @@ sealed class Routes {
     object Shows
 
     @Serializable
+    data class EpisodeDetail(val episodeId: Int, val isPPV: Boolean)
+
+    @Serializable
+    object AddEpisode
+
+    @Serializable
     object Championships
 
     @Serializable

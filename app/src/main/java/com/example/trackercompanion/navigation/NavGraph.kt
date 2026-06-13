@@ -18,6 +18,8 @@ import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.computeStatsForWrestler
+import com.example.trackercompanion.model.enums.Brand
+import com.example.trackercompanion.model.enums.Show
 import com.example.trackercompanion.ui.calendar.CalendarScreen
 import com.example.trackercompanion.ui.championships.ChampionshipScreen
 import com.example.trackercompanion.ui.dashboard.DashboardScreen
@@ -26,6 +28,9 @@ import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
 import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
+import com.example.trackercompanion.ui.shows.AddEpisodeScreen
+import com.example.trackercompanion.ui.shows.EpisodeDetailScreen
+import com.example.trackercompanion.ui.shows.ShowSource
 
 @Composable
 fun App() {
@@ -33,7 +38,8 @@ fun App() {
 
     val wrestlers = remember { mutableStateListOf(*WrestlerData.roster.toTypedArray()) }
     val matches = remember { mutableStateListOf(*ShowData.matches.toTypedArray()) }
-    val titles = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
+    val episodes = remember { mutableStateListOf(*ShowData.episodes.toTypedArray()) }
+    val ppvEvents = remember { mutableStateListOf(*ShowData.ppvEvents.toTypedArray()) }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
@@ -50,10 +56,15 @@ fun App() {
                 composable<Roster> {
                     var selectedBrandType by remember { mutableStateOf("ALL") }
                     var selectedSort by remember { mutableStateOf("Name") }
+                    var searchQuery by remember { mutableStateOf("") }
 
                     val filteredWrestlers = wrestlers
                         .filter { w ->
                             selectedBrandType == "ALL" || w.brand.toString() == selectedBrandType
+                        }
+                        .filter { w ->
+                            searchQuery.isBlank() ||
+                            w.name.contains(searchQuery, ignoreCase = true)
                         }
                         .sortedWith(
                             when (selectedSort) {
@@ -66,9 +77,13 @@ fun App() {
 
                     RosterScreen(
                         wrestlers = filteredWrestlers,
-                        matchesSources = matches,
+                        matcheSources = matches,
                         selectedBrand = selectedBrandType,
                         selectedSort = selectedSort,
+                        searchQuery = searchQuery,
+                        onSearchQueryChanged = {
+                            searchQuery = it
+                        },
                         onBrandSelected = {
                             selectedBrandType = it
                         },
@@ -79,7 +94,7 @@ fun App() {
                             navController.navigate(route = WrestlerDetail(id))
                         },
                         onAddWrestlerClick = {
-                            navController.navigate(route = AddEditWrestler)
+                            navController.navigate(route = AddEditWrestler())
                         }
                     )
                 }
@@ -131,8 +146,114 @@ fun App() {
                 }
 
                 composable<Shows> {
-                    ShowScreen()
+                    ShowScreen(
+                        episodes = episodes,
+                        ppvEvents = ppvEvents,
+                        matches = matches,
+                        onEpisodeClick = {episode ->
+                            navController.navigate(route = EpisodeDetail(episodeId = episode.id, isPPV = false))
+                        },
+                        onPPVClick = {ppv ->
+                            navController.navigate(route = EpisodeDetail(episodeId = ppv.id, isPPV = true))
+                        },
+                        onAddEpisodeClick = {
+                            navController.navigate(route = AddEpisode)
+                        },
+                        onEpisodeEdited = {edited ->
+                            val i = episodes.indexOfFirst { it.id == edited.id }
+                            if (i != -1) episodes[i] = edited
+                        },
+                        onEpisodeDeleted = { deleted ->
+                            episodes.removeIf { it.id == deleted.id }
+                            // Also delete all matches belonging to this episode
+                            matches.removeIf {
+                                it.showId == deleted.id && it.showType == Show.SHOW
+                            }
+                        }
+                    )
                 }
+
+                composable<EpisodeDetail> {backStackEntry ->
+                    val route = backStackEntry.toRoute<EpisodeDetail>()
+
+                    val showSource = if (route.isPPV) {
+                        val ppv = ppvEvents.find { it.id == route.episodeId }
+                        if (ppv != null) ShowSource.PPV(ppv) else null
+                    } else {
+                        val episode = episodes.find { it.id == route.episodeId }
+                        if (episode != null) ShowSource.RegularShow(episode = episode) else null
+                    }
+
+                    val showType = if (route.isPPV) {
+                        Show.PPV
+                    } else {
+                        Show.SHOW
+                    }
+
+                    val episodeMatches = matches.filter {
+                        it.showId == route.episodeId && it.showType == showType
+                    }
+
+                    if (showSource != null) {
+                        EpisodeDetailScreen(
+                            showSource = showSource,
+                            matches = episodeMatches,
+                            wrestlers = wrestlers,
+                            existingMatchCount = episodeMatches.size,
+                            onMatchSaved = {savedMatch ->
+                                // Edit mode — replace existing entry
+                                val i = matches.indexOfFirst { it.id == savedMatch.id }
+                                if (i != -1) matches[i] = savedMatch
+                                // Add mode — append
+                                else matches.add(savedMatch)
+                            },
+                            onMatchDeleted = { deletedMatch ->
+                                matches.removeIf { it.id == deletedMatch.id }
+                            },
+                            onEpisodeEdited = { edited ->
+                                val i = episodes.indexOfFirst { it.id == edited.id }
+                                if (i != -1) episodes[i] = edited
+                            },
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                }
+
+//                composable<AddEpisode> {
+//                    val rawCount = episodes.count { it.brand == Brand.RAW }
+//                    val sdCount = episodes.count { it.brand == Brand.SD }
+//
+//                    AddEpisodeScreen(
+//                        existingEpisodeCount = maxOf(rawCount, sdCount),
+//                        existingPPVCount = ppvEvents.size,
+//                        onSave = {result ->
+//                            when (result) {
+//                                is AddEpisodeResult.NewEpisode -> {
+//                                    episodes.add(result.episode)
+//                                    navController.navigate(
+//                                        route = EpisodeDetail(result.episode.id, isPPV = false)
+//                                    ) {
+//                                        popUpTo<AddEpisode> {inclusive = true}
+//                                    }
+//                                }
+//                                is AddEpisodeResult.NewPPV -> {
+//                                    ppvEvents.add(result.ppv)
+//                                    navController.navigate(
+//                                        route = EpisodeDetail(result.ppv.id, isPPV = true)
+//                                    ) {
+//                                        popUpTo<AddEpisode> { inclusive = true }
+//                                    }
+//                                }
+//                            }
+//                        },
+//                        onBack = {
+//                            navController.popBackStack()
+//                        }
+//                    )
+//                }
+
                 composable<Championships> {
                     ChampionshipScreen()
                 }
