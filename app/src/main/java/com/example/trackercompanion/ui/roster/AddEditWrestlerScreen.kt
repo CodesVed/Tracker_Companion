@@ -168,7 +168,7 @@ fun AddEditWrestlerScreen(existing: Wrestler? = null, onSave: (Wrestler)->Unit, 
                 }
             ) {
                 Text(
-                    text = if (isEditMode) "Saved Changes" else "Add Wrestler",
+                    text = if (isEditMode) "Save Changes" else "Add Wrestler",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )

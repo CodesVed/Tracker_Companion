@@ -97,7 +97,7 @@ fun App() {
                             matchHistory = matches.filter { wrestler.id in it.participantIds },
                             titleReigns = ChampionshipData.getReignsForWrestler(wrestler.id),
                             onEditClick = {
-                                navController.navigate(route = AddEditWrestler)
+                                navController.navigate(route = AddEditWrestler(wrestlerId = wrestler.id))
                             },
                             onBackClick = {
                                 navController.popBackStack()
@@ -106,10 +106,22 @@ fun App() {
                     }
                 }
 
-                composable<AddEditWrestler> {
+                composable<AddEditWrestler> {backStackEntry ->
+                    val route = backStackEntry.toRoute<AddEditWrestler>()
+
+                    val existing = if (route.wrestlerId != -1) {
+                        wrestlers.find { it.id == route.wrestlerId }
+                    } else null
+
                     AddEditWrestlerScreen(
-                        onSave = {newWrestler ->
-                            wrestlers.add(newWrestler)
+                        existing = existing,
+                        onSave = {saved ->
+                            if (existing == null){
+                                wrestlers.add(saved)
+                            } else {
+                                val index = wrestlers.indexOfFirst { it.id == saved.id }
+                                if (index != -1) wrestlers[index] = saved
+                            }
                             navController.popBackStack()
                         },
                         onBack = {

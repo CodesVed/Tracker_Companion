@@ -19,7 +19,7 @@ sealed class Routes {
     data class WrestlerDetail(val wrestlerId: Int)
 
     @Serializable
-    object AddEditWrestler
+    data class AddEditWrestler(val wrestlerId: Int = -1)
 
     @Serializable
     object Shows
