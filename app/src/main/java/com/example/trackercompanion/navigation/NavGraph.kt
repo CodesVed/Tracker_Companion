@@ -28,6 +28,7 @@ import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
 import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
+import com.example.trackercompanion.ui.shows.AddEpisodeResult
 import com.example.trackercompanion.ui.shows.AddEpisodeScreen
 import com.example.trackercompanion.ui.shows.EpisodeDetailScreen
 import com.example.trackercompanion.ui.shows.ShowSource
@@ -199,7 +200,6 @@ fun App() {
                             showSource = showSource,
                             matches = episodeMatches,
                             wrestlers = wrestlers,
-                            existingMatchCount = episodeMatches.size,
                             onMatchSaved = {savedMatch ->
                                 // Edit mode — replace existing entry
                                 val i = matches.indexOfFirst { it.id == savedMatch.id }
@@ -214,6 +214,10 @@ fun App() {
                                 val i = episodes.indexOfFirst { it.id == edited.id }
                                 if (i != -1) episodes[i] = edited
                             },
+                            onPPVEdited = { edited ->
+                                val i = ppvEvents.indexOfFirst { it.id == edited.id }
+                                if (i != -1) ppvEvents[i] = edited
+                            },
                             onBackClick = {
                                 navController.popBackStack()
                             }
@@ -221,38 +225,38 @@ fun App() {
                     }
                 }
 
-//                composable<AddEpisode> {
-//                    val rawCount = episodes.count { it.brand == Brand.RAW }
-//                    val sdCount = episodes.count { it.brand == Brand.SD }
-//
-//                    AddEpisodeScreen(
-//                        existingEpisodeCount = maxOf(rawCount, sdCount),
-//                        existingPPVCount = ppvEvents.size,
-//                        onSave = {result ->
-//                            when (result) {
-//                                is AddEpisodeResult.NewEpisode -> {
-//                                    episodes.add(result.episode)
-//                                    navController.navigate(
-//                                        route = EpisodeDetail(result.episode.id, isPPV = false)
-//                                    ) {
-//                                        popUpTo<AddEpisode> {inclusive = true}
-//                                    }
-//                                }
-//                                is AddEpisodeResult.NewPPV -> {
-//                                    ppvEvents.add(result.ppv)
-//                                    navController.navigate(
-//                                        route = EpisodeDetail(result.ppv.id, isPPV = true)
-//                                    ) {
-//                                        popUpTo<AddEpisode> { inclusive = true }
-//                                    }
-//                                }
-//                            }
-//                        },
-//                        onBack = {
-//                            navController.popBackStack()
-//                        }
-//                    )
-//                }
+                composable<AddEpisode> {
+                    val rawCount = episodes.count { it.brand == Brand.RAW }
+                    val sdCount = episodes.count { it.brand == Brand.SD }
+
+                    AddEpisodeScreen(
+                        existingEpisodeCount = maxOf(rawCount, sdCount),
+                        existingPPVCount = ppvEvents.size,
+                        onSave = {result ->
+                            when (result) {
+                                is AddEpisodeResult.NewEpisode -> {
+                                    episodes.add(result.episode)
+                                    navController.navigate(
+                                        route = EpisodeDetail(result.episode.id, isPPV = false)
+                                    ) {
+                                        popUpTo<AddEpisode> {inclusive = true}
+                                    }
+                                }
+                                is AddEpisodeResult.NewPPV -> {
+                                    ppvEvents.add(result.ppv)
+                                    navController.navigate(
+                                        route = EpisodeDetail(result.ppv.id, isPPV = true)
+                                    ) {
+                                        popUpTo<AddEpisode> { inclusive = true }
+                                    }
+                                }
+                            }
+                        },
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
 
                 composable<Championships> {
                     ChampionshipScreen()

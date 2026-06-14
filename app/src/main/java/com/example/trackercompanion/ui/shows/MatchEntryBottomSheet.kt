@@ -71,6 +71,7 @@ fun MatchEntryBottomSheet(
     showId: Int,
     showType: Show,
     wrestlers: List<Wrestler>,
+    existingMatchCount: Int,
     editingMatch: Match? = null,
     onSave: (Match) -> Unit,
     onDismiss: () -> Unit,
@@ -79,8 +80,15 @@ fun MatchEntryBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isEditMode = editingMatch != null
 
+    val suggestedSlot = when {
+        existingMatchCount == 0 -> CardSlot.OPEN
+        existingMatchCount <= 2 -> CardSlot.MID
+        existingMatchCount <= 4 -> CardSlot.UPPER
+        else                    -> CardSlot.MAIN
+    }
+
     var isTagMatch by remember { mutableStateOf(editingMatch?.isTagMatch ?: false) }
-    var slot by remember { mutableStateOf(editingMatch?.slot ?: CardSlot.OPEN) }
+    var slot by remember { mutableStateOf(editingMatch?.slot ?: suggestedSlot) }
     var stipulation by remember { mutableStateOf(editingMatch?.stipulation ?: "Normal") }
     var notes by remember { mutableStateOf(editingMatch?.notes ?: "") }
 
@@ -144,8 +152,6 @@ fun MatchEntryBottomSheet(
     var winnerError      by remember { mutableStateOf(false) }
 
     var showDeleteConfirm by remember { mutableStateOf(false) }
-
-    val wrestlerNames = wrestlers.map { it.name }
 
     val participantIds: List<Int>
     val participantDisplay: String
@@ -274,6 +280,15 @@ fun MatchEntryBottomSheet(
                 options = slotOptions,
                 onOptionsSelected = { slot = CardSlot.valueOf(it) }
             )
+
+            if (!isEditMode) {
+                Text(
+                    text = "Suggested based on $existingMatchCount existing match" +
+                            if (existingMatchCount == 1) "" else "es",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
             // ── Stipulation picker ─────────────────────────
             DropdownField(
