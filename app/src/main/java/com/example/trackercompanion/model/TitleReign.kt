@@ -7,6 +7,7 @@ data class TitleReign(
     val reignNumber: Int,
     val holderIds: List<Int>,
     val holderNames: List<String>,
+    val holderImages: List<Int> = listOf(),
     val wonAtEvent: String,
     val lostAtEvent: String?,
     val defenses: Int = 0,

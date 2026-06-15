@@ -1,20 +1,11 @@
 package com.example.trackercompanion.data
 
+import com.example.trackercompanion.R
 import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.TitleReign
 
 object ChampionshipData {
-    val titles: List<Championship> = listOf(
-        Championship(id = 1, title = "WWE Championship", currentChampionId = 7),
-        Championship(id = 2, title = "World Heavyweight Championship", currentChampionId = 51),
-        Championship(id = 3, title = "WWE Tag Team Championship", currentChampionId = 8),
-        Championship(id = 4, title = "World Tag Team Championship", currentChampionId = 16),
-        Championship(id = 5, title = "WWE Intercontinental Championship", currentChampionId = null),
-        Championship(id = 6, title = "WWE United States Championship", currentChampionId = null),
-        Championship(id = 7, title = "WWE Women's Championship", currentChampionId = null)
-    )
-
     val reigns: List<TitleReign> = listOf(
         // WWE Championship
         TitleReign(
@@ -103,6 +94,16 @@ object ChampionshipData {
         Contendership(id = 8, titleId = 2, wrestlerId = 44, wrestlerName = "Scott Steiner", rank = 5),
         Contendership(id = 8, titleId = 2, wrestlerId = 6, wrestlerName = "Booker T", rank = 6),
         Contendership(id = 8, titleId = 2, wrestlerId = 32, wrestlerName = "Matt Hardy", rank = 7),
+    )
+
+    val titles: List<Championship> = listOf(
+        Championship(id = 1, title = "WWE Championship", titleImage = R.drawable.belt_wwe_championship, currentChampion = getCurrentReign(1)),
+        Championship(id = 2, title = "World Heavyweight Championship", titleImage = R.drawable.belt_world_heavyweight_championship, currentChampion = getCurrentReign(2)),
+        Championship(id = 3, title = "WWE Tag Team Championship", titleImage = R.drawable.belt_tag_team_championship, currentChampion = getCurrentReign(3)),
+        Championship(id = 4, title = "World Tag Team Championship", titleImage = R.drawable.belt_world_tag_team_championship, currentChampion = getCurrentReign(4)),
+        Championship(id = 5, title = "WWE Intercontinental Championship", titleImage = R.drawable.belt_intercontinental_championship, currentChampion = getCurrentReign(5)),
+        Championship(id = 6, title = "WWE United States Championship", titleImage = R.drawable.belt_us_championship, currentChampion = getCurrentReign(6)),
+        Championship(id = 7, title = "WWE Women's Championship", titleImage = R.drawable.belt_womens_champion, currentChampion = getCurrentReign(7))
     )
 
     fun getReignsForWrestler(wrestlerId: Int): List<TitleReign> =

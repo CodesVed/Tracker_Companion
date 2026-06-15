@@ -41,6 +41,7 @@ fun App() {
     val matches = remember { mutableStateListOf(*ShowData.matches.toTypedArray()) }
     val episodes = remember { mutableStateListOf(*ShowData.episodes.toTypedArray()) }
     val ppvEvents = remember { mutableStateListOf(*ShowData.ppvEvents.toTypedArray()) }
+    val championships = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
@@ -78,7 +79,7 @@ fun App() {
 
                     RosterScreen(
                         wrestlers = filteredWrestlers,
-                        matcheSources = matches,
+                        matchSources = matches,
                         selectedBrand = selectedBrandType,
                         selectedSort = selectedSort,
                         searchQuery = searchQuery,
@@ -259,7 +260,9 @@ fun App() {
                 }
 
                 composable<Championships> {
-                    ChampionshipScreen()
+                    ChampionshipScreen(
+                        championships = championships
+                    )
                 }
                 composable<Calendar> {
                     CalendarScreen()

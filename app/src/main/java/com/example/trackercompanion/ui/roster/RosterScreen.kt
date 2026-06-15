@@ -28,7 +28,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -74,7 +73,7 @@ fun RosterScreen(
     onSortSelected: (String) -> Unit,
     onWrestlerClick: (Int) -> Unit,
     onAddWrestlerClick: () -> Unit,
-    matcheSources: List<Match>
+    matchSources: List<Match>
 ) {
     val brandTypes = listOf("ALL", "RAW", "SD", "DIVA", "FREE")
     val sorts = listOf("Name", "Points", "Win Rate")
@@ -93,6 +92,8 @@ fun RosterScreen(
                 text = "Locker Room",
 
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             // ── Search bar ─────────────────────────────────
             OutlinedTextField(
@@ -223,7 +224,7 @@ fun RosterScreen(
                         WrestlerCard(
                             wrestler = wrestler,
                             onClick = { onWrestlerClick(wrestler.id) },
-                            matches = matcheSources
+                            matches = matchSources
                         )
                     }
                 }
@@ -358,7 +359,7 @@ fun StatCell(label: String, value: String, fontSize: TextUnit, modifier: Modifie
 fun RosterPreview() {
     RosterScreen(
         wrestlers = WrestlerData.roster,
-        matcheSources = ShowData.matches,
+        matchSources = ShowData.matches,
         selectedBrand = "ALL",
         selectedSort = "Name",
         searchQuery = "",

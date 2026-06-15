@@ -165,8 +165,6 @@ fun EpisodeDetailScreen(
                             tint = brandColor
                         )
                     }
-
-                    Spacer(modifier = Modifier.size(30.dp))
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
