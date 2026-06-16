@@ -34,5 +34,8 @@ sealed class Routes {
     object Championships
 
     @Serializable
+    data class TitleDetail(val titleId: Int)
+
+    @Serializable
     object Calendar
 }

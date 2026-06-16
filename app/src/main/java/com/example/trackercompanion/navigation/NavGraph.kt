@@ -15,6 +15,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.trackercompanion.data.ChampionshipData
+import com.example.trackercompanion.data.ChampionshipData.contenderships
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.computeStatsForWrestler
@@ -27,6 +28,8 @@ import com.example.trackercompanion.ui.roster.RosterScreen
 import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
+import com.example.trackercompanion.ui.championships.LogTitleChangeBottomSheet
+import com.example.trackercompanion.ui.championships.TitleDetailScreen
 import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
 import com.example.trackercompanion.ui.shows.AddEpisodeResult
 import com.example.trackercompanion.ui.shows.AddEpisodeScreen
@@ -42,6 +45,9 @@ fun App() {
     val episodes = remember { mutableStateListOf(*ShowData.episodes.toTypedArray()) }
     val ppvEvents = remember { mutableStateListOf(*ShowData.ppvEvents.toTypedArray()) }
     val championships = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
+    val reigns = remember { mutableStateListOf(*ChampionshipData.reigns.toTypedArray()) }
+    val contenders = remember { mutableStateListOf(*contenderships.toTypedArray()) }
+    val titles = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
@@ -261,9 +267,99 @@ fun App() {
 
                 composable<Championships> {
                     ChampionshipScreen(
-                        championships = championships
+                        championships = championships,
+                        onTitleClick = { title ->
+                            navController.navigate(route = TitleDetail(titleId = title.id))
+                        }
                     )
                 }
+
+                composable<TitleDetail> { backStackEntry ->
+                    val route = backStackEntry.toRoute<TitleDetail>()
+                    val title = championships.find { it.id == route.titleId }
+
+                    if (title != null) {
+                        var showLogTitleChange by remember { mutableStateOf(false) }
+
+                        TitleDetailScreen(
+                            title = title,
+                            allReignsForTitle = reigns.filter { it.titleId == title.id },
+                            contenders = contenders.filter { it.titleId == title.id },
+                            onMoveUp = { contender ->
+                                val currentRank = contender.rank
+                                if (currentRank > 1) {
+                                    val other = contenders.find { it.titleId == title.id && it.rank == currentRank - 1 }
+                                    if (other != null) {
+                                        val idx1 = contenders.indexOfFirst { it.id == contender.id }
+                                        val idx2 = contenders.indexOfFirst { it.id == other.id }
+                                        if (idx1 != -1 && idx2 != -1) {
+                                            contenders[idx1] = contender.copy(rank = currentRank - 1)
+                                            contenders[idx2] = other.copy(rank = currentRank)
+                                        }
+                                    }
+                                }
+                            },
+                            onMoveDown = { contender ->
+                                val currentRank = contender.rank
+                                val titleContenders = contenders.filter { it.titleId == title.id }
+                                if (currentRank < titleContenders.size) {
+                                    val other = contenders.find { it.titleId == title.id && it.rank == currentRank + 1 }
+                                    if (other != null) {
+                                        val idx1 = contenders.indexOfFirst { it.id == contender.id }
+                                        val idx2 = contenders.indexOfFirst { it.id == other.id }
+                                        if (idx1 != -1 && idx2 != -1) {
+                                            contenders[idx1] = contender.copy(rank = currentRank + 1)
+                                            contenders[idx2] = other.copy(rank = currentRank)
+                                        }
+                                    }
+                                }
+                            },
+                            onRemove = { contender ->
+                                val rankToRemove = contender.rank
+                                contenders.removeIf { it.id == contender.id }
+                                contenders.indices.forEach { i ->
+                                    val c = contenders[i]
+                                    if (c.titleId == title.id && c.rank > rankToRemove) {
+                                        contenders[i] = c.copy(rank = c.rank - 1)
+                                    }
+                                }
+                            },
+                            onLogTitleChangeClick = {
+                                showLogTitleChange = true
+                            },
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+
+                        if (showLogTitleChange) {
+                            val currentReign = reigns.find { it.titleId == title.id && it.lostAtEvent == null}
+                            val isTagTitle = title.title.contains("Tag", ignoreCase = true)
+
+                            LogTitleChangeBottomSheet(
+                                title = title,
+                                currentReign = currentReign,
+                                nextReignNumber = currentReign?.reignNumber?.plus(1) ?: 1,
+                                isTagTitle = isTagTitle,
+                                wrestlers = wrestlers,
+                                onSave = { closedReign, newReign ->
+                                    if (closedReign != null) {
+                                        val i = reigns.indexOfFirst { it.id == closedReign.id }
+                                        if (i != -1) reigns[i] = closedReign
+                                    }
+                                    if (newReign != null) {
+                                        reigns.add(newReign)
+                                    }
+                                    showLogTitleChange = false
+                                },
+                                onDismiss = {
+                                    showLogTitleChange = false
+                                }
+                            )
+                        }
+                    }
+                }
+
                 composable<Calendar> {
                     CalendarScreen()
                 }

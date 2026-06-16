@@ -27,7 +27,7 @@ object ChampionshipData {
             reignNumber = 2,
             holderIds = listOf(7),
             holderNames = listOf("Brock Lesnar"),
-            wonAtEvent = "Royal Rumble",
+            wonAtEvent = "Royal Rumble 1",
             lostAtEvent = null,
             defenses = 0,
             notes = "Won from Cena after losing from him at tournament"
@@ -87,13 +87,13 @@ object ChampionshipData {
         Contendership(id = 7, titleId = 1, wrestlerId = 36, wrestlerName = "Rhyno", rank = 7),
 
         // World Heavyweight Championship contenders
-        Contendership(id = 5, titleId = 2, wrestlerId = 60, wrestlerName = "Triple H", rank = 1),
-        Contendership(id = 6, titleId = 2, wrestlerId = 47, wrestlerName = "Shawn Michaels", rank = 2),
-        Contendership(id = 7, titleId = 2, wrestlerId = 27, wrestlerName = "Kane", rank = 3),
-        Contendership(id = 8, titleId = 2, wrestlerId = 58, wrestlerName = "The Undertaker", rank = 4),
-        Contendership(id = 8, titleId = 2, wrestlerId = 44, wrestlerName = "Scott Steiner", rank = 5),
-        Contendership(id = 8, titleId = 2, wrestlerId = 6, wrestlerName = "Booker T", rank = 6),
-        Contendership(id = 8, titleId = 2, wrestlerId = 32, wrestlerName = "Matt Hardy", rank = 7),
+        Contendership(id = 8, titleId = 2, wrestlerId = 60, wrestlerName = "Triple H", rank = 1),
+        Contendership(id = 9, titleId = 2, wrestlerId = 47, wrestlerName = "Shawn Michaels", rank = 2),
+        Contendership(id = 10, titleId = 2, wrestlerId = 27, wrestlerName = "Kane", rank = 3),
+        Contendership(id = 11, titleId = 2, wrestlerId = 58, wrestlerName = "The Undertaker", rank = 4),
+        Contendership(id = 12, titleId = 2, wrestlerId = 44, wrestlerName = "Scott Steiner", rank = 5),
+        Contendership(id = 13, titleId = 2, wrestlerId = 6, wrestlerName = "Booker T", rank = 6),
+        Contendership(id = 14, titleId = 2, wrestlerId = 32, wrestlerName = "Matt Hardy", rank = 7),
     )
 
     val titles: List<Championship> = listOf(

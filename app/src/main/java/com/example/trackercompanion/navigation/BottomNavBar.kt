@@ -41,6 +41,7 @@ fun BottomNavigationBar(navController: NavHostController){
         currentRoute?.startsWith(AddEditWrestler::class.qualifiedName?:"") == true -> Roster::class.qualifiedName
         currentRoute?.startsWith(EpisodeDetail::class.qualifiedName?:"") == true -> Shows::class.qualifiedName
         currentRoute == AddEpisode::class.qualifiedName -> Shows::class.qualifiedName
+        currentRoute?.startsWith(TitleDetail::class.qualifiedName?:"") == true -> Championships::class.qualifiedName
         else -> currentRoute
     }
 

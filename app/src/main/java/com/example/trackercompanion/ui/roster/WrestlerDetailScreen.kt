@@ -403,13 +403,19 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
 }
 
 @Composable
-fun TitleReignRow(reign: TitleReign, currentWrestlerName: String) {
+fun TitleReignRow(reign: TitleReign, currentWrestlerName: String? = null) {
     val isCurrentChampion = reign.lostAtEvent == null
     val isTagReign = reign.holderIds.size > 1
 
+    val holderDisplay = if (isTagReign) {
+        reign.holderNames.joinToString(" & ")
+    } else {
+        reign.holderNames.firstOrNull()?:""
+    }
+
     val partners = reign.holderNames.filter { it != currentWrestlerName }
-    val partnerDisplay = if (isTagReign && partners.isNotEmpty()) {
-        "w/ ${partners.joinToString(" & ") }"
+    val partnerDisplay = if (currentWrestlerName != null && isTagReign) {
+        if (partners.isNotEmpty()) "w/ ${partners.joinToString(" & ")}" else null
     } else null
 
     Card(
@@ -447,6 +453,16 @@ fun TitleReignRow(reign: TitleReign, currentWrestlerName: String) {
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
+
+                if (currentWrestlerName == null) {
+                    Text(
+                        text = holderDisplay,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (isCurrentChampion) Gold
+                        else MaterialTheme.colorScheme.onSurface
+                    )
+                }
 
                 Text(
                     text = "Reign #${reign.reignNumber}",

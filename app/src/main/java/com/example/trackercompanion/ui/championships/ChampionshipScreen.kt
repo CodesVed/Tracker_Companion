@@ -1,7 +1,6 @@
 package com.example.trackercompanion.ui.championships
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,17 +30,15 @@ import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.TitleReign
-import com.example.trackercompanion.model.Wrestler
+import com.example.trackercompanion.ui.theme.Gold
 
 @Composable
 fun ChampionshipScreen(
     championships: List<Championship>,
+    onTitleClick: (Championship) -> Unit
 ){
-
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp)
+        modifier = Modifier.fillMaxSize().padding(12.dp)
     ) {
         Column {
             Text(
@@ -58,7 +55,8 @@ fun ChampionshipScreen(
                 items(championships, key = { it.id }) {championship ->
                     TitleCard(
                         championship = championship,
-                        currentChampion = championship.currentChampion
+                        currentChampion = championship.currentChampion,
+                        onClick = { onTitleClick(championship) }
                     )
                 }
             }
@@ -67,12 +65,16 @@ fun ChampionshipScreen(
 }
 
 @Composable
-fun TitleCard(championship: Championship, currentChampion: TitleReign?) {
+fun TitleCard(championship: Championship, currentChampion: TitleReign?, onClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp),
-        onClick = {}
+        onClick = onClick,
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = if (currentChampion?.holderNames != null) Gold.copy(alpha = 0.5f)
+                             else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        )
     ) {
         Column(
             modifier = Modifier.padding(4.dp)
@@ -80,12 +82,13 @@ fun TitleCard(championship: Championship, currentChampion: TitleReign?) {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(80.dp),
+                    .size(80.dp)
+                    .padding(8.dp),
                 painter = painterResource(id = championship.titleImage),
                 contentDescription = null
             )
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(5.dp),
                 text = championship.title,
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp,
@@ -97,21 +100,16 @@ fun TitleCard(championship: Championship, currentChampion: TitleReign?) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp)
+                    .padding(8.dp)
             ) {
                 TitleStatCell(
-                    label = "Current Champion: ",
+                    label = if (currentChampion?.holderNames != null) "Current Champion${if (currentChampion.holderNames.size > 1)"s" else ""}: " else "Status: ",
                     value = currentChampion?.holderNames?.joinToString(" & ") ?: "Vacant",
                     fontSize = 16.sp
                 )
                 TitleStatCell(
-                    label = "Reign ",
-                    value = "#${currentChampion?.reignNumber?.toString() ?: "N/A"}",
-                    fontSize = 16.sp
-                )
-                TitleStatCell(
-                    label = "Defenses: ",
-                    value = currentChampion?.defenses.toString(),
+                    label = "Reign: ",
+                    value = if (currentChampion?.reignNumber?.toString() != null) "#${currentChampion.reignNumber}" else "N/A",
                     fontSize = 16.sp
                 )
             }
@@ -134,6 +132,7 @@ fun TitleStatCell(label: String, value: String, fontSize: TextUnit ,modifier: Mo
 @Composable
 fun ChampionshipScreenPreview(){
     ChampionshipScreen(
-        championships = ChampionshipData.titles
+        championships = ChampionshipData.titles,
+        onTitleClick = {}
     )
 }
