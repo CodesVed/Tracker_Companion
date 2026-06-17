@@ -18,6 +18,7 @@ import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.ChampionshipData.contenderships
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
+import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.computeStatsForWrestler
 import com.example.trackercompanion.model.enums.Brand
 import com.example.trackercompanion.model.enums.Show
@@ -28,6 +29,7 @@ import com.example.trackercompanion.ui.roster.RosterScreen
 import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
+import com.example.trackercompanion.ui.championships.AddContenderBottomSheet
 import com.example.trackercompanion.ui.championships.LogTitleChangeBottomSheet
 import com.example.trackercompanion.ui.championships.TitleDetailScreen
 import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
@@ -118,7 +120,7 @@ fun App() {
                             wrestler = wrestler,
                             stats = stats,
                             matchHistory = matches.filter { wrestler.id in it.participantIds },
-                            titleReigns = ChampionshipData.getReignsForWrestler(wrestler.id),
+                            titleReigns = reigns.filter { wrestler.id in it.holderIds },
                             onEditClick = {
                                 navController.navigate(route = AddEditWrestler(wrestlerId = wrestler.id))
                             },
@@ -268,6 +270,7 @@ fun App() {
                 composable<Championships> {
                     ChampionshipScreen(
                         championships = championships,
+                        reigns = reigns,
                         onTitleClick = { title ->
                             navController.navigate(route = TitleDetail(titleId = title.id))
                         }
@@ -277,6 +280,8 @@ fun App() {
                 composable<TitleDetail> { backStackEntry ->
                     val route = backStackEntry.toRoute<TitleDetail>()
                     val title = championships.find { it.id == route.titleId }
+                    var showAddContender by remember { mutableStateOf(false) }
+                    val isTagTitle  = title?.title?.contains("Tag", ignoreCase = true)
 
                     if (title != null) {
                         var showLogTitleChange by remember { mutableStateOf(false) }
@@ -285,6 +290,37 @@ fun App() {
                             title = title,
                             allReignsForTitle = reigns.filter { it.titleId == title.id },
                             contenders = contenders.filter { it.titleId == title.id },
+                            onAddContenderClick = {
+                                showAddContender = true
+                            },
+                            onSuggestContenderClick = {
+                                val titleContenders = contenders.filter { it.titleId == title.id }
+                                val currentChampionIds = reigns
+                                    .find { it.titleId == title.id && it.lostAtEvent == null }
+                                    ?.holderIds?.toSet() ?: emptySet()
+
+                                val suggested = ChampionshipData.suggestNextContender(
+                                    titleId = title.id,
+                                    titleBrand = title.brand,
+                                    isTagTitle = isTagTitle == true,
+                                    wrestlers = wrestlers,
+                                    matches = matches,
+                                    existingContenderIds = titleContenders.flatMap { it.wrestlerIds }.toSet(),
+                                    currentChampionIds = currentChampionIds
+                                )
+
+                                if (suggested.isNotEmpty()) {
+                                    contenders.add(
+                                        Contendership(
+                                            id = System.currentTimeMillis().toInt(),
+                                            titleId = title.id,
+                                            wrestlerIds = suggested.map { it.id },
+                                            wrestlerNames = suggested.map { it.name},
+                                            rank = titleContenders.size + 1
+                                        )
+                                    )
+                                }
+                            },
                             onMoveUp = { contender ->
                                 val currentRank = contender.rank
                                 if (currentRank > 1) {
@@ -354,6 +390,38 @@ fun App() {
                                 },
                                 onDismiss = {
                                     showLogTitleChange = false
+                                }
+                            )
+                        }
+
+                        if (showAddContender) {
+                            val titleContenders = contenders.filter { it.titleId == title.id }
+                            val alreadyContendingIds = titleContenders.flatMap { it.wrestlerIds }.toSet()
+
+                            val eligibleWrestlers = wrestlers.filter { w ->
+                                (title.brand == null || w.brand == title.brand) &&
+                                        w.id !in alreadyContendingIds
+                            }
+
+                            AddContenderBottomSheet(
+                                isTagTitle = isTagTitle == true,
+                                eligibleWrestlers = eligibleWrestlers,
+                                currentContenderCount = titleContenders.size,
+                                onSave = { selectedWrestlers ->
+                                    val nextRank = titleContenders.size + 1
+                                    contenders.add(
+                                        Contendership(
+                                            id = System.currentTimeMillis().toInt(),
+                                            titleId = title.id,
+                                            wrestlerIds = selectedWrestlers.map { it.id },
+                                            wrestlerNames = selectedWrestlers.map { it.name },
+                                            rank = nextRank
+                                        )
+                                    )
+                                    showAddContender = false
+                                },
+                                onDismiss = {
+                                    showAddContender = false
                                 }
                             )
                         }

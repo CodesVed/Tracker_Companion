@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Circle
@@ -42,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.R
@@ -70,189 +75,156 @@ fun WrestlerDetailScreen(
     val formattedWinPercent = "%.2f".format(stats.winPercent)
 
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(12.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp)
+            .verticalScroll(rememberScrollState())
     ) {
-        item {
-            Row {
-                Icon(
-                    modifier = Modifier.size(30.dp).clickable(
-                        onClick = {
-                            onBackClick.invoke()
-                        }
-                    ),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back"
-                )
-
-                Text(
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    text = "Wrestler Profile"
-                )
-
-                Icon(
-                    modifier = Modifier.size(30.dp).clickable(
-                        onClick = {
-                            onEditClick.invoke()
-                        }
-                    ),
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit"
-                )
-            }
-        }
-
-        item { HorizontalDivider(modifier = Modifier.padding(5.dp)) }
-
-        item {
-            Image(
-                modifier = Modifier.fillMaxWidth().height(300.dp),
-                painter = painterResource(wrestler?.imageRes ?: R.drawable.wrestler_placeholder),
-                contentDescription = wrestler?.name
+        Row {
+            Icon(
+                modifier = Modifier.size(30.dp).clickable(
+                    onClick = {
+                        onBackClick.invoke()
+                    }
+                ),
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back"
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    fontSize = 24.sp,
-                    text = wrestler?.name ?: "Default"
-                )
-
-                BrandChip(brand = wrestler?.brand.toString(), 22.sp, modifier = Modifier.size(28.dp))
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        item {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                StatCell(label = "Wins", value = stats.wins.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
-                StatCell(label = "Loss", value = stats.losses.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
-                StatCell(label = "Win Rate", value = formattedWinPercent, fontSize = 20.sp, modifier = Modifier.weight(1f))
-                StatCell(label = "Points", value = stats.points.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
-            }
-
-            HorizontalDivider(modifier = Modifier.padding(8.dp))
-        }
-
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    fontSize = 20.sp,
-                    text = "Status"
-                )
-
-                StatusChip(wrestler?.status.toString())
-            }
-
-            Spacer(modifier = Modifier.height(18.dp))
-        }
-
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    fontSize = 20.sp,
-                    text = "Type"
-                )
-
-                Icon(
-                    imageVector =
-                        when (wrestler?.type) {
-                            Type.SINGLE -> Icons.Default.Person
-                            Type.TEAM -> Icons.Default.Group
-                            else -> Icons.Default.Diversity3
-                        },
-                    contentDescription = wrestler?.type?.name,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-        }
-
-        item {
-            HorizontalDivider(modifier = Modifier.padding(8.dp))
-
-            SectionHeader(
-                title = "Match History",
-                count = matchHistory.size
+            Text(
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                text = "Wrestler Profile"
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Icon(
+                modifier = Modifier.size(30.dp).clickable(
+                    onClick = {
+                        onEditClick.invoke()
+                    }
+                ),
+                imageVector = Icons.Default.Edit,
+                contentDescription = "Edit"
+            )
         }
 
-        if (matchHistory.isEmpty()) {
-            item {
-                EmptyState(message = "No matches logged yet.")
-            }
-        } else {
-            items(matchHistory) {match ->
-                MatchHistoryRow(
-                    match = match,
-                    wrestlerId = wrestler?.id?:-1,
-                    wrestlerName = wrestler?.name?:""
-                )
-            }
-        }
+        HorizontalDivider(modifier = Modifier.padding(5.dp))
 
-        item {
-            HorizontalDivider(modifier = Modifier.padding(8.dp))
+        Image(
+            modifier = Modifier.fillMaxWidth().height(300.dp),
+            painter = painterResource(wrestler?.imageRes ?: R.drawable.wrestler_placeholder),
+            contentDescription = wrestler?.name
+        )
 
-            SectionHeader(
-                title = "Championship History",
-                count = titleReigns.size
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                fontSize = 24.sp,
+                text = wrestler?.name ?: "Default"
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            BrandChip(brand = wrestler?.brand.toString(), 22.sp, modifier = Modifier.size(28.dp))
         }
 
-        if (titleReigns.isEmpty()) {
-            item {
-                EmptyState("No title reigns recorded.")
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            StatCell(label = "Wins", value = stats.wins.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
+            StatCell(label = "Loss", value = stats.losses.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
+            StatCell(label = "Win Rate", value = formattedWinPercent, fontSize = 20.sp, modifier = Modifier.weight(1f))
+            StatCell(label = "Points", value = stats.points.toString(), fontSize = 20.sp, modifier = Modifier.weight(1f))
+        }
+
+        HorizontalDivider(modifier = Modifier.padding(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                fontSize = 20.sp,
+                text = "Status"
+            )
+
+            StatusChip(wrestler?.status.toString())
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                fontSize = 20.sp,
+                text = "Type"
+            )
+
+            Icon(
+                imageVector =
+                    when (wrestler?.type) {
+                        Type.SINGLE -> Icons.Default.Person
+                        Type.TEAM -> Icons.Default.Group
+                        else -> Icons.Default.Diversity3
+                    },
+                contentDescription = wrestler?.type?.name,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        HorizontalDivider(modifier = Modifier.padding(8.dp))
+
+        ScrollableSection(
+            title = "Match History",
+            count = matchHistory.size,
+            emptyMessage = "No matches logged yet."
+        ) {
+            items(matchHistory) { match ->
+                MatchHistoryRow(match = match, wrestlerId = wrestler?.id ?: -1, wrestlerName = wrestler?.name ?: "")
             }
-        } else {
-            items(titleReigns) {reign ->
-                TitleReignRow(reign = reign, currentWrestlerName = wrestler?.name?:"")
+        }
+
+        HorizontalDivider(modifier = Modifier.padding(8.dp))
+
+        ScrollableSection(
+            title = "Championship History",
+            count = titleReigns.size,
+            emptyMessage = "No title reigns recorded."
+        ) {
+            items(titleReigns) { reign ->
+                TitleReignRow(reign = reign, currentWrestlerName = wrestler?.name ?: "")
             }
         }
 
         //── Notes ──────────────────────────
         if (!wrestler?.notes.isNullOrBlank()) {
-            item {
-                HorizontalDivider(modifier = Modifier.padding(8.dp))
+            HorizontalDivider(modifier = Modifier.padding(8.dp))
 
-                Text(
-                    text = "Notes",
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            Text(
+                text = "Notes",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = wrestler.notes,
-                    fontSize = 15.sp
-                )
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = wrestler.notes,
+                fontSize = 15.sp
+            )
 
-                Spacer(modifier = Modifier.height(6.dp))
-            }
+            Spacer(modifier = Modifier.height(6.dp))
         }
     }
 }
@@ -524,6 +496,33 @@ fun TitleReignRow(reign: TitleReign, currentWrestlerName: String? = null) {
                     color = if (isCurrentChampion) Gold
                             else MaterialTheme.colorScheme.inverseOnSurface
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun ScrollableSection(
+    title: String,
+    count: Int,
+    maxHeight: Dp = 280.dp,
+    emptyMessage: String,
+    content: LazyListScope.() -> Unit
+) {
+    Column {
+        SectionHeader(title = title, count = count)
+        Spacer(modifier = Modifier.height(4.dp))
+
+        if (count == 0) {
+            EmptyState(emptyMessage)
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = maxHeight),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                content()
             }
         }
     }

@@ -35,6 +35,7 @@ import com.example.trackercompanion.ui.theme.Gold
 @Composable
 fun ChampionshipScreen(
     championships: List<Championship>,
+    reigns: List<TitleReign>,
     onTitleClick: (Championship) -> Unit
 ){
     Box(
@@ -53,9 +54,13 @@ fun ChampionshipScreen(
 
             LazyColumn {
                 items(championships, key = { it.id }) {championship ->
+                    val currentReign = reigns.find {
+                        it.titleId == championship.id && it.lostAtEvent == null
+                    }
+
                     TitleCard(
                         championship = championship,
-                        currentChampion = championship.currentChampion,
+                        currentChampion = currentReign,
                         onClick = { onTitleClick(championship) }
                     )
                 }
@@ -133,6 +138,7 @@ fun TitleStatCell(label: String, value: String, fontSize: TextUnit ,modifier: Mo
 fun ChampionshipScreenPreview(){
     ChampionshipScreen(
         championships = ChampionshipData.titles,
+        reigns = ChampionshipData.reigns,
         onTitleClick = {}
     )
 }

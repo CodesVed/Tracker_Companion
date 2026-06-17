@@ -3,7 +3,7 @@ package com.example.trackercompanion.model
 data class Contendership(
     val id: Int,
     val titleId: Int,
-    val wrestlerId: Int,
-    val wrestlerName: String,
+    val wrestlerIds: List<Int>,
+    val wrestlerNames: List<String>,
     val rank: Int
 )
