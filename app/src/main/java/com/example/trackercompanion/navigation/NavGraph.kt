@@ -14,10 +14,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.trackercompanion.data.CalendarData
 import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.ChampionshipData.contenderships
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
+import com.example.trackercompanion.model.CalendarWeek
 import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.computeStatsForWrestler
 import com.example.trackercompanion.model.enums.Brand
@@ -29,6 +31,7 @@ import com.example.trackercompanion.ui.roster.RosterScreen
 import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
+import com.example.trackercompanion.ui.calendar.AddEditWeekBottomSheet
 import com.example.trackercompanion.ui.championships.AddContenderBottomSheet
 import com.example.trackercompanion.ui.championships.LogTitleChangeBottomSheet
 import com.example.trackercompanion.ui.championships.TitleDetailScreen
@@ -49,7 +52,7 @@ fun App() {
     val championships = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
     val reigns = remember { mutableStateListOf(*ChampionshipData.reigns.toTypedArray()) }
     val contenders = remember { mutableStateListOf(*contenderships.toTypedArray()) }
-    val titles = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
+    val calendarWeeks = remember { mutableStateListOf(*CalendarData.weeks.toTypedArray()) }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
@@ -429,7 +432,56 @@ fun App() {
                 }
 
                 composable<Calendar> {
-                    CalendarScreen()
+                    var showAddEditWeek by remember { mutableStateOf(false) }
+                    var editingWeek by remember { mutableStateOf<CalendarWeek?>(null) }
+
+                    CalendarScreen(
+                        weeks = calendarWeeks,
+                        onWeekClick = { week ->
+                            when {
+                                week.linkedPPVId != null ->
+                                    navController.navigate(EpisodeDetail(episodeId = week.linkedPPVId, isPPV = true))
+                                week.linkedShowId != null ->
+                                    navController.navigate(EpisodeDetail(episodeId = week.linkedShowId, isPPV = false))
+                                else -> {
+                                    editingWeek = week
+                                    showAddEditWeek = true
+                                }
+                            }
+                        },
+                        onAddWeekClick = {
+                            editingWeek = null
+                            showAddEditWeek = true
+                        },
+                        onWeekLongPress = { week ->
+                            editingWeek = week
+                            showAddEditWeek = true
+                        }
+                    )
+
+                    if (showAddEditWeek) {
+                        AddEditWeekBottomSheet(
+                            existing = editingWeek,
+                            episodes = episodes,
+                            ppvEvents = ppvEvents,
+                            onSave = { saved ->
+                                val i = calendarWeeks.indexOfFirst { it.weekNumber == saved.weekNumber }
+                                if (i != -1) calendarWeeks[i] = saved
+                                else calendarWeeks.add(saved)
+                                showAddEditWeek = false
+                                editingWeek = null
+                            },
+                            onDelete = { toDelete ->
+                                calendarWeeks.removeIf { it.weekNumber == toDelete.weekNumber }
+                                showAddEditWeek = false
+                                editingWeek = null
+                            },
+                            onDismiss = {
+                                showAddEditWeek = false
+                                editingWeek = null
+                            }
+                        )
+                    }
                 }
             }
         }
