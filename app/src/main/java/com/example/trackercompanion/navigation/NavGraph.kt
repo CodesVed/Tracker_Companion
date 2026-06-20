@@ -79,6 +79,12 @@ fun App() {
                                     navController.navigate(EpisodeDetail(episodeId = show.linkedShowId, isPPV = false))
                                 else -> {}
                             }
+                        },
+                        onEpisodeClick = { episode ->
+                            navController.navigate(EpisodeDetail(episodeId = episode.id, isPPV = false))
+                        },
+                        onPPVClick = { ppv ->
+                            navController.navigate(EpisodeDetail(episodeId = ppv.id, isPPV = true))
                         }
                     )
                 }

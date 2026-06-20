@@ -73,31 +73,52 @@ fun DashboardScreen(
     championships: List<Championship>,
     reigns: List<TitleReign>,
     calendarWeeks: List<CalendarWeek>,
-    onShowClick: (CalendarWeek) -> Unit
+    onShowClick: (CalendarWeek) -> Unit,
+    onEpisodeClick: (ShowEpisode) -> Unit,
+    onPPVClick: (PPVEvent) -> Unit
 ){
-    val currentWeek = calendarWeeks.maxByOrNull { it.weekNumber }
+    val playedEpisodes = episodes.filter { it.hasMatches(matches) }
+    val playedPPVs = ppvEvents.filter { it.hasMatches(matches) }
 
-    val lastLoggedWeek = calendarWeeks
-        .filter {week ->
-            (week.linkedShowId != null && episodes.any { it.id == week.linkedShowId}) ||
-            (week.linkedPPVId != null && episodes.any { it.id == week.linkedPPVId })
-        }
-        .maxByOrNull { it.weekNumber }
-
-    val nextEvent = calendarWeeks
-        .filter { it.weekNumber > (lastLoggedWeek?.weekNumber?:0) }
-        .minByOrNull { it.weekNumber }
-
-    val recentShows: List<Any> = buildList {
-        addAll(episodes)
-        addAll(ppvEvents)
-    }.sortedByDescending {
-        when (it) {
-            is ShowEpisode -> it.id
-            is PPVEvent -> it.id
+    val allPlayedShows: List<Any> = buildList {
+        addAll(playedEpisodes)
+        addAll(playedPPVs)
+    }.sortedByDescending { show ->
+        when (show) {
+            is ShowEpisode -> calendarWeeks
+                .find { it.linkedShowId == show.id }?.weekNumber ?: show.id
+            is PPVEvent -> calendarWeeks
+                .find { it.linkedPPVId == show.id }?.weekNumber ?: show.id
             else -> 0
         }
-    }. take(3)
+    }
+
+    val recentShows = allPlayedShows.take(3)
+
+    val currentWeek = allPlayedShows.firstOrNull()?.let { show ->
+        when (show) {
+            is ShowEpisode -> calendarWeeks.find { it.linkedShowId == show.id }
+            is PPVEvent -> calendarWeeks.find { it.linkedPPVId == show.id }
+            else -> null
+        }
+    }
+
+    val nextEvent = calendarWeeks
+        .sortedBy { it.weekNumber }
+        .firstOrNull { week ->
+            when {
+                week.linkedShowId != null -> {
+                    val ep = episodes.find { it.id == week.linkedShowId }
+                    ep != null && !ep.hasMatches(matches)
+                }
+                week.linkedPPVId != null -> {
+                    val ppv = ppvEvents.find { it.id == week.linkedPPVId }
+                    ppv != null && !ppv.hasMatches(matches)
+                }
+                else -> false
+            }
+        }
+
 
     val topWrestlers = remember (wrestlers, matches) {
         wrestlers
@@ -136,13 +157,13 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 QuickStatCell(label = "Matches", value = totalMatches.toString())
-                VerticalDivider()
+                VerticalDivider1()
                 QuickStatCell(label = "Shows", value = totalEpisodes.toString())
-                VerticalDivider()
+                VerticalDivider1()
                 QuickStatCell(label = "RAW", value = rawEpisodes.toString())
-                VerticalDivider()
+                VerticalDivider1()
                 QuickStatCell(label = "SD", value = sdEpisodes.toString())
-                VerticalDivider()
+                VerticalDivider1()
                 QuickStatCell(label = "PPV", value = ppvEpisodes.toString())
             }
             HorizontalDivider()
@@ -169,8 +190,12 @@ fun DashboardScreen(
 
         // ── Recent shows ───────────────────────────────────
         item {
-            DashboardSection(title = "Recent Shows") {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            DashboardSection(
+                title = "Recent Shows"
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     if (recentShows.isEmpty()) {
                         Text(
                             text = "No shows logged yet.",
@@ -185,13 +210,15 @@ fun DashboardScreen(
                                     episode = show,
                                     matchCount = matches.count {
                                         it.showId == show.id && it.showType == Show.SHOW
-                                    }
+                                    },
+                                    onClick = {onEpisodeClick(show)}
                                 )
                                 is PPVEvent -> RecentPPVCard(
                                     ppv = show,
                                     matchCount = matches.count {
                                         it.showId == show.id && it.showType == Show.PPV
-                                    }
+                                    },
+                                    onClick = { onPPVClick(show) }
                                 )
                             }
                         }
@@ -303,7 +330,7 @@ fun QuickStatCell(label: String, value: String) {
 }
 
 @Composable
-fun VerticalDivider() {
+fun VerticalDivider1() {
     Box(
         modifier = Modifier
             .height(32.dp)
@@ -336,6 +363,7 @@ fun DashboardSection(
 
 @Composable
 fun NextEventCard(week: CalendarWeek, onClick: () -> Unit) {
+
     val isPPV = week.linkedPPVId != null
     val accentColor = if (isPPV) Gold else MaterialTheme.colorScheme.primary
 
@@ -344,7 +372,7 @@ fun NextEventCard(week: CalendarWeek, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = accentColor.copy(alpha = 0.08f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
         ),
         border = BorderStroke(1.dp, accentColor.copy(alpha = 0.3f)),
         onClick = onClick
@@ -358,16 +386,26 @@ fun NextEventCard(week: CalendarWeek, onClick: () -> Unit) {
             Icon(
                 imageVector = if (isPPV) Icons.Default.Bolt else Icons.Default.LiveTv,
                 contentDescription = null,
-                tint = accentColor,
+                tint = when {
+                    week.showLabel.contains("RAW") -> Red
+                    week.showLabel.contains("SD") -> Blue
+                    else -> accentColor
+                },
                 modifier = Modifier.size(28.dp)
             )
+
             Spacer(modifier = Modifier.width(12.dp))
+
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = week.showLabel,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = accentColor
+                    color = when {
+                        week.showLabel.contains("RAW") -> Red
+                        week.showLabel.contains("SD") -> Blue
+                        else -> accentColor
+                    }
                 )
                 Text(
                     text = "Week ${week.weekNumber}",
@@ -510,14 +548,16 @@ fun ChampionshipMiniCard(
 }
 
 @Composable
-fun RecentShowCard(episode: ShowEpisode, matchCount: Int) {
+fun RecentShowCard(episode: ShowEpisode, matchCount: Int, onClick: () -> Unit) {
     val brandColor = when (episode.brand) {
         Brand.RAW -> Red
         Brand.SD  -> Blue
         else      -> MaterialTheme.colorScheme.primary
     }
     val brandLabel = when (episode.brand) {
-        Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> episode.brand.name
+        Brand.RAW -> "RAW"
+        Brand.SD -> "Smackdown"
+        else -> episode.brand.name
     }
 
     Card(
@@ -526,7 +566,8 @@ fun RecentShowCard(episode: ShowEpisode, matchCount: Int) {
             .padding(horizontal = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-        )
+        ),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
@@ -580,7 +621,7 @@ fun RecentShowCard(episode: ShowEpisode, matchCount: Int) {
 }
 
 @Composable
-fun RecentPPVCard(ppv: PPVEvent, matchCount: Int) {
+fun RecentPPVCard(ppv: PPVEvent, matchCount: Int, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -588,7 +629,8 @@ fun RecentPPVCard(ppv: PPVEvent, matchCount: Int) {
         colors = CardDefaults.cardColors(
             containerColor = Gold.copy(alpha = 0.08f)
         ),
-        border = BorderStroke(1.dp, Gold.copy(alpha = 0.25f))
+        border = BorderStroke(1.dp, Gold.copy(alpha = 0.25f)),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
@@ -765,6 +807,12 @@ fun MiniStat(label: String, value: String, highlight: Boolean = false) {
     }
 }
 
+fun ShowEpisode.hasMatches(matches: List<Match>) =
+    matches.any { it.showId == this.id && it.showType == Show.SHOW }
+
+fun PPVEvent.hasMatches(matches: List<Match>) =
+    matches.any { it.showId == this.id && it.showType == Show.PPV }
+
 @Preview(showBackground = true)
 @Composable
 fun DashboardPreview() {
@@ -776,6 +824,8 @@ fun DashboardPreview() {
         championships = ChampionshipData.titles,
         reigns = ChampionshipData.reigns,
         calendarWeeks = CalendarData.weeks,
-        onShowClick = {}
+        onShowClick = {},
+        onEpisodeClick = {},
+        onPPVClick = {}
     )
 }
