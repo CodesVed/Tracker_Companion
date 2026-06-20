@@ -63,7 +63,24 @@ fun App() {
             modifier = Modifier.padding(innerPadding)) {
             navigation<Navigation.Main>(startDestination = Dashboard) {
                 composable<Dashboard> {
-                    DashboardScreen()
+                    DashboardScreen(
+                        wrestlers = wrestlers,
+                        matches = matches,
+                        episodes = episodes,
+                        ppvEvents = ppvEvents,
+                        championships = championships,
+                        reigns = reigns,
+                        calendarWeeks = calendarWeeks,
+                        onShowClick = { show ->
+                            when {
+                                show.linkedPPVId != null ->
+                                    navController.navigate(EpisodeDetail(episodeId = show.linkedPPVId, isPPV = true))
+                                show.linkedShowId != null ->
+                                    navController.navigate(EpisodeDetail(episodeId = show.linkedShowId, isPPV = false))
+                                else -> {}
+                            }
+                        }
+                    )
                 }
 
                 composable<Roster> {
