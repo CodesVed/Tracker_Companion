@@ -38,12 +38,14 @@ import kotlin.time.Duration.Companion.milliseconds
 fun AppEntry() {
     var showSplash by remember { mutableStateOf(true) }
 
-    if (showSplash) {
-        BrandedSplashScreen(
-            onFinished = { showSplash = false }
-        )
-    } else {
+    Box {
         App()
+
+        if (showSplash) {
+            BrandedSplashScreen(
+                onFinished = { showSplash = false }
+            )
+        }
     }
 }
 
