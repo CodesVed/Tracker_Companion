@@ -1,7 +1,13 @@
 package com.example.trackercompanion.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Contendership(
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
+
     val titleId: Int,
     val wrestlerIds: List<Int>,
     val wrestlerNames: List<String>,

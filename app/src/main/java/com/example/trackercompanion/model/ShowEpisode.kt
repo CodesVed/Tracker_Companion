@@ -1,9 +1,14 @@
 package com.example.trackercompanion.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.example.trackercompanion.model.enums.Brand
 
+@Entity
 data class ShowEpisode(
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
+
     val episodeNumber: Int,
     val brand: Brand,
     val weekNumber: Int,
