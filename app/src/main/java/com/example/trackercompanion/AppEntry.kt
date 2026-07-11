@@ -25,21 +25,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trackercompanion.data.db.AppDatabase
+import com.example.trackercompanion.data.db.DatabaseSeeder
 import com.example.trackercompanion.navigation.App
 import com.example.trackercompanion.ui.theme.Gold
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AppEntry() {
+    val context = LocalContext.current
     var showSplash by remember { mutableStateOf(true) }
+    val database = AppDatabase.getInstance(context)
 
     Box {
         App()
+        LaunchedEffect(Unit) {
+            CoroutineScope(Dispatchers.IO).launch {
+                DatabaseSeeder(database).seedIfEmpty()
+            }
+        }
 
         if (showSplash) {
             BrandedSplashScreen(
@@ -58,11 +71,11 @@ fun BrandedSplashScreen(onFinished: () -> Unit) {
         //Fade content in
         contentAlpha.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
+            animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
         )
 
         // Hold for reading
-        delay(1000.milliseconds)
+        delay(500.milliseconds)
 
         // Fade whole screen out
         screenAlpha.animateTo(

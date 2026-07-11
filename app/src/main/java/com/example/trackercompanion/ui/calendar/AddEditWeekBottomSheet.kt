@@ -313,6 +313,7 @@ fun AddEditWeekBottomSheet(
                     if (!valid) return@Button
 
                     val saved = CalendarWeek(
+                        id = existing?.id ?: 0,
                         weekNumber = weekNum!!,
                         showLabel = computedLabel,
                         linkedShowId = if (linkToShow && !isPPVLink) selectedEpisode?.id else null,

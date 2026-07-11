@@ -1,5 +1,6 @@
 package com.example.trackercompanion.data.db.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -7,10 +8,14 @@ import androidx.room.Update
 import com.example.trackercompanion.model.Wrestler
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface WrestlerDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(wrestler: Wrestler)
+
+    @Insert
+    suspend fun insertAll(wrestlers: List<Wrestler>)
 
     @Update
     suspend fun update(wrestler: Wrestler)
@@ -19,5 +24,5 @@ interface WrestlerDao {
     suspend fun delete(id: Int)
 
     @Query("SELECT * FROM Wrestler")
-    fun getAllWrestlers(): Flow<List<Wrestler>>
+    fun getAllWrestlers(): List<Wrestler>
 }

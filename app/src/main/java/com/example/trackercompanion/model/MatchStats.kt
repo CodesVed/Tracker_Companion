@@ -2,7 +2,6 @@ package com.example.trackercompanion.model
 
 import androidx.room.Entity
 
-@Entity
 data class MatchStats(
     val wins: Int,
     val losses: Int,

@@ -4,12 +4,12 @@ import com.example.trackercompanion.model.CalendarWeek
 
 object CalendarData {
     val weeks: List<CalendarWeek> = listOf(
-        CalendarWeek(weekNumber = 1, showLabel = "RAW 1", linkedShowId = 1, notes = "Season Opener / Draft Night"),
-        CalendarWeek(weekNumber = 2, showLabel = "SD 1", linkedShowId = 2, notes = "SD Season Opener"),
-        CalendarWeek(weekNumber = 3, showLabel = "RAW 2", linkedShowId = 3, notes = "WHC Tournament Round 1"),
-        CalendarWeek(weekNumber = 4, showLabel = "SD 2", linkedShowId = 4, notes = "WWE Title Tournament Round 1"),
-        CalendarWeek(weekNumber = 5, showLabel = "RAW 3", linkedShowId = 5),
-        CalendarWeek(weekNumber = 6, showLabel = "SD 3", linkedShowId = 6),
-        CalendarWeek(weekNumber = 11, showLabel = "Royal Rumble", linkedPPVId = 1001)
+        CalendarWeek(id = 1, weekNumber = 1, showLabel = "RAW 1", linkedShowId = 1, notes = "Season Opener / Draft Night"),
+        CalendarWeek(id = 2, weekNumber = 2, showLabel = "SD 1", linkedShowId = 2, notes = "SD Season Opener"),
+        CalendarWeek(id = 3, weekNumber = 3, showLabel = "RAW 2", linkedShowId = 3, notes = "WHC Tournament Round 1"),
+        CalendarWeek(id = 4, weekNumber = 4, showLabel = "SD 2", linkedShowId = 4, notes = "WWE Title Tournament Round 1"),
+        CalendarWeek(id = 5, weekNumber = 5, showLabel = "RAW 3", linkedShowId = 5),
+        CalendarWeek(id = 6, weekNumber = 6, showLabel = "SD 3", linkedShowId = 6),
+        CalendarWeek(id = 7, weekNumber = 11, showLabel = "Royal Rumble", linkedPPVId = 1001)
     )
 }
