@@ -3,12 +3,15 @@ package com.example.trackercompanion.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -19,6 +22,7 @@ import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.ChampionshipData.contenderships
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
+import com.example.trackercompanion.data.db.AppDatabase
 import com.example.trackercompanion.model.CalendarWeek
 import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.computeStatsForWrestler
@@ -40,19 +44,30 @@ import com.example.trackercompanion.ui.shows.AddEpisodeResult
 import com.example.trackercompanion.ui.shows.AddEpisodeScreen
 import com.example.trackercompanion.ui.shows.EpisodeDetailScreen
 import com.example.trackercompanion.ui.shows.ShowSource
+import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 @Composable
-fun App() {
+fun App(database: AppDatabase) {
     val navController = rememberNavController()
+    val scope = rememberCoroutineScope()
+    val wrestlerDao = database.getWrestlerDao()
+    val championshipDao = database.getChampionshipDao()
+    val reignDao = database.getTitleReignDao()
+    val contendershipDao = database.getContendershipDao()
+    val episodeDao = database.getShowEpisodeDao()
+    val ppvEventDao = database.getPPVEventDao()
+    val matchesDao = database.getMatchDao()
+    val calendarWeekDao = database.getCalendarWeekDao()
 
-    val wrestlers = remember { mutableStateListOf(*WrestlerData.roster.toTypedArray()) }
-    val matches = remember { mutableStateListOf(*ShowData.matches.toTypedArray()) }
-    val episodes = remember { mutableStateListOf(*ShowData.episodes.toTypedArray()) }
-    val ppvEvents = remember { mutableStateListOf(*ShowData.ppvEvents.toTypedArray()) }
-    val championships = remember { mutableStateListOf(*ChampionshipData.titles.toTypedArray()) }
-    val reigns = remember { mutableStateListOf(*ChampionshipData.reigns.toTypedArray()) }
-    val contenders = remember { mutableStateListOf(*contenderships.toTypedArray()) }
-    val calendarWeeks = remember { mutableStateListOf(*CalendarData.weeks.toTypedArray()) }
+    val wrestlers by wrestlerDao.getAllWrestlers().collectAsState(initial = emptyList())
+    val matches by matchesDao.getAllMatches().collectAsState(initial = emptyList())
+    val episodes by episodeDao.getAllShowEpisodes().collectAsState(initial = emptyList())
+    val ppvEvents by ppvEventDao.getAllPPVEvents().collectAsState(initial = emptyList())
+    val championships by championshipDao.getAllChampionships().collectAsState(initial = emptyList())
+    val reigns by reignDao.getAllTitleReigns().collectAsState(initial = emptyList())
+    val contenders by contendershipDao.getAllContendership().collectAsState(initial = emptyList())
+    val calendarWeeks by calendarWeekDao.getAllCalendarWeeks().collectAsState(initial = emptyList())
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
@@ -168,10 +183,12 @@ fun App() {
                         existing = existing,
                         onSave = {saved ->
                             if (existing == null){
-                                wrestlers.add(saved)
+                                scope.launch {
+                                    wrestlerDao.add(saved)
+                                }
                             } else {
                                 val index = wrestlers.indexOfFirst { it.id == saved.id }
-                                if (index != -1) wrestlers[index] = saved
+                                if (index != -1) scope.launch { wrestlerDao.update(saved) }
                             }
                             navController.popBackStack()
                         },
@@ -197,13 +214,13 @@ fun App() {
                         },
                         onEpisodeEdited = {edited ->
                             val i = episodes.indexOfFirst { it.id == edited.id }
-                            if (i != -1) episodes[i] = edited
+                            if (i != -1) scope.launch{ episodeDao.update(edited) }
                         },
                         onEpisodeDeleted = { deleted ->
-                            episodes.removeIf { it.id == deleted.id }
-                            // Also delete all matches belonging to this episode
-                            matches.removeIf {
-                                it.showId == deleted.id && it.showType == Show.SHOW
+                            scope.launch {
+                                episodeDao.delete(deleted.id)
+                                // Also delete all matches belonging to this episode
+                                matchesDao.deleteMatchesForEpisode(deleted.id, Show.SHOW)
                             }
                         }
                     )
@@ -238,20 +255,20 @@ fun App() {
                             onMatchSaved = {savedMatch ->
                                 // Edit mode — replace existing entry
                                 val i = matches.indexOfFirst { it.id == savedMatch.id }
-                                if (i != -1) matches[i] = savedMatch
+                                if (i != -1) scope.launch { matchesDao.update(savedMatch) }
                                 // Add mode — append
-                                else matches.add(savedMatch)
+                                else scope.launch { matchesDao.add(savedMatch) }
                             },
                             onMatchDeleted = { deletedMatch ->
-                                matches.removeIf { it.id == deletedMatch.id }
+                                scope.launch { matchesDao.delete(deletedMatch.id) }
                             },
                             onEpisodeEdited = { edited ->
                                 val i = episodes.indexOfFirst { it.id == edited.id }
-                                if (i != -1) episodes[i] = edited
+                                if (i != -1) scope.launch { episodeDao.update(edited) }
                             },
                             onPPVEdited = { edited ->
                                 val i = ppvEvents.indexOfFirst { it.id == edited.id }
-                                if (i != -1) ppvEvents[i] = edited
+                                if (i != -1) scope.launch { ppvEventDao.update(edited) }
                             },
                             onBackClick = {
                                 navController.popBackStack()
@@ -270,7 +287,7 @@ fun App() {
                         onSave = {result ->
                             when (result) {
                                 is AddEpisodeResult.NewEpisode -> {
-                                    episodes.add(result.episode)
+                                    scope.launch { episodeDao.add(result.episode) }
                                     navController.navigate(
                                         route = EpisodeDetail(result.episode.id, isPPV = false)
                                     ) {
@@ -278,7 +295,7 @@ fun App() {
                                     }
                                 }
                                 is AddEpisodeResult.NewPPV -> {
-                                    ppvEvents.add(result.ppv)
+                                    scope.launch { ppvEventDao.add(result.ppv) }
                                     navController.navigate(
                                         route = EpisodeDetail(result.ppv.id, isPPV = true)
                                     ) {
@@ -336,15 +353,17 @@ fun App() {
                                 )
 
                                 if (suggested.isNotEmpty()) {
-                                    contenders.add(
-                                        Contendership(
-                                            id = System.currentTimeMillis().toInt(),
-                                            titleId = title.id,
-                                            wrestlerIds = suggested.map { it.id },
-                                            wrestlerNames = suggested.map { it.name},
-                                            rank = titleContenders.size + 1
+                                    scope.launch {
+                                        contendershipDao.add(
+                                            Contendership(
+                                                id = System.currentTimeMillis().toInt(),
+                                                titleId = title.id,
+                                                wrestlerIds = suggested.map { it.id },
+                                                wrestlerNames = suggested.map { it.name },
+                                                rank = titleContenders.size + 1
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             },
                             onMoveUp = { contender ->
@@ -355,8 +374,10 @@ fun App() {
                                         val idx1 = contenders.indexOfFirst { it.id == contender.id }
                                         val idx2 = contenders.indexOfFirst { it.id == other.id }
                                         if (idx1 != -1 && idx2 != -1) {
-                                            contenders[idx1] = contender.copy(rank = currentRank - 1)
-                                            contenders[idx2] = other.copy(rank = currentRank)
+                                            scope.launch {
+                                                contendershipDao.update(contender.copy(rank = currentRank - 1))
+                                                contendershipDao.update(other.copy(rank = currentRank))
+                                            }
                                         }
                                     }
                                 }
@@ -370,19 +391,21 @@ fun App() {
                                         val idx1 = contenders.indexOfFirst { it.id == contender.id }
                                         val idx2 = contenders.indexOfFirst { it.id == other.id }
                                         if (idx1 != -1 && idx2 != -1) {
-                                            contenders[idx1] = contender.copy(rank = currentRank + 1)
-                                            contenders[idx2] = other.copy(rank = currentRank)
+                                            scope.launch {
+                                                contendershipDao.update(contender.copy(rank = currentRank + 1))
+                                                contendershipDao.update(other.copy(rank = currentRank))
+                                            }
                                         }
                                     }
                                 }
                             },
                             onRemove = { contender ->
                                 val rankToRemove = contender.rank
-                                contenders.removeIf { it.id == contender.id }
+                                scope.launch { contendershipDao.delete(contender.id) }
                                 contenders.indices.forEach { i ->
                                     val c = contenders[i]
                                     if (c.titleId == title.id && c.rank > rankToRemove) {
-                                        contenders[i] = c.copy(rank = c.rank - 1)
+                                        scope.launch { contendershipDao.update(c.copy(rank = c.rank - 1)) }
                                     }
                                 }
                             },
@@ -407,10 +430,10 @@ fun App() {
                                 onSave = { closedReign, newReign ->
                                     if (closedReign != null) {
                                         val i = reigns.indexOfFirst { it.id == closedReign.id }
-                                        if (i != -1) reigns[i] = closedReign
+                                        if (i != -1) scope.launch { reignDao.update(closedReign) }
                                     }
                                     if (newReign != null) {
-                                        reigns.add(newReign)
+                                        scope.launch { reignDao.add(newReign) }
                                     }
                                     showLogTitleChange = false
                                 },
@@ -435,15 +458,17 @@ fun App() {
                                 currentContenderCount = titleContenders.size,
                                 onSave = { selectedWrestlers ->
                                     val nextRank = titleContenders.size + 1
-                                    contenders.add(
-                                        Contendership(
-                                            id = System.currentTimeMillis().toInt(),
-                                            titleId = title.id,
-                                            wrestlerIds = selectedWrestlers.map { it.id },
-                                            wrestlerNames = selectedWrestlers.map { it.name },
-                                            rank = nextRank
+                                    scope.launch {
+                                        contendershipDao.add(
+                                            Contendership(
+                                                id = System.currentTimeMillis().toInt(),
+                                                titleId = title.id,
+                                                wrestlerIds = selectedWrestlers.map { it.id },
+                                                wrestlerNames = selectedWrestlers.map { it.name },
+                                                rank = nextRank
+                                            )
                                         )
-                                    )
+                                    }
                                     showAddContender = false
                                 },
                                 onDismiss = {
@@ -489,13 +514,13 @@ fun App() {
                             ppvEvents = ppvEvents,
                             onSave = { saved ->
                                 val i = calendarWeeks.indexOfFirst { it.weekNumber == saved.weekNumber }
-                                if (i != -1) calendarWeeks[i] = saved
-                                else calendarWeeks.add(saved)
+                                if (i != -1) scope.launch { calendarWeekDao.update(saved) }
+                                else scope.launch { calendarWeekDao.add(saved) }
                                 showAddEditWeek = false
                                 editingWeek = null
                             },
                             onDelete = { toDelete ->
-                                calendarWeeks.removeIf { it.weekNumber == toDelete.weekNumber }
+                                scope.launch { calendarWeekDao.delete(toDelete.weekNumber) }
                                 showAddEditWeek = false
                                 editingWeek = null
                             },

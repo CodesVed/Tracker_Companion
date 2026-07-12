@@ -44,14 +44,12 @@ import kotlin.time.Duration.Companion.milliseconds
 fun AppEntry() {
     val context = LocalContext.current
     var showSplash by remember { mutableStateOf(true) }
-    val database = AppDatabase.getInstance(context)
+    val database = remember { AppDatabase.getInstance(context.applicationContext) }
 
     Box {
-        App()
+        App(database = database)
         LaunchedEffect(Unit) {
-            CoroutineScope(Dispatchers.IO).launch {
-                DatabaseSeeder(database).seedIfEmpty()
-            }
+            DatabaseSeeder(database).seedIfEmpty()
         }
 
         if (showSplash) {

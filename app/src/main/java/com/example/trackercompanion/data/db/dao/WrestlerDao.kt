@@ -24,5 +24,8 @@ interface WrestlerDao {
     suspend fun delete(id: Int)
 
     @Query("SELECT * FROM Wrestler")
-    fun getAllWrestlers(): List<Wrestler>
+     fun getAllWrestlers(): Flow<List<Wrestler>>
+
+    @Query("SELECT * FROM Wrestler")
+    suspend fun getAllWrestlersOnce(): List<Wrestler>
 }

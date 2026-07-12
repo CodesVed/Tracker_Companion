@@ -10,7 +10,7 @@ class DatabaseSeeder(private val database: AppDatabase) {
     suspend fun seedIfEmpty() {
         val wrestlerDao = database.getWrestlerDao()
 
-        if (wrestlerDao.getAllWrestlers().isEmpty()) {
+        if (wrestlerDao.getAllWrestlersOnce().isEmpty()) {
             // In order of data referenced by id first
             wrestlerDao.insertAll(WrestlerData.roster)
 
