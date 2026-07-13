@@ -50,7 +50,7 @@ fun CalendarScreen(
     onAddWeekClick: () -> Unit,
     onWeekLongPress: (CalendarWeek) -> Unit,
 ){
-    val sortedWeeks = weeks.sortedBy { it.weekNumber }
+    val sortedWeeks = weeks.sortedWith(compareBy({ it.weekNumber }, { it.id }))
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -101,7 +101,7 @@ fun CalendarScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(sortedWeeks, key = { it.weekNumber }) { week ->
+                    items(sortedWeeks, key = { it.id }) { week ->
                         WeekRow(
                             week = week,
                             onClick = { onWeekClick(week) },

@@ -164,16 +164,17 @@ fun AddEditWeekBottomSheet(
             OutlinedTextField(
                 value = weekNumStr,
                 onValueChange = {
-                    if (it.all { c -> c.isDigit() }) {
-                        weekNumStr = it
-                        weekNumError = false
-                    }
+                    val filtered = it.filter { c -> c.isDigit() }
+                    weekNumStr = filtered
+                    weekNumError = false
                 },
                 label = { Text("Week Number") },
                 isError = weekNumError,
                 supportingText = {
-                    if (weekNumError) Text("Week number required",
-                        color = MaterialTheme.colorScheme.error)
+                    if (weekNumError) {
+                        val errorText = if (weekNumStr.isBlank()) "Week number required" else "Invalid week number"
+                        Text(errorText, color = MaterialTheme.colorScheme.error)
+                    }
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -299,7 +300,7 @@ fun AddEditWeekBottomSheet(
                 onClick = {
                     var valid = true
 
-                    val weekNum = weekNumStr.toIntOrNull()
+                    val weekNum = weekNumStr.trim().toIntOrNull()
                     if (weekNum == null) {
                         weekNumError = true
                         valid = false

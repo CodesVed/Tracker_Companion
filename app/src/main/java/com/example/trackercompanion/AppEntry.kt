@@ -69,7 +69,7 @@ fun BrandedSplashScreen(onFinished: () -> Unit) {
         //Fade content in
         contentAlpha.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
         )
 
         // Hold for reading

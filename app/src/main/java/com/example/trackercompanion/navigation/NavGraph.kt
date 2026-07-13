@@ -5,23 +5,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.trackercompanion.data.CalendarData
 import com.example.trackercompanion.data.ChampionshipData
-import com.example.trackercompanion.data.ChampionshipData.contenderships
-import com.example.trackercompanion.data.ShowData
-import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.data.db.AppDatabase
 import com.example.trackercompanion.model.CalendarWeek
 import com.example.trackercompanion.model.Contendership
@@ -513,14 +507,16 @@ fun App(database: AppDatabase) {
                             episodes = episodes,
                             ppvEvents = ppvEvents,
                             onSave = { saved ->
-                                val i = calendarWeeks.indexOfFirst { it.weekNumber == saved.weekNumber }
-                                if (i != -1) scope.launch { calendarWeekDao.update(saved) }
-                                else scope.launch { calendarWeekDao.add(saved) }
+                                if (saved.id != 0) {
+                                    scope.launch { calendarWeekDao.update(saved) }
+                                } else {
+                                    scope.launch { calendarWeekDao.add(saved) }
+                                }
                                 showAddEditWeek = false
                                 editingWeek = null
                             },
                             onDelete = { toDelete ->
-                                scope.launch { calendarWeekDao.delete(toDelete.weekNumber) }
+                                scope.launch { calendarWeekDao.delete(toDelete.id) }
                                 showAddEditWeek = false
                                 editingWeek = null
                             },
