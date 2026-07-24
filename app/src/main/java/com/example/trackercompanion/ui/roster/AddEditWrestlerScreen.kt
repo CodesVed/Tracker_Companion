@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -44,13 +45,13 @@ import com.example.trackercompanion.R
 fun AddEditWrestlerScreen(existing: Wrestler? = null, onSave: (Wrestler)->Unit, onBack: ()->Unit) {
     val isEditMode = existing != null
 
-    var name by remember { mutableStateOf(existing?.name ?: "") }
-    var brand by remember { mutableStateOf(existing?.brand?: Brand.RAW) }
-    var type by remember { mutableStateOf(existing?.type?: Type.SINGLE) }
-    var status by remember { mutableStateOf(existing?.status?: Status.ACTIVE) }
-    var notes by remember { mutableStateOf(existing?.notes?: "") }
+    var name by rememberSaveable { mutableStateOf(existing?.name ?: "") }
+    var brand by rememberSaveable { mutableStateOf(existing?.brand?: Brand.RAW) }
+    var type by rememberSaveable { mutableStateOf(existing?.type?: Type.SINGLE) }
+    var status by rememberSaveable { mutableStateOf(existing?.status?: Status.ACTIVE) }
+    var notes by rememberSaveable { mutableStateOf(existing?.notes?: "") }
 
-    var nameError by remember { mutableStateOf(false) }
+    var nameError by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {

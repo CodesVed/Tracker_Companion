@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,7 +78,7 @@ fun RosterScreen(
 ) {
     val brandTypes = listOf("ALL", "RAW", "SD", "DIVA", "FREE")
     val sorts = listOf("Name", "Points", "Win Rate")
-    var sortMenuExpanded by remember { mutableStateOf(false) }
+    var sortMenuExpanded by rememberSaveable { mutableStateOf(false) }
 
 
     Box(

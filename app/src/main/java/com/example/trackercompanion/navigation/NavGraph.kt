@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -34,6 +35,8 @@ import com.example.trackercompanion.ui.championships.AddContenderBottomSheet
 import com.example.trackercompanion.ui.championships.LogTitleChangeBottomSheet
 import com.example.trackercompanion.ui.championships.TitleDetailScreen
 import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
+import com.example.trackercompanion.ui.roster.WrestlerViewModel
+import com.example.trackercompanion.ui.roster.WrestlerViewModelFactory
 import com.example.trackercompanion.ui.shows.AddEpisodeResult
 import com.example.trackercompanion.ui.shows.AddEpisodeScreen
 import com.example.trackercompanion.ui.shows.EpisodeDetailScreen
@@ -45,7 +48,9 @@ import kotlin.collections.emptyList
 fun App(database: AppDatabase) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
-    val wrestlerDao = database.getWrestlerDao()
+    val wrestlerViewModel: WrestlerViewModel = viewModel(
+        factory = WrestlerViewModelFactory(database.getWrestlerDao(), database.getMatchDao())
+    )
     val championshipDao = database.getChampionshipDao()
     val reignDao = database.getTitleReignDao()
     val contendershipDao = database.getContendershipDao()
@@ -54,7 +59,7 @@ fun App(database: AppDatabase) {
     val matchesDao = database.getMatchDao()
     val calendarWeekDao = database.getCalendarWeekDao()
 
-    val wrestlers by wrestlerDao.getAllWrestlers().collectAsState(initial = emptyList())
+    val wrestlers by wrestlerViewModel.wrestlers.collectAsState()
     val matches by matchesDao.getAllMatches().collectAsState(initial = emptyList())
     val episodes by episodeDao.getAllShowEpisodes().collectAsState(initial = emptyList())
     val ppvEvents by ppvEventDao.getAllPPVEvents().collectAsState(initial = emptyList())
@@ -99,26 +104,11 @@ fun App(database: AppDatabase) {
                 }
 
                 composable<Roster> {
-                    var selectedBrandType by remember { mutableStateOf("ALL") }
-                    var selectedSort by remember { mutableStateOf("Name") }
-                    var searchQuery by remember { mutableStateOf("") }
+                    val selectedBrandType by wrestlerViewModel.selectedBrand.collectAsState()
+                    val selectedSort by wrestlerViewModel.selectedSort.collectAsState()
+                    val searchQuery by wrestlerViewModel.searchQuery.collectAsState()
 
-                    val filteredWrestlers = wrestlers
-                        .filter { w ->
-                            selectedBrandType == "ALL" || w.brand.toString() == selectedBrandType
-                        }
-                        .filter { w ->
-                            searchQuery.isBlank() ||
-                            w.name.contains(searchQuery, ignoreCase = true)
-                        }
-                        .sortedWith(
-                            when (selectedSort) {
-                                "Points" -> compareByDescending { computeStatsForWrestler(it.id, matches).points }
-                                "Win Rate" -> compareByDescending { computeStatsForWrestler(it.id, matches).winPercent }
-                                "Name" -> compareBy { it.name }
-                                else -> compareBy { it.name }
-                            }
-                        )
+                    val filteredWrestlers by wrestlerViewModel.filteredWrestlers.collectAsState()
 
                     RosterScreen(
                         wrestlers = filteredWrestlers,
@@ -126,15 +116,9 @@ fun App(database: AppDatabase) {
                         selectedBrand = selectedBrandType,
                         selectedSort = selectedSort,
                         searchQuery = searchQuery,
-                        onSearchQueryChanged = {
-                            searchQuery = it
-                        },
-                        onBrandSelected = {
-                            selectedBrandType = it
-                        },
-                        onSortSelected = {
-                            selectedSort = it
-                        },
+                        onSearchQueryChanged = wrestlerViewModel::onSearchQueryChanged,
+                        onBrandSelected = wrestlerViewModel::onBrandSelected,
+                        onSortSelected = wrestlerViewModel::onSortSelected,
                         onWrestlerClick = { id ->
                             navController.navigate(route = WrestlerDetail(id))
                         },
@@ -177,12 +161,9 @@ fun App(database: AppDatabase) {
                         existing = existing,
                         onSave = {saved ->
                             if (existing == null){
-                                scope.launch {
-                                    wrestlerDao.add(saved)
-                                }
+                                wrestlerViewModel.addWrestler(saved)
                             } else {
-                                val index = wrestlers.indexOfFirst { it.id == saved.id }
-                                if (index != -1) scope.launch { wrestlerDao.update(saved) }
+                                wrestlerViewModel.updateWrestler(saved)
                             }
                             navController.popBackStack()
                         },
