@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,9 +87,11 @@ fun EpisodeDetailScreen(
     onPPVEdited: (PPVEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
-    var showMatchEntry by remember { mutableStateOf(false) }
-    var editingMatch    by remember { mutableStateOf<Match?>(null) }
-    var showEditEpisode by remember { mutableStateOf(false) }
+    var showMatchEntry by rememberSaveable { mutableStateOf(false) }
+    var editingMatchId    by rememberSaveable { mutableStateOf<Int?>(null) }
+    var showEditEpisode by rememberSaveable { mutableStateOf(false) }
+
+    val editingMatch = matches.find { it.id == editingMatchId }
 
     val title = when (showSource) {
         is ShowSource.RegularShow -> {
@@ -276,7 +279,7 @@ fun EpisodeDetailScreen(
                     MatchCardRow(
                         match = match,
                         onLongPress = {
-                            editingMatch = match
+                            editingMatchId = match.id
                             showMatchEntry = true
                         }
                     )
@@ -319,16 +322,16 @@ fun EpisodeDetailScreen(
             onSave = { savedMatch ->
                 onMatchSaved(savedMatch)
                 showMatchEntry = false
-                editingMatch = null
+                editingMatchId = null
             },
             onDismiss = {
                 showMatchEntry = false
-                editingMatch = null
+                editingMatchId = null
             },
             onDelete = { matchToDelete ->
                 onMatchDeleted(matchToDelete)
                 showMatchEntry = false
-                editingMatch = null
+                editingMatchId = null
             }
         )
     }

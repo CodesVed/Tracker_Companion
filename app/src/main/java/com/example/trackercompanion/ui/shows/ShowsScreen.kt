@@ -49,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,11 +84,13 @@ fun ShowScreen(
     onEpisodeEdited: (ShowEpisode) -> Unit,
     onEpisodeDeleted: (ShowEpisode) -> Unit
 ){
-    var selectedTab by remember { mutableIntStateOf(0) }
-    var episodeOptionsTarget by remember { mutableStateOf<ShowEpisode?>(null) }
-    var showEpisodeOptions   by remember { mutableStateOf(false) }
-    var showEditEpisode      by remember { mutableStateOf(false) }
-    var showDeleteEpisodeConfirm by remember { mutableStateOf(false) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var episodeOptionsTargetId by rememberSaveable { mutableStateOf<Int?>(null) }
+    var showEpisodeOptions   by rememberSaveable { mutableStateOf(false) }
+    var showEditEpisode      by rememberSaveable { mutableStateOf(false) }
+    var showDeleteEpisodeConfirm by rememberSaveable { mutableStateOf(false) }
+
+    val target = episodes.find { it.id == episodeOptionsTargetId }
 
     val tabs = listOf("RAW", "Smackdown", "PPV")
 
@@ -143,7 +146,7 @@ fun ShowScreen(
                     matches = matches,
                     onEpisodeClick = onEpisodeClick,
                     onEpisodeLongPress = {episode ->
-                        episodeOptionsTarget = episode
+                        episodeOptionsTargetId = episode.id
                         showEpisodeOptions = true
                     }
                 )
@@ -152,7 +155,7 @@ fun ShowScreen(
                     matches = matches,
                     onEpisodeClick = onEpisodeClick,
                     onEpisodeLongPress = { episode ->
-                        episodeOptionsTarget = episode
+                        episodeOptionsTargetId = episode.id
                         showEpisodeOptions = true
                     }
                 )
@@ -180,13 +183,12 @@ fun ShowScreen(
             }
         }
 
-        if (showEpisodeOptions && episodeOptionsTarget != null) {
-            val target = episodeOptionsTarget!!
+        if (showEpisodeOptions && target != null) {
 
             ModalBottomSheet(
                 onDismissRequest = {
                     showEpisodeOptions = false
-                    episodeOptionsTarget = null
+                    episodeOptionsTargetId = null
                 }
             ) {
                 Column(
@@ -278,27 +280,25 @@ fun ShowScreen(
                 }
             }
 
-            if (showEditEpisode && episodeOptionsTarget != null) {
-                val target = episodeOptionsTarget!!
+            if (showEditEpisode) {
 
                 EditEpisodeBottomSheet(
                     episode = target,
                     onSave = { edited ->
                         onEpisodeEdited(edited)
                         showEditEpisode = false
-                        episodeOptionsTarget = null
+                        episodeOptionsTargetId = null
                     },
                     onDismiss = {
                         showEditEpisode = false
-                        episodeOptionsTarget = null
+                        episodeOptionsTargetId = null
                     }
                 )
             }
         }
 
         // Delete confirmation dialog
-        if (showDeleteEpisodeConfirm && episodeOptionsTarget != null) {
-            val target = episodeOptionsTarget!!
+        if (showDeleteEpisodeConfirm && target != null) {
             val brandLabel = when (target.brand) {
                 Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> target.brand.name
             }
@@ -325,7 +325,7 @@ fun ShowScreen(
                             onEpisodeDeleted(target)
                             showDeleteEpisodeConfirm = false
                             showEpisodeOptions = false
-                            episodeOptionsTarget = null
+                            episodeOptionsTargetId = null
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error

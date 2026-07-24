@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.trackercompanion.model.ShowEpisode
+import com.example.trackercompanion.model.enums.Brand
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,4 +26,7 @@ interface ShowEpisodeDao {
 
     @Query("SELECT * FROM ShowEpisode")
     fun getAllShowEpisodes(): Flow<List<ShowEpisode>>
+
+    @Query("SELECT * FROM ShowEpisode WHERE brand = :brand")
+    fun getEpisodesByBrand(brand: String): Flow<List<ShowEpisode>>
 }

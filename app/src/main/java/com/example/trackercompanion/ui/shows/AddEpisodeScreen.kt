@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -50,15 +51,15 @@ fun AddEpisodeScreen(
     onSave: (AddEpisodeResult) -> Unit,
     onBack: () -> Unit
 ) {
-    var showType     by remember { mutableStateOf("RAW") }
-    var episodeNumStr by remember { mutableStateOf("") }
-    var weekNumStr   by remember { mutableStateOf("") }
-    var themeNotes   by remember { mutableStateOf("") }
-    var ppvName      by remember { mutableStateOf("") }
+    var showType     by rememberSaveable { mutableStateOf("RAW") }
+    var episodeNumStr by rememberSaveable { mutableStateOf("") }
+    var weekNumStr   by rememberSaveable { mutableStateOf("") }
+    var themeNotes   by rememberSaveable { mutableStateOf("") }
+    var ppvName      by rememberSaveable { mutableStateOf("") }
 
-    var episodeNumError by remember { mutableStateOf(false) }
-    var weekNumError    by remember { mutableStateOf(false) }
-    var ppvNameError    by remember { mutableStateOf(false) }
+    var episodeNumError by rememberSaveable { mutableStateOf(false) }
+    var weekNumError    by rememberSaveable { mutableStateOf(false) }
+    var ppvNameError    by rememberSaveable { mutableStateOf(false) }
 
     val isPPV = showType == "PPV"
 

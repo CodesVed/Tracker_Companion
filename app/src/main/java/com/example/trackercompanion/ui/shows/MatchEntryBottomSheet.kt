@@ -1,32 +1,16 @@
 package com.example.trackercompanion.ui.shows
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,7 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -46,25 +29,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.model.Match
 import com.example.trackercompanion.model.Wrestler
-import com.example.trackercompanion.model.enums.Brand
 import com.example.trackercompanion.model.enums.CardSlot
 import com.example.trackercompanion.model.enums.Show
 import com.example.trackercompanion.ui.roster.DropdownField
-import com.example.trackercompanion.ui.theme.Blue
-import com.example.trackercompanion.ui.theme.Gold
-import com.example.trackercompanion.ui.theme.Red
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchEntryBottomSheet(
@@ -87,71 +64,81 @@ fun MatchEntryBottomSheet(
         else                    -> CardSlot.MAIN
     }
 
-    var isTagMatch by remember { mutableStateOf(editingMatch?.isTagMatch ?: false) }
-    var slot by remember { mutableStateOf(editingMatch?.slot ?: suggestedSlot) }
-    var stipulation by remember { mutableStateOf(editingMatch?.stipulation ?: "Normal") }
-    var notes by remember { mutableStateOf(editingMatch?.notes ?: "") }
+    var isTagMatch by rememberSaveable { mutableStateOf(editingMatch?.isTagMatch ?: false) }
+    var slot by rememberSaveable { mutableStateOf(editingMatch?.slot ?: suggestedSlot) }
+    var stipulation by rememberSaveable { mutableStateOf(editingMatch?.stipulation ?: "Normal") }
+    var notes by rememberSaveable { mutableStateOf(editingMatch?.notes ?: "") }
 
     // Singles
-    var participant1 by remember {
+    var participant1Id by rememberSaveable {
         mutableStateOf(
             editingMatch?.let {
-                if (!it.isTagMatch) wrestlers.find { w -> w.id == it.participantIds.getOrNull(0) }
+                if (!it.isTagMatch) it.participantIds.getOrNull(0)
                 else null
             }
         )
     }
-    var participant2 by remember {
+    var participant1 = wrestlers.find { it.id == participant1Id }
+
+    var participant2Id by rememberSaveable {
         mutableStateOf(
             editingMatch?.let {
-                if (!it.isTagMatch) wrestlers.find { w -> w.id == it.participantIds.getOrNull(1) }
+                if (!it.isTagMatch) it.participantIds.getOrNull(1)
                 else null
             }
         )
     }
+    var participant2 = wrestlers.find { it.id == participant2Id }
 
     // Tag
-    var team1Wrestler1 by remember {
+    var team1Wrestler1Id by rememberSaveable {
         mutableStateOf(
             editingMatch?.let {
-                if (it.isTagMatch) wrestlers.find { w -> w.id == it.participantIds.getOrNull(0) }
+                if (it.isTagMatch) it.participantIds.getOrNull(0)
                 else null
             }
         )
     }
-    var team1Wrestler2 by remember {
+    var team1Wrestler1 = wrestlers.find { it.id == team1Wrestler1Id }
+
+    var team1Wrestler2Id by rememberSaveable {
         mutableStateOf(
             editingMatch?.let {
-                if (it.isTagMatch) wrestlers.find { w -> w.id == it.participantIds.getOrNull(1) }
+                if (it.isTagMatch) it.participantIds.getOrNull(1)
                 else null
             }
         )
     }
-    var team2Wrestler1 by remember {
+    var team1Wrestler2 = wrestlers.find { it.id == team1Wrestler2Id }
+
+    var team2Wrestler1Id by rememberSaveable {
         mutableStateOf(
             editingMatch?.let {
-                if (it.isTagMatch) wrestlers.find { w -> w.id == it.participantIds.getOrNull(2) }
+                if (it.isTagMatch) it.participantIds.getOrNull(2)
                 else null
             }
         )
     }
-    var team2Wrestler2 by remember {
+    var team2Wrestler1 = wrestlers.find { it.id == team2Wrestler1Id }
+
+    var team2Wrestler2Id by rememberSaveable {
         mutableStateOf(
             editingMatch?.let {
-                if (it.isTagMatch) wrestlers.find { w -> w.id == it.participantIds.getOrNull(3) }
+                if (it.isTagMatch) it.participantIds.getOrNull(3)
                 else null
             }
         )
     }
+    var team2Wrestler2 = wrestlers.find { it.id == team2Wrestler2Id }
 
     // Winner
-    var winnerId    by remember { mutableStateOf(editingMatch?.winnerId) }
-    var winnerLabel by remember { mutableStateOf(editingMatch?.winnerLabel) }
+    var winnerId    by rememberSaveable { mutableStateOf(editingMatch?.winnerId) }
+    var winnerLabel by rememberSaveable { mutableStateOf(editingMatch?.winnerLabel) }
 
-    var participantError by remember { mutableStateOf(false) }
+    var participantError by rememberSaveable { mutableStateOf(false) }
     var winnerError      by remember { mutableStateOf(false) }
 
-    var showDeleteConfirm by remember { mutableStateOf(false) }
+    var showDeleteConfirm by rememberSaveable { mutableStateOf(false) }
 
     val participantIds: List<Int>
     val participantDisplay: String

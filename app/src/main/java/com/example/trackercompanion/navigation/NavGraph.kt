@@ -41,6 +41,8 @@ import com.example.trackercompanion.ui.shows.AddEpisodeResult
 import com.example.trackercompanion.ui.shows.AddEpisodeScreen
 import com.example.trackercompanion.ui.shows.EpisodeDetailScreen
 import com.example.trackercompanion.ui.shows.ShowSource
+import com.example.trackercompanion.ui.shows.ShowsViewModel
+import com.example.trackercompanion.ui.shows.ShowsViewModelFactory
 import kotlinx.coroutines.launch
 import kotlin.collections.emptyList
 
@@ -49,20 +51,27 @@ fun App(database: AppDatabase) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
     val wrestlerViewModel: WrestlerViewModel = viewModel(
-        factory = WrestlerViewModelFactory(database.getWrestlerDao(), database.getMatchDao())
+        factory = WrestlerViewModelFactory(
+            database.getWrestlerDao(),
+            database.getMatchDao()
+        )
+    )
+    val showsViewModel: ShowsViewModel = viewModel(
+        factory = ShowsViewModelFactory(
+            database.getShowEpisodeDao(),
+            database.getPPVEventDao(),
+            database.getMatchDao()
+        )
     )
     val championshipDao = database.getChampionshipDao()
     val reignDao = database.getTitleReignDao()
     val contendershipDao = database.getContendershipDao()
-    val episodeDao = database.getShowEpisodeDao()
-    val ppvEventDao = database.getPPVEventDao()
-    val matchesDao = database.getMatchDao()
     val calendarWeekDao = database.getCalendarWeekDao()
 
     val wrestlers by wrestlerViewModel.wrestlers.collectAsState()
-    val matches by matchesDao.getAllMatches().collectAsState(initial = emptyList())
-    val episodes by episodeDao.getAllShowEpisodes().collectAsState(initial = emptyList())
-    val ppvEvents by ppvEventDao.getAllPPVEvents().collectAsState(initial = emptyList())
+    val matches by showsViewModel.matches.collectAsState()
+    val episodes by showsViewModel.episodes.collectAsState()
+    val ppvEvents by showsViewModel.ppvEvents.collectAsState()
     val championships by championshipDao.getAllChampionships().collectAsState(initial = emptyList())
     val reigns by reignDao.getAllTitleReigns().collectAsState(initial = emptyList())
     val contenders by contendershipDao.getAllContendership().collectAsState(initial = emptyList())
@@ -188,15 +197,10 @@ fun App(database: AppDatabase) {
                             navController.navigate(route = AddEpisode)
                         },
                         onEpisodeEdited = {edited ->
-                            val i = episodes.indexOfFirst { it.id == edited.id }
-                            if (i != -1) scope.launch{ episodeDao.update(edited) }
+                            showsViewModel.updateEpisode(edited)
                         },
                         onEpisodeDeleted = { deleted ->
-                            scope.launch {
-                                episodeDao.delete(deleted.id)
-                                // Also delete all matches belonging to this episode
-                                matchesDao.deleteMatchesForEpisode(deleted.id, Show.SHOW)
-                            }
+                            showsViewModel.deleteEpisode(deleted)
                         }
                     )
                 }
@@ -228,22 +232,16 @@ fun App(database: AppDatabase) {
                             matches = episodeMatches,
                             wrestlers = wrestlers,
                             onMatchSaved = {savedMatch ->
-                                // Edit mode — replace existing entry
-                                val i = matches.indexOfFirst { it.id == savedMatch.id }
-                                if (i != -1) scope.launch { matchesDao.update(savedMatch) }
-                                // Add mode — append
-                                else scope.launch { matchesDao.add(savedMatch) }
+                                showsViewModel.saveMatch(savedMatch)
                             },
                             onMatchDeleted = { deletedMatch ->
-                                scope.launch { matchesDao.delete(deletedMatch.id) }
+                                showsViewModel.deleteMatch(deletedMatch)
                             },
                             onEpisodeEdited = { edited ->
-                                val i = episodes.indexOfFirst { it.id == edited.id }
-                                if (i != -1) scope.launch { episodeDao.update(edited) }
+                                showsViewModel.updateEpisode(edited)
                             },
                             onPPVEdited = { edited ->
-                                val i = ppvEvents.indexOfFirst { it.id == edited.id }
-                                if (i != -1) scope.launch { ppvEventDao.update(edited) }
+                                showsViewModel.updatePPVEvent(edited)
                             },
                             onBackClick = {
                                 navController.popBackStack()
@@ -262,7 +260,7 @@ fun App(database: AppDatabase) {
                         onSave = {result ->
                             when (result) {
                                 is AddEpisodeResult.NewEpisode -> {
-                                    scope.launch { episodeDao.add(result.episode) }
+                                    showsViewModel.addEpisode(result.episode)
                                     navController.navigate(
                                         route = EpisodeDetail(result.episode.id, isPPV = false)
                                     ) {
@@ -270,7 +268,7 @@ fun App(database: AppDatabase) {
                                     }
                                 }
                                 is AddEpisodeResult.NewPPV -> {
-                                    scope.launch { ppvEventDao.add(result.ppv) }
+                                    showsViewModel.addPPVEvent(result.ppv)
                                     navController.navigate(
                                         route = EpisodeDetail(result.ppv.id, isPPV = true)
                                     ) {
