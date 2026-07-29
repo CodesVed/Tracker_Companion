@@ -16,7 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.db.AppDatabase
 import com.example.trackercompanion.model.CalendarWeek
 import com.example.trackercompanion.model.Contendership
@@ -32,6 +31,8 @@ import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
 import com.example.trackercompanion.ui.calendar.AddEditWeekBottomSheet
 import com.example.trackercompanion.ui.championships.AddContenderBottomSheet
+import com.example.trackercompanion.ui.championships.ChampionshipsViewModel
+import com.example.trackercompanion.ui.championships.ChampionshipsViewModelFactory
 import com.example.trackercompanion.ui.championships.LogTitleChangeBottomSheet
 import com.example.trackercompanion.ui.championships.TitleDetailScreen
 import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
@@ -63,18 +64,22 @@ fun App(database: AppDatabase) {
             database.getMatchDao()
         )
     )
-    val championshipDao = database.getChampionshipDao()
-    val reignDao = database.getTitleReignDao()
-    val contendershipDao = database.getContendershipDao()
+    val championshipsViewModel: ChampionshipsViewModel = viewModel(
+        factory = ChampionshipsViewModelFactory(
+            database.getChampionshipDao(),
+            database.getTitleReignDao(),
+            database.getContendershipDao()
+        )
+    )
     val calendarWeekDao = database.getCalendarWeekDao()
 
     val wrestlers by wrestlerViewModel.wrestlers.collectAsState()
     val matches by showsViewModel.matches.collectAsState()
     val episodes by showsViewModel.episodes.collectAsState()
     val ppvEvents by showsViewModel.ppvEvents.collectAsState()
-    val championships by championshipDao.getAllChampionships().collectAsState(initial = emptyList())
-    val reigns by reignDao.getAllTitleReigns().collectAsState(initial = emptyList())
-    val contenders by contendershipDao.getAllContendership().collectAsState(initial = emptyList())
+    val championships by championshipsViewModel.championships.collectAsState()
+    val reigns by championshipsViewModel.reigns.collectAsState()
+    val contenders by championshipsViewModel.contenders.collectAsState()
     val calendarWeeks by calendarWeekDao.getAllCalendarWeeks().collectAsState(initial = emptyList())
 
     Scaffold(
@@ -310,77 +315,22 @@ fun App(database: AppDatabase) {
                                 showAddContender = true
                             },
                             onSuggestContenderClick = {
-                                val titleContenders = contenders.filter { it.titleId == title.id }
-                                val currentChampionIds = reigns
-                                    .find { it.titleId == title.id && it.lostAtEvent == null }
-                                    ?.holderIds?.toSet() ?: emptySet()
-
-                                val suggested = ChampionshipData.suggestNextContender(
+                                championshipsViewModel.suggestContender(
                                     titleId = title.id,
                                     titleBrand = title.brand,
                                     isTagTitle = isTagTitle == true,
-                                    wrestlers = wrestlers,
-                                    matches = matches,
-                                    existingContenderIds = titleContenders.flatMap { it.wrestlerIds }.toSet(),
-                                    currentChampionIds = currentChampionIds
+                                    wrestlerIds = wrestlers,
+                                    matches = matches
                                 )
-
-                                if (suggested.isNotEmpty()) {
-                                    scope.launch {
-                                        contendershipDao.add(
-                                            Contendership(
-                                                id = System.currentTimeMillis().toInt(),
-                                                titleId = title.id,
-                                                wrestlerIds = suggested.map { it.id },
-                                                wrestlerNames = suggested.map { it.name },
-                                                rank = titleContenders.size + 1
-                                            )
-                                        )
-                                    }
-                                }
                             },
                             onMoveUp = { contender ->
-                                val currentRank = contender.rank
-                                if (currentRank > 1) {
-                                    val other = contenders.find { it.titleId == title.id && it.rank == currentRank - 1 }
-                                    if (other != null) {
-                                        val idx1 = contenders.indexOfFirst { it.id == contender.id }
-                                        val idx2 = contenders.indexOfFirst { it.id == other.id }
-                                        if (idx1 != -1 && idx2 != -1) {
-                                            scope.launch {
-                                                contendershipDao.update(contender.copy(rank = currentRank - 1))
-                                                contendershipDao.update(other.copy(rank = currentRank))
-                                            }
-                                        }
-                                    }
-                                }
+                                championshipsViewModel.moveContenderUp(contender)
                             },
                             onMoveDown = { contender ->
-                                val currentRank = contender.rank
-                                val titleContenders = contenders.filter { it.titleId == title.id }
-                                if (currentRank < titleContenders.size) {
-                                    val other = contenders.find { it.titleId == title.id && it.rank == currentRank + 1 }
-                                    if (other != null) {
-                                        val idx1 = contenders.indexOfFirst { it.id == contender.id }
-                                        val idx2 = contenders.indexOfFirst { it.id == other.id }
-                                        if (idx1 != -1 && idx2 != -1) {
-                                            scope.launch {
-                                                contendershipDao.update(contender.copy(rank = currentRank + 1))
-                                                contendershipDao.update(other.copy(rank = currentRank))
-                                            }
-                                        }
-                                    }
-                                }
+                                championshipsViewModel.moveContenderDown(contender)
                             },
                             onRemove = { contender ->
-                                val rankToRemove = contender.rank
-                                scope.launch { contendershipDao.delete(contender.id) }
-                                contenders.indices.forEach { i ->
-                                    val c = contenders[i]
-                                    if (c.titleId == title.id && c.rank > rankToRemove) {
-                                        scope.launch { contendershipDao.update(c.copy(rank = c.rank - 1)) }
-                                    }
-                                }
+                                championshipsViewModel.removeContender(contender)
                             },
                             onLogTitleChangeClick = {
                                 showLogTitleChange = true
@@ -401,13 +351,8 @@ fun App(database: AppDatabase) {
                                 isTagTitle = isTagTitle,
                                 wrestlers = wrestlers,
                                 onSave = { closedReign, newReign ->
-                                    if (closedReign != null) {
-                                        val i = reigns.indexOfFirst { it.id == closedReign.id }
-                                        if (i != -1) scope.launch { reignDao.update(closedReign) }
-                                    }
-                                    if (newReign != null) {
-                                        scope.launch { reignDao.add(newReign) }
-                                    }
+                                    championshipsViewModel.closingReign(closedReign)
+                                    championshipsViewModel.startReign(newReign)
                                     showLogTitleChange = false
                                 },
                                 onDismiss = {
@@ -431,17 +376,15 @@ fun App(database: AppDatabase) {
                                 currentContenderCount = titleContenders.size,
                                 onSave = { selectedWrestlers ->
                                     val nextRank = titleContenders.size + 1
-                                    scope.launch {
-                                        contendershipDao.add(
-                                            Contendership(
-                                                id = System.currentTimeMillis().toInt(),
-                                                titleId = title.id,
-                                                wrestlerIds = selectedWrestlers.map { it.id },
-                                                wrestlerNames = selectedWrestlers.map { it.name },
-                                                rank = nextRank
-                                            )
+                                    championshipsViewModel.addContender(
+                                        Contendership(
+                                            id = System.currentTimeMillis().toInt(),
+                                            titleId = title.id,
+                                            wrestlerIds = selectedWrestlers.map { it.id },
+                                            wrestlerNames = selectedWrestlers.map { it.name },
+                                            rank = nextRank
                                         )
-                                    }
+                                    )
                                     showAddContender = false
                                 },
                                 onDismiss = {
