@@ -1,4 +1,4 @@
-# 📱 [Tracker Companion]
+# 📱 Tracker Companion
 
 A custom, offline-first companion app eliminating use of excel sheets for tracking stats and simulation data for a game mode.
 
