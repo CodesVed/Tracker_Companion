@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,15 +47,19 @@ fun LogTitleChangeBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    var newChampion1 by remember { mutableStateOf<Wrestler?>(null) }
-    var newChampion2 by remember { mutableStateOf<Wrestler?>(null) }
-    var wonAtEvent    by remember { mutableStateOf("") }
-    var notes         by remember { mutableStateOf("") }
-    var vacateOnly    by remember { mutableStateOf(false) }
+    var newChampion1Id by rememberSaveable { mutableStateOf<Int?>(null) }
+    val newChampion1 = wrestlers.find { it.id == newChampion1Id }
 
-    var champion1Error by remember { mutableStateOf(false) }
-    var champion2Error by remember { mutableStateOf(false) }
-    var eventError      by remember { mutableStateOf(false) }
+    var newChampion2Id by rememberSaveable { mutableStateOf<Int?>(null) }
+    val newChampion2 = wrestlers.find { it.id == newChampion2Id }
+
+    var wonAtEvent    by rememberSaveable { mutableStateOf("") }
+    var notes         by rememberSaveable { mutableStateOf("") }
+    var vacateOnly    by rememberSaveable { mutableStateOf(false) }
+
+    var champion1Error by rememberSaveable { mutableStateOf(false) }
+    var champion2Error by rememberSaveable { mutableStateOf(false) }
+    var eventError      by rememberSaveable { mutableStateOf(false) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -116,7 +121,7 @@ fun LogTitleChangeBottomSheet(
                     checked = vacateOnly,
                     onCheckedChange = {
                         vacateOnly = it
-                        if (it) { newChampion1 = null; newChampion2 = null }
+                        if (it) { newChampion1Id = null; newChampion2Id = null }
                     },
                     enabled = currentReign != null
                 )
@@ -138,7 +143,7 @@ fun LogTitleChangeBottomSheet(
                     selected = newChampion1,
                     wrestlers = wrestlers,
                     onWrestlerSelected = {
-                        newChampion1 = it
+                        newChampion1Id = it.id
                         champion1Error = false
                     }
                 )
@@ -157,7 +162,7 @@ fun LogTitleChangeBottomSheet(
                         selected = newChampion2,
                         wrestlers = wrestlers,
                         onWrestlerSelected = {
-                            newChampion2 = it
+                            newChampion2Id = it.id
                             champion2Error = false
                         }
                     )

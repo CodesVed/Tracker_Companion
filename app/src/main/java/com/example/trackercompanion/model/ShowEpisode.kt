@@ -1,9 +1,12 @@
 package com.example.trackercompanion.model
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.trackercompanion.model.enums.Brand
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity
 data class ShowEpisode(
     @PrimaryKey(autoGenerate = true)
@@ -13,4 +16,4 @@ data class ShowEpisode(
     val brand: Brand,
     val weekNumber: Int,
     val notes: String = ""
-)
+) : Parcelable

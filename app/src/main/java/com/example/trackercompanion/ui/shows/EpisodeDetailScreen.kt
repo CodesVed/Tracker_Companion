@@ -387,7 +387,7 @@ fun MatchCardRow(match: Match, onLongPress: () -> Unit = {}) {
                 onLongClick = onLongPress
             ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+            containerColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.08f)
         )
     ) {
         Row(

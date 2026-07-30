@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,6 +30,8 @@ import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
 import com.example.trackercompanion.ui.calendar.AddEditWeekBottomSheet
+import com.example.trackercompanion.ui.calendar.CalendarViewModel
+import com.example.trackercompanion.ui.calendar.CalendarViewModelFactory
 import com.example.trackercompanion.ui.championships.AddContenderBottomSheet
 import com.example.trackercompanion.ui.championships.ChampionshipsViewModel
 import com.example.trackercompanion.ui.championships.ChampionshipsViewModelFactory
@@ -44,8 +46,6 @@ import com.example.trackercompanion.ui.shows.EpisodeDetailScreen
 import com.example.trackercompanion.ui.shows.ShowSource
 import com.example.trackercompanion.ui.shows.ShowsViewModel
 import com.example.trackercompanion.ui.shows.ShowsViewModelFactory
-import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
 @Composable
 fun App(database: AppDatabase) {
@@ -71,7 +71,11 @@ fun App(database: AppDatabase) {
             database.getContendershipDao()
         )
     )
-    val calendarWeekDao = database.getCalendarWeekDao()
+    val calendarViewModel: CalendarViewModel = viewModel(
+        factory = CalendarViewModelFactory(
+            database.getCalendarWeekDao()
+        )
+    )
 
     val wrestlers by wrestlerViewModel.wrestlers.collectAsState()
     val matches by showsViewModel.matches.collectAsState()
@@ -80,7 +84,7 @@ fun App(database: AppDatabase) {
     val championships by championshipsViewModel.championships.collectAsState()
     val reigns by championshipsViewModel.reigns.collectAsState()
     val contenders by championshipsViewModel.contenders.collectAsState()
-    val calendarWeeks by calendarWeekDao.getAllCalendarWeeks().collectAsState(initial = emptyList())
+    val calendarWeeks by calendarViewModel.weeks.collectAsState()
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
@@ -301,11 +305,11 @@ fun App(database: AppDatabase) {
                 composable<TitleDetail> { backStackEntry ->
                     val route = backStackEntry.toRoute<TitleDetail>()
                     val title = championships.find { it.id == route.titleId }
-                    var showAddContender by remember { mutableStateOf(false) }
+                    var showAddContender by rememberSaveable { mutableStateOf(false) }
                     val isTagTitle  = title?.title?.contains("Tag", ignoreCase = true)
 
                     if (title != null) {
-                        var showLogTitleChange by remember { mutableStateOf(false) }
+                        var showLogTitleChange by rememberSaveable { mutableStateOf(false) }
 
                         TitleDetailScreen(
                             title = title,
@@ -396,8 +400,9 @@ fun App(database: AppDatabase) {
                 }
 
                 composable<Calendar> {
-                    var showAddEditWeek by remember { mutableStateOf(false) }
-                    var editingWeek by remember { mutableStateOf<CalendarWeek?>(null) }
+                    var showAddEditWeek by rememberSaveable { mutableStateOf(false) }
+                    var editingWeekId by rememberSaveable { mutableStateOf<Int?>(null) }
+                    val editingWeek = calendarWeeks.find { it.id == editingWeekId }
 
                     CalendarScreen(
                         weeks = calendarWeeks,
@@ -408,17 +413,17 @@ fun App(database: AppDatabase) {
                                 week.linkedShowId != null ->
                                     navController.navigate(EpisodeDetail(episodeId = week.linkedShowId, isPPV = false))
                                 else -> {
-                                    editingWeek = week
+                                    editingWeekId = week.id
                                     showAddEditWeek = true
                                 }
                             }
                         },
                         onAddWeekClick = {
-                            editingWeek = null
+                            editingWeekId = null
                             showAddEditWeek = true
                         },
                         onWeekLongPress = { week ->
-                            editingWeek = week
+                            editingWeekId = week.id
                             showAddEditWeek = true
                         }
                     )
@@ -430,21 +435,21 @@ fun App(database: AppDatabase) {
                             ppvEvents = ppvEvents,
                             onSave = { saved ->
                                 if (saved.id != 0) {
-                                    scope.launch { calendarWeekDao.update(saved) }
+                                    calendarViewModel.editWeek(saved)
                                 } else {
-                                    scope.launch { calendarWeekDao.add(saved) }
+                                    calendarViewModel.addWeek(saved)
                                 }
                                 showAddEditWeek = false
-                                editingWeek = null
+                                editingWeekId = null
                             },
                             onDelete = { toDelete ->
-                                scope.launch { calendarWeekDao.delete(toDelete.id) }
+                                calendarViewModel.deleteWeek(toDelete)
                                 showAddEditWeek = false
-                                editingWeek = null
+                                editingWeekId = null
                             },
                             onDismiss = {
                                 showAddEditWeek = false
-                                editingWeek = null
+                                editingWeekId = null
                             }
                         )
                     }

@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,21 +59,21 @@ fun AddEditWeekBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isEditMode = existing != null
 
-    var weekNumStr  by remember { mutableStateOf(existing?.weekNumber?.toString() ?: "") }
-    var notes       by remember { mutableStateOf(existing?.notes ?: "") }
-    var linkToShow  by remember { mutableStateOf(existing?.linkedShowId != null || existing?.linkedPPVId != null) }
-    var isPPVLink   by remember { mutableStateOf(existing?.linkedPPVId != null) }
+    var weekNumStr  by rememberSaveable { mutableStateOf(existing?.weekNumber?.toString() ?: "") }
+    var notes       by rememberSaveable { mutableStateOf(existing?.notes ?: "") }
+    var linkToShow  by rememberSaveable { mutableStateOf(existing?.linkedShowId != null || existing?.linkedPPVId != null) }
+    var isPPVLink   by rememberSaveable { mutableStateOf(existing?.linkedPPVId != null) }
 
-    var selectedEpisode by remember { mutableStateOf(episodes.find { it.id == existing?.linkedShowId }) }
-    var selectedPPV by remember { mutableStateOf(ppvEvents.find { it.id == existing?.linkedPPVId }) }
-    var manualLabel by remember { mutableStateOf(
+    var selectedEpisode by rememberSaveable { mutableStateOf(episodes.find { it.id == existing?.linkedShowId }) }
+    var selectedPPV by rememberSaveable { mutableStateOf(ppvEvents.find { it.id == existing?.linkedPPVId }) }
+    var manualLabel by rememberSaveable { mutableStateOf(
         if (existing?.linkedShowId == null && existing?.linkedPPVId == null) existing?.showLabel?:""
         else ""
     ) }
 
-    var weekNumError by remember { mutableStateOf(false) }
-    var labelError    by remember { mutableStateOf(false) }
-    var showDeleteConfirm by remember { mutableStateOf(false) }
+    var weekNumError by rememberSaveable { mutableStateOf(false) }
+    var labelError    by rememberSaveable { mutableStateOf(false) }
+    var showDeleteConfirm by rememberSaveable { mutableStateOf(false) }
 
     val computedLabel = when {
         linkToShow && isPPVLink && selectedPPV != null -> selectedPPV!!.name

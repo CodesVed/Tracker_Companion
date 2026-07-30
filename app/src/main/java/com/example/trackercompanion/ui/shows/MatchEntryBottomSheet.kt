@@ -303,9 +303,9 @@ fun MatchEntryBottomSheet(
                     checked = isTagMatch,
                     onCheckedChange = {
                         isTagMatch = it
-                        participant1 = null; participant2 = null
-                        team1Wrestler1 = null; team1Wrestler2 = null
-                        team2Wrestler1 = null; team2Wrestler2 = null
+                        participant1Id = null; participant2Id = null
+                        team1Wrestler1Id = null; team1Wrestler2Id = null
+                        team2Wrestler1Id = null; team2Wrestler2Id = null
                         winnerId = null; winnerLabel = null
                         participantError = false
                     }
@@ -327,7 +327,7 @@ fun MatchEntryBottomSheet(
                     selected = team1Wrestler1,
                     wrestlers = wrestlers,
                     onWrestlerSelected = { w ->
-                        team1Wrestler1 = w
+                        team1Wrestler1Id = w.id
                         winnerId = null; winnerLabel = null
                         participantError = false
                     }
@@ -337,7 +337,7 @@ fun MatchEntryBottomSheet(
                     selected = team1Wrestler2,
                     wrestlers = wrestlers,
                     onWrestlerSelected = { w ->
-                        team1Wrestler2 = w
+                        team1Wrestler2Id = w.id
                         winnerId = null; winnerLabel = null
                     }
                 )
@@ -353,7 +353,7 @@ fun MatchEntryBottomSheet(
                     selected = team2Wrestler1,
                     wrestlers = wrestlers,
                     onWrestlerSelected = { w ->
-                        team2Wrestler1 = w
+                        team2Wrestler1Id = w.id
                         winnerId = null; winnerLabel = null
                         participantError = false
                     }
@@ -363,7 +363,7 @@ fun MatchEntryBottomSheet(
                     selected = team2Wrestler2,
                     wrestlers = wrestlers,
                     onWrestlerSelected = { w ->
-                        team2Wrestler2 = w
+                        team2Wrestler2Id = w.id
                         winnerId = null; winnerLabel = null
                     }
                 )
@@ -373,7 +373,7 @@ fun MatchEntryBottomSheet(
                     selected = participant1,
                     wrestlers = wrestlers,
                     onWrestlerSelected = { w ->
-                        participant1 = w
+                        participant1Id = w.id
                         winnerId = null; winnerLabel = null
                         participantError = false
                     }
@@ -383,7 +383,7 @@ fun MatchEntryBottomSheet(
                     selected = participant2,
                     wrestlers = wrestlers,
                     onWrestlerSelected = { w ->
-                        participant2 = w
+                        participant2Id = w.id
                         winnerId = null; winnerLabel = null
                         participantError = false
                     }

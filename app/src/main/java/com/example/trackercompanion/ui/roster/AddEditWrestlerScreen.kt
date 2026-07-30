@@ -197,7 +197,7 @@ fun DropdownField(label: String, selected: String, options: List<String>, onOpti
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
-            modifier = Modifier.fillMaxWidth().menuAnchor()
+            modifier = Modifier.fillMaxWidth()
         )
 
         ExposedDropdownMenu(
