@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.db.dao.ChampionshipDao
-import com.example.trackercompanion.data.db.dao.ContendershipDao
-import com.example.trackercompanion.data.db.dao.TitleReignDao
+import com.example.trackercompanion.data.repository.ChampionshipRepository
 import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.Match
@@ -23,34 +22,32 @@ import kotlin.collections.indexOfFirst
 import kotlin.collections.indices
 
 class ChampionshipsViewModel(
-    private val championshipDao: ChampionshipDao,
-    private val reignDao: TitleReignDao,
-    private val contendershipDao: ContendershipDao
+    private val championshipRepository: ChampionshipRepository,
 ): ViewModel() {
 
-    val championships: StateFlow<List<Championship>> = championshipDao.getAllChampionships()
+    val championships: StateFlow<List<Championship>> = championshipRepository.getAllChampionship()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    val reigns: StateFlow<List<TitleReign>> = reignDao.getAllTitleReigns()
+    val reigns: StateFlow<List<TitleReign>> = championshipRepository.getAllTitleReigns()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    val contenders: StateFlow<List<Contendership>> = contendershipDao.getAllContendership()
+    val contenders: StateFlow<List<Contendership>> = championshipRepository.getAllContendership()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-
-    fun closingReign(reign: TitleReign?) {
-        viewModelScope.launch {
-            reign?.let { reignDao.update(it) }
-        }
-    }
 
     fun startReign(reign: TitleReign?) {
         viewModelScope.launch {
-            reign?.let { reignDao.add(it) }
+            reign?.let { championshipRepository.addReign(it) }
+        }
+    }
+
+    fun closingReign(reign: TitleReign?) {
+        viewModelScope.launch {
+            reign?.let { championshipRepository.updateReign(it) }
         }
     }
 
     fun addContender(contender: Contendership) {
         viewModelScope.launch {
-            contendershipDao.add(contender)
+            championshipRepository.addContender(contender)
         }
     }
 
@@ -60,8 +57,8 @@ class ChampionshipsViewModel(
             val other = contenders.value.find { it.titleId == contender.titleId && it.rank == currentRank - 1 }
             if (other != null) {
                 viewModelScope.launch {
-                    contendershipDao.update(contender.copy(rank = currentRank - 1))
-                    contendershipDao.update(other.copy(rank = currentRank))
+                    championshipRepository.updateContender(contender.copy(rank = currentRank - 1))
+                    championshipRepository.updateContender(other.copy(rank = currentRank))
                 }
             }
         }
@@ -77,8 +74,8 @@ class ChampionshipsViewModel(
                 val idx2 = contenders.value.indexOfFirst { it.id == other.id }
                 if (idx1 != -1 && idx2 != -1) {
                     viewModelScope.launch {
-                        contendershipDao.update(contender.copy(rank = currentRank + 1))
-                        contendershipDao.update(other.copy(rank = currentRank))
+                        championshipRepository.updateContender(contender.copy(rank = currentRank + 1))
+                        championshipRepository.updateContender(other.copy(rank = currentRank))
                     }
                 }
             }
@@ -88,11 +85,11 @@ class ChampionshipsViewModel(
     fun removeContender(contender: Contendership) {
         val rankToRemove = contender.rank
         viewModelScope.launch {
-            contendershipDao.delete(contender.id)
+            championshipRepository.deleteContender(contender)
             contenders.value.indices.forEach { i ->
                 val c = contenders.value[i]
                 if (c.titleId == contender.titleId && c.rank > rankToRemove) {
-                    contendershipDao.update(c.copy(rank = c.rank - 1))
+                    championshipRepository.updateContender(c.copy(rank = c.rank - 1))
                 }
             }
         }
@@ -118,7 +115,7 @@ class ChampionshipsViewModel(
 
         if (suggested.isNotEmpty()) {
             viewModelScope.launch {
-                contendershipDao.add(
+                championshipRepository.addContender(
                     Contendership(
                         id = System.currentTimeMillis().toInt(),
                         titleId = titleId,
@@ -133,12 +130,10 @@ class ChampionshipsViewModel(
 }
 
 class ChampionshipsViewModelFactory(
-    private val championshipDao: ChampionshipDao,
-    private val reignDao: TitleReignDao,
-    private val contendershipDao: ContendershipDao
+    private val championshipRepository: ChampionshipRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return ChampionshipsViewModel(championshipDao, reignDao, contendershipDao) as T
+        return ChampionshipsViewModel(championshipRepository) as T
     }
 }

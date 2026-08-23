@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.trackercompanion.data.db.dao.MatchDao
-import com.example.trackercompanion.data.db.dao.WrestlerDao
+import com.example.trackercompanion.data.repository.ShowRepository
+import com.example.trackercompanion.data.repository.WrestlerRepository
 import com.example.trackercompanion.model.Match
 import com.example.trackercompanion.model.Wrestler
 import com.example.trackercompanion.model.computeStatsForWrestler
@@ -17,12 +18,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class WrestlerViewModel(
-    private val wrestlerDao: WrestlerDao,
-    private val matchDao: MatchDao
+    private val wrestlerRepository: WrestlerRepository,
+    private val showRepository: ShowRepository
 ): ViewModel() {
-    val wrestlers: StateFlow<List<Wrestler>> = wrestlerDao.getAllWrestlers()
+    val wrestlers: StateFlow<List<Wrestler>> = wrestlerRepository.getAllWrestlers()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    val matches: StateFlow<List<Match>> = matchDao.getAllMatches()
+    val matches: StateFlow<List<Match>> = showRepository.getAllMatches()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _selectedBrand = MutableStateFlow("ALL")
@@ -52,19 +53,19 @@ class WrestlerViewModel(
 
     fun addWrestler(wrestler: Wrestler) {
         viewModelScope.launch {
-            wrestlerDao.add(wrestler)
+            wrestlerRepository.addWrestler(wrestler)
         }
     }
 
     fun updateWrestler(wrestler: Wrestler) {
         viewModelScope.launch {
-            wrestlerDao.update(wrestler)
+            wrestlerRepository.updateWrestler(wrestler)
         }
     }
 
     fun deleteWrestler(id: Int) {
         viewModelScope.launch {
-            wrestlerDao.delete(id)
+            wrestlerRepository.deleteWrestler(id)
         }
     }
 
@@ -82,11 +83,11 @@ class WrestlerViewModel(
 }
 
 class WrestlerViewModelFactory(
-    private val wrestlerDao: WrestlerDao,
-    private val matchDao: MatchDao
+    private val wrestlerRepository: WrestlerRepository,
+    private val showRepository: ShowRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return WrestlerViewModel(wrestlerDao, matchDao) as T
+        return WrestlerViewModel(wrestlerRepository, showRepository) as T
     }
 }

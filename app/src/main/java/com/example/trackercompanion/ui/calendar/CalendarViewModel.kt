@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.trackercompanion.data.db.dao.CalendarWeekDao
+import com.example.trackercompanion.data.repository.CalendarRepository
 import com.example.trackercompanion.model.CalendarWeek
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -11,36 +12,36 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class CalendarViewModel(
-    private val calendarWeekDao: CalendarWeekDao
+    private val calendarRepository: CalendarRepository
 ): ViewModel() {
 
-    val weeks: StateFlow<List<CalendarWeek>> = calendarWeekDao.getAllCalendarWeeks()
+    val weeks: StateFlow<List<CalendarWeek>> = calendarRepository.getAllWeeks()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun addWeek(calendarWeek: CalendarWeek) {
         viewModelScope.launch {
-            calendarWeekDao.add(calendarWeek)
+            calendarRepository.addWeek(calendarWeek)
         }
     }
 
     fun editWeek(calendarWeek: CalendarWeek) {
         viewModelScope.launch {
-            calendarWeekDao.update(calendarWeek)
+            calendarRepository.editWeek(calendarWeek)
         }
     }
 
     fun deleteWeek(calendarWeek: CalendarWeek) {
         viewModelScope.launch {
-            calendarWeekDao.delete(calendarWeek.id)
+            calendarRepository.deleteWeek(calendarWeek)
         }
     }
 }
 
 class CalendarViewModelFactory(
-    private val calendarWeekDao: CalendarWeekDao
+    private val calendarRepository: CalendarRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return CalendarViewModel(calendarWeekDao) as T
+        return CalendarViewModel(calendarRepository) as T
     }
 }

@@ -17,6 +17,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.trackercompanion.data.db.AppDatabase
+import com.example.trackercompanion.data.repository.CalendarRepository
+import com.example.trackercompanion.data.repository.ChampionshipRepository
+import com.example.trackercompanion.data.repository.ShowRepository
+import com.example.trackercompanion.data.repository.WrestlerRepository
 import com.example.trackercompanion.model.CalendarWeek
 import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.computeStatsForWrestler
@@ -50,31 +54,34 @@ import com.example.trackercompanion.ui.shows.ShowsViewModelFactory
 @Composable
 fun App(database: AppDatabase) {
     val navController = rememberNavController()
-    val scope = rememberCoroutineScope()
+
+    val calendarRepository = CalendarRepository(database.getCalendarWeekDao())
+    val wrestlerRepository = WrestlerRepository(database.getWrestlerDao())
+    val showRepository = ShowRepository(
+        database.getShowEpisodeDao(),
+        database.getMatchDao(),
+        database.getPPVEventDao()
+    )
+    val championshipRepository = ChampionshipRepository(
+        database.getChampionshipDao(),
+        database.getTitleReignDao(),
+        database.getContendershipDao()
+    )
+
     val wrestlerViewModel: WrestlerViewModel = viewModel(
         factory = WrestlerViewModelFactory(
-            database.getWrestlerDao(),
-            database.getMatchDao()
+            wrestlerRepository,
+            showRepository
         )
     )
     val showsViewModel: ShowsViewModel = viewModel(
-        factory = ShowsViewModelFactory(
-            database.getShowEpisodeDao(),
-            database.getPPVEventDao(),
-            database.getMatchDao()
-        )
+        factory = ShowsViewModelFactory(showRepository)
     )
     val championshipsViewModel: ChampionshipsViewModel = viewModel(
-        factory = ChampionshipsViewModelFactory(
-            database.getChampionshipDao(),
-            database.getTitleReignDao(),
-            database.getContendershipDao()
-        )
+        factory = ChampionshipsViewModelFactory(championshipRepository)
     )
     val calendarViewModel: CalendarViewModel = viewModel(
-        factory = CalendarViewModelFactory(
-            database.getCalendarWeekDao()
-        )
+        factory = CalendarViewModelFactory(calendarRepository)
     )
 
     val wrestlers by wrestlerViewModel.wrestlers.collectAsState()
