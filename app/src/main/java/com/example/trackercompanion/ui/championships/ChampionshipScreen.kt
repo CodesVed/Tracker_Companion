@@ -100,9 +100,8 @@ fun TitleCard(championship: Championship, currentChampion: TitleReign?, onClick:
                     .crossfade(true)
                     .build(),
                 contentDescription = championship.title,
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.wrestler_placeholder),
-                error = painterResource(R.drawable.wrestler_placeholder),
+                placeholder = painterResource(R.drawable.belt_placeholder),
+                error = painterResource(R.drawable.belt_placeholder),
             )
             Text(
                 modifier = Modifier.fillMaxWidth().padding(5.dp),

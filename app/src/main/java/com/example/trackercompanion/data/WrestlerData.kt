@@ -16,7 +16,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
 
         ),
         Wrestler(
@@ -25,7 +25,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 8,
@@ -33,7 +33,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 12,
@@ -41,7 +41,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 14,
@@ -49,7 +49,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 17,
@@ -57,7 +57,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 19,
@@ -65,7 +65,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 20,
@@ -73,7 +73,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 22,
@@ -81,7 +81,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 27,
@@ -89,7 +89,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 30,
@@ -97,7 +97,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 32,
@@ -105,7 +105,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 33,
@@ -113,7 +113,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 34,
@@ -121,7 +121,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 37,
@@ -129,7 +129,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 38,
@@ -137,7 +137,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 42,
@@ -145,7 +145,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 44,
@@ -153,7 +153,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 45,
@@ -161,7 +161,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 47,
@@ -169,7 +169,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 51,
@@ -177,7 +177,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 54,
@@ -185,7 +185,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 55,
@@ -193,7 +193,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 58,
@@ -201,7 +201,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 60,
@@ -209,7 +209,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
             notes = "#1 Contender - WHC"
         ),
         Wrestler(
@@ -218,7 +218,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 66,
@@ -226,7 +226,7 @@ object WrestlerData {
             brand = Brand.RAW,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
 
         // ── Smackdown ────────────────────────────────────
@@ -236,7 +236,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 3,
@@ -244,7 +244,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 5,
@@ -252,7 +252,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp"
         ),
         Wrestler(
             id = 7,
@@ -260,7 +260,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
             notes = "WWE Champion - Reign #2"
         ),
         Wrestler(
@@ -269,7 +269,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 10,
@@ -277,7 +277,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 11,
@@ -285,7 +285,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 13,
@@ -293,7 +293,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 15,
@@ -301,7 +301,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 16,
@@ -309,7 +309,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.BOTH,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 18,
@@ -317,7 +317,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 21,
@@ -325,7 +325,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 23,
@@ -333,7 +333,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 25,
@@ -341,7 +341,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 26,
@@ -349,7 +349,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/img_john_cena.webp",
             notes = "Broke Lesnar's undefeated streak, winning WWE Championship tourney"
         ),
         Wrestler(
@@ -358,7 +358,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 29,
@@ -366,7 +366,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 35,
@@ -374,14 +374,14 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),Wrestler(
             id = 36,
             name = "Rhyno",
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 39,
@@ -389,7 +389,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 40,
@@ -397,7 +397,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 41,
@@ -405,7 +405,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 46,
@@ -413,7 +413,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 48,
@@ -421,7 +421,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.TEAM,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 52,
@@ -429,7 +429,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 53,
@@ -437,7 +437,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 56,
@@ -445,7 +445,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 57,
@@ -453,7 +453,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
             notes = "WWE Championship - #1 Contender"
         ),
         Wrestler(
@@ -462,7 +462,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 63,
@@ -470,7 +470,7 @@ object WrestlerData {
             brand = Brand.SD,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
 
         // ── Free (Divas) ────────────────────────────────────
@@ -480,7 +480,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 31,
@@ -488,7 +488,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 43,
@@ -496,7 +496,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 49,
@@ -504,7 +504,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 50,
@@ -512,7 +512,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 59,
@@ -520,7 +520,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 61,
@@ -528,7 +528,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
         ),
         Wrestler(
             id = 65,
@@ -536,7 +536,7 @@ object WrestlerData {
             brand = Brand.DIVA,
             status = Status.ACTIVE,
             type = Type.SINGLE,
-            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp",
+            imageUrl = "file:////android_asset/images/wrestler/wrestler_placeholder.webp",
 
         ),
     )

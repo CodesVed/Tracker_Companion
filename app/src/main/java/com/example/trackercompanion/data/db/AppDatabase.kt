@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.trackercompanion.data.db.dao.CalendarWeekDao
 import com.example.trackercompanion.data.db.dao.ChampionshipDao
 import com.example.trackercompanion.data.db.dao.ContendershipDao
@@ -30,17 +32,60 @@ import com.example.trackercompanion.model.Wrestler
     Match::class,
     ShowEpisode::class,
     PPVEvent::class,
-    CalendarWeek::class], version = 1, exportSchema = false)
+    CalendarWeek::class], version = 2, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
-
     companion object {
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+            CREATE TABLE Wrestler_new (
+                id INTEGER PRIMARY KEY NOT NULL,
+                name TEXT NOT NULL,
+                brand TEXT NOT NULL,
+                status TEXT NOT NULL,
+                type TEXT NOT NULL,
+                imageUrl TEXT,
+                notes TEXT NOT NULL
+            )
+        """.trimIndent())
+
+                db.execSQL("""
+            CREATE TABLE Championship_new (
+                id INTEGER PRIMARY KEY NOT NULL,
+                title TEXT NOT NULL,
+                titleImageUrl TEXT,
+                brand TEXT
+            )
+        """.trimIndent())
+
+                db.execSQL("""
+            INSERT INTO Wrestler_new (id, name, brand, status, type, imageUrl, notes)
+            SELECT id, name, brand, status, type,
+                   'file:///android_asset/images/wrestler_placeholder.webp',
+                   notes
+            FROM Wrestler
+        """.trimIndent())
+
+                db.execSQL("""
+            INSERT INTO Championship_new (id, title, titleImageUrl, brand)
+            SELECT id, title, NULL, brand
+            FROM Championship
+        """.trimIndent())
+
+                db.execSQL("DROP TABLE Wrestler")
+                db.execSQL("ALTER TABLE Wrestler_new RENAME TO Wrestler")
+
+                db.execSQL("DROP TABLE Championship")
+                db.execSQL("ALTER TABLE Championship_new RENAME TO Championship")
+            }
+        }
         fun getInstance(context: Context): AppDatabase {
             return Room.databaseBuilder(
                 context,
                 AppDatabase::class.java,
                 "app_database"
-            ).build()
+            ).addMigrations(MIGRATION_1_2).build()
         }
     }
 

@@ -16,11 +16,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments.putAll(mapOf("room.schemaLocation" to "$projectDir/schemas"))
-            }
-        }
     }
 
     buildTypes {
@@ -39,6 +34,10 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
