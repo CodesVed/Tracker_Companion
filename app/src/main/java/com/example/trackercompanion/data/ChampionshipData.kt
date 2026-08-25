@@ -103,13 +103,13 @@ object ChampionshipData {
     )
 
     val titles: List<Championship> = listOf(
-        Championship(id = 1, title = "WWE Championship", titleImage = R.drawable.belt_wwe_championship, brand = Brand.SD),
-        Championship(id = 2, title = "World Heavyweight Championship", titleImage = R.drawable.belt_world_heavyweight_championship, brand = Brand.RAW),
-        Championship(id = 3, title = "WWE Tag Team Championship", titleImage = R.drawable.belt_tag_team_championship, brand = Brand.SD),
-        Championship(id = 4, title = "World Tag Team Championship", titleImage = R.drawable.belt_world_tag_team_championship, brand = Brand.RAW),
-        Championship(id = 5, title = "WWE Intercontinental Championship", titleImage = R.drawable.belt_intercontinental_championship),
-        Championship(id = 6, title = "WWE United States Championship", titleImage = R.drawable.belt_us_championship),
-        Championship(id = 7, title = "WWE Women's Championship", titleImage = R.drawable.belt_womens_champion)
+        Championship(id = 1, title = "WWE Championship", titleImageUrl = "file:///android_asset/images/belt_wwe_championship.webp", brand = Brand.SD),
+        Championship(id = 2, title = "World Heavyweight Championship", titleImageUrl = "file:///android_asset/images/belt_world_heavyweight_championship.webp", brand = Brand.RAW),
+        Championship(id = 3, title = "WWE Tag Team Championship", titleImageUrl = "file:///android_asset/images/belt_wwe_tag_team_championship.webp", brand = Brand.SD),
+        Championship(id = 4, title = "World Tag Team Championship", titleImageUrl = "file:///android_asset/images/belt_world_tag_team_championship.webp", brand = Brand.RAW),
+        Championship(id = 5, title = "WWE Intercontinental Championship", titleImageUrl = "file:///android_asset/images/belt_intercontinental_championship.webp"),
+        Championship(id = 6, title = "WWE United States Championship", titleImageUrl = "file:///android_asset/images/belt_us_championship.webp"),
+        Championship(id = 7, title = "WWE Women's Championship", titleImageUrl = "file:///android_asset/images/belt_womens_championship.webp")
     )
 
     fun getReignsForWrestler(wrestlerId: Int): List<TitleReign> =

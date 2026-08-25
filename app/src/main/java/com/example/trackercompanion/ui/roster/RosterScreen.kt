@@ -1,7 +1,6 @@
 package com.example.trackercompanion.ui.roster
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,6 +54,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.trackercompanion.R
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.computeStatsForWrestler
@@ -262,7 +268,7 @@ fun WrestlerCard(wrestler: Wrestler, matches: List<Match>, onClick: () -> Unit) 
             modifier = Modifier.fillMaxWidth().padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            WrestlerAvatar(name = wrestler.name, modifier = Modifier.clip(CircleShape))
+            WrestlerAvatar(wrestler = wrestler, modifier = Modifier.clip(CircleShape))
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -300,22 +306,18 @@ fun WrestlerCard(wrestler: Wrestler, matches: List<Match>, onClick: () -> Unit) 
 }
 
 @Composable
-fun WrestlerAvatar(name: String, modifier: Modifier = Modifier) {
-    val initials = name.split(" ")
-        .take(2)
-        .joinToString("") { it.first().uppercase() }
-
-    Box(
-        modifier = modifier.size(80.dp).background(MaterialTheme.colorScheme.primary),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            color = MaterialTheme.colorScheme.onPrimary,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            text = initials
-        )
-    }
+fun WrestlerAvatar(wrestler: Wrestler, modifier: Modifier = Modifier) {
+    AsyncImage(
+        modifier = modifier.size(80.dp),
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(wrestler.imageUrl)
+            .crossfade(true)
+            .build(),
+        contentDescription = wrestler.name,
+        contentScale = ContentScale.Crop,
+        placeholder = painterResource(R.drawable.wrestler_placeholder),
+        error = painterResource(R.drawable.wrestler_placeholder)
+    )
 }
 
 @Composable

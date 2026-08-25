@@ -40,6 +40,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +51,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.trackercompanion.R
 import com.example.trackercompanion.model.MatchStats
 import com.example.trackercompanion.data.ShowData
@@ -113,10 +118,16 @@ fun WrestlerDetailScreen(
 
         HorizontalDivider(modifier = Modifier.padding(5.dp))
 
-        Image(
+        AsyncImage(
             modifier = Modifier.fillMaxWidth().height(300.dp),
-            painter = painterResource(wrestler?.imageRes ?: R.drawable.wrestler_placeholder),
-            contentDescription = wrestler?.name
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(wrestler?.imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = wrestler?.name,
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.wrestler_placeholder),
+            error = painterResource(R.drawable.wrestler_placeholder)
         )
 
         Spacer(modifier = Modifier.height(12.dp))

@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.example.trackercompanion.R
 import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.TitleReign
@@ -84,13 +90,19 @@ fun TitleCard(championship: Championship, currentChampion: TitleReign?, onClick:
         Column(
             modifier = Modifier.padding(4.dp)
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(80.dp)
                     .padding(8.dp),
-                painter = painterResource(id = championship.titleImage),
-                contentDescription = null
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(championship.titleImageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = championship.title,
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.wrestler_placeholder),
+                error = painterResource(R.drawable.wrestler_placeholder),
             )
             Text(
                 modifier = Modifier.fillMaxWidth().padding(5.dp),

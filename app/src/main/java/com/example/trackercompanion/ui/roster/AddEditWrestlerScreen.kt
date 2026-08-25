@@ -164,7 +164,7 @@ fun AddEditWrestlerScreen(existing: Wrestler? = null, onSave: (Wrestler)->Unit, 
                         type = type,
                         status = status,
                         notes = notes.trim(),
-                        imageRes = existing?.imageRes ?: R.drawable.wrestler_placeholder
+                        imageUrl = existing?.imageUrl ?: "file:///android_asset/images/wrestler_placeholder.webp"
                     )
                     onSave(saved)
                 }
@@ -240,7 +240,7 @@ fun EditWrestlerPreview() {
             brand = Brand.RAW,
             type = Type.SINGLE,
             status = Status.ACTIVE,
-            imageRes = R.drawable.wrestler_placeholder
+            imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
         ),
         onSave = {},
         onBack = {}

@@ -3,7 +3,6 @@ package com.example.trackercompanion.ui.roster
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.trackercompanion.data.db.dao.MatchDao
 import com.example.trackercompanion.data.repository.ShowRepository
 import com.example.trackercompanion.data.repository.WrestlerRepository
 import com.example.trackercompanion.model.Match

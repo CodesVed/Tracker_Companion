@@ -55,18 +55,18 @@ import com.example.trackercompanion.ui.shows.ShowsViewModelFactory
 fun App(database: AppDatabase) {
     val navController = rememberNavController()
 
-    val calendarRepository = CalendarRepository(database.getCalendarWeekDao())
-    val wrestlerRepository = WrestlerRepository(database.getWrestlerDao())
     val showRepository = ShowRepository(
         database.getShowEpisodeDao(),
         database.getMatchDao(),
         database.getPPVEventDao()
     )
+    val wrestlerRepository = WrestlerRepository(database.getWrestlerDao())
     val championshipRepository = ChampionshipRepository(
         database.getChampionshipDao(),
         database.getTitleReignDao(),
         database.getContendershipDao()
     )
+    val calendarRepository = CalendarRepository(database.getCalendarWeekDao())
 
     val wrestlerViewModel: WrestlerViewModel = viewModel(
         factory = WrestlerViewModelFactory(

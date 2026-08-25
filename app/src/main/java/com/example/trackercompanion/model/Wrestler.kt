@@ -15,6 +15,6 @@ data class Wrestler(
     val brand: Brand,
     val status: Status,
     val type: Type,
-    val imageRes: Int,
+    val imageUrl: String?,
     val notes: String = "",
 )

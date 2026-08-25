@@ -16,6 +16,11 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments.putAll(mapOf("room.schemaLocation" to "$projectDir/schemas"))
+            }
+        }
     }
 
     buildTypes {
@@ -37,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.compose)
+
     //room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

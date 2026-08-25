@@ -10,6 +10,6 @@ data class Championship(
     val id: Int,
 
     val title: String,
-    val titleImage: Int,
+    val titleImageUrl: String?,
     val brand: Brand? = null       // null = open for all
 )

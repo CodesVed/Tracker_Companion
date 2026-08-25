@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.trackercompanion.data.ChampionshipData
-import com.example.trackercompanion.data.db.dao.ChampionshipDao
 import com.example.trackercompanion.data.repository.ChampionshipRepository
 import com.example.trackercompanion.model.Championship
 import com.example.trackercompanion.model.Contendership

@@ -3,7 +3,6 @@ package com.example.trackercompanion.ui.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.trackercompanion.data.db.dao.CalendarWeekDao
 import com.example.trackercompanion.data.repository.CalendarRepository
 import com.example.trackercompanion.model.CalendarWeek
 import kotlinx.coroutines.flow.SharingStarted
