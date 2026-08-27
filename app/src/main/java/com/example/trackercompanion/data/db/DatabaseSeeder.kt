@@ -15,14 +15,11 @@ class DatabaseSeeder(private val database: AppDatabase) {
             wrestlerDao.insertAll(WrestlerData.roster)
 
             database.getChampionshipDao().insertAll(ChampionshipData.titles)
-            database.getTitleReignDao().insertAll(ChampionshipData.reigns)
-            database.getContendershipDao().insertAll(ChampionshipData.contenderships)
-
-            database.getShowEpisodeDao().insertAll(ShowData.episodes)
-            database.getPPVEventDao().insertAll(ShowData.ppvEvents)
-            database.getMatchDao().insertAll(ShowData.matches)
-
-            database.getCalendarWeekDao().insertAll(CalendarData.weeks)
         }
+    }
+
+    suspend fun resetUniverse() {
+        database.clearAllTables()
+        seedIfEmpty()
     }
 }

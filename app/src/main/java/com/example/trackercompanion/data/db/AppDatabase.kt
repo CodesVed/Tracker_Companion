@@ -80,12 +80,20 @@ abstract class AppDatabase: RoomDatabase() {
                 db.execSQL("ALTER TABLE Championship_new RENAME TO Championship")
             }
         }
+
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
         fun getInstance(context: Context): AppDatabase {
-            return Room.databaseBuilder(
-                context,
-                AppDatabase::class.java,
-                "app_database"
-            ).addMigrations(MIGRATION_1_2).build()
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "app_database"
+                ).addMigrations(MIGRATION_1_2).build()
+                    .also { INSTANCE = it }
+            }
+
         }
     }
 

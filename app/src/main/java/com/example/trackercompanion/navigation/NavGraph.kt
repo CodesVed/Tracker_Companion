@@ -1,7 +1,15 @@
 package com.example.trackercompanion.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
@@ -33,6 +42,7 @@ import com.example.trackercompanion.ui.roster.RosterScreen
 import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
+import com.example.trackercompanion.ui.SettingsViewModel
 import com.example.trackercompanion.ui.calendar.AddEditWeekBottomSheet
 import com.example.trackercompanion.ui.calendar.CalendarViewModel
 import com.example.trackercompanion.ui.calendar.CalendarViewModelFactory
@@ -51,8 +61,9 @@ import com.example.trackercompanion.ui.shows.ShowSource
 import com.example.trackercompanion.ui.shows.ShowsViewModel
 import com.example.trackercompanion.ui.shows.ShowsViewModelFactory
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App(database: AppDatabase) {
+fun App(database: AppDatabase, settingsViewModel: SettingsViewModel) {
     val navController = rememberNavController()
 
     val showRepository = ShowRepository(
@@ -94,6 +105,33 @@ fun App(database: AppDatabase) {
     val calendarWeeks by calendarViewModel.weeks.collectAsState()
 
     Scaffold(
+        topBar = {
+            val backStackEntry by navController.currentBackStackEntryAsState()
+            val isTopLevelRoute = when (backStackEntry?.destination?.route) {
+                Dashboard::class.qualifiedName, Roster::class.qualifiedName,
+                Shows::class.qualifiedName, Championships::class.qualifiedName,
+                Calendar::class.qualifiedName -> true
+                else -> false
+            }
+            if (isTopLevelRoute) {
+                TopAppBar(
+                    title = {
+                        Text(text = "Your Universe")
+                    },
+                    actions = {
+                        IconButton(onClick = { navController.navigate(Settings) }) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = androidx.compose.ui.graphics.Color.Transparent
+                    )
+                )
+            }
+        },
         bottomBar = { BottomNavigationBar(navController) }
     ) {innerPadding ->
         NavHost(

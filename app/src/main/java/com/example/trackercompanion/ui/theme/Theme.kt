@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -19,9 +20,18 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Dark,
+    onPrimary = Color.White,
+    secondary = Gold,
+    onSecondary = Dark,
+    tertiary = Red,
+    onTertiary = Color.White,
+    background = Color(0xFFF7F5F0),
+    onBackground = Dark,
+    surface = Color.White,
+    onSurface = Dark,
+    surfaceVariant = Color(0xFFEDEAE2),
+    onSurfaceVariant = Dark.copy(alpha = 0.7f)
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -38,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
 fun TrackerCompanionTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

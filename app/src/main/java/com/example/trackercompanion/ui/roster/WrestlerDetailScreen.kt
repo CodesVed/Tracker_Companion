@@ -60,10 +60,16 @@ import coil3.request.crossfade
 import com.example.trackercompanion.R
 import com.example.trackercompanion.model.MatchStats
 import com.example.trackercompanion.data.ShowData
+import com.example.trackercompanion.data.ShowData.episodes
+import com.example.trackercompanion.data.ShowData.ppvEvents
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.Match
+import com.example.trackercompanion.model.PPVEvent
+import com.example.trackercompanion.model.ShowEpisode
 import com.example.trackercompanion.model.TitleReign
 import com.example.trackercompanion.model.Wrestler
+import com.example.trackercompanion.model.enums.Brand
+import com.example.trackercompanion.model.enums.Show
 import com.example.trackercompanion.model.enums.Type
 import com.example.trackercompanion.ui.theme.Gold
 import com.example.trackercompanion.ui.theme.Green
@@ -77,11 +83,12 @@ fun WrestlerDetailScreen(
     stats: MatchStats = MatchStats(0, 0, 0, 0, 0f, 0),
     matchHistory: List<Match> = emptyList(),
     titleReigns: List<TitleReign> = emptyList(),
+    episodes: List<ShowEpisode> = emptyList(),
+    ppvEvents: List<PPVEvent> = emptyList(),
     onEditClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     val formattedWinPercent = "%.2f".format(stats.winPercent)
-
 
     Column(
         modifier = Modifier
@@ -380,7 +387,7 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
             }
 
             Text(
-                text = ShowData.getShowLabel(match.showId, match.showType),
+                text = getShowLabel(match.showId, match.showType),
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -553,5 +560,24 @@ fun WrestlerDetailPreview() {
             matchHistory = emptyList(),
             titleReigns = emptyList()
         )
+    }
+}
+
+fun getShowLabel(showId: Int, showType: Show): String {
+    return when (showType) {
+        Show.PPV -> ppvEvents.find { it.id == showId }?.name ?: "PPV #${showId}"
+        Show.SHOW -> {
+            val episode = episodes.find { it.id == showId }
+            if (episode != null) {
+                val brandLabel = when (episode.brand) {
+                    Brand.RAW -> "RAW"
+                    Brand.SD -> "SD"
+                    else -> {}
+                }
+                "$brandLabel ${episode.episodeNumber}"
+            } else {
+                "Show #$showId"
+            }
+        }
     }
 }

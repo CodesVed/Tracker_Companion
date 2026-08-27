@@ -38,4 +38,7 @@ sealed class Routes {
 
     @Serializable
     object Calendar
+
+    @Serializable
+    object Settings
 }

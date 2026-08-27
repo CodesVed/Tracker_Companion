@@ -449,25 +449,6 @@ object ShowData {
         ),
     )
 
-    fun getShowLabel(showId: Int, showType: Show): String {
-        return when (showType) {
-            Show.PPV -> ppvEvents.find { it.id == showId }?.name ?: "PPV #${showId}"
-            Show.SHOW -> {
-                val episode = episodes.find { it.id == showId }
-                if (episode != null) {
-                    val brandLabel = when (episode.brand) {
-                        Brand.RAW -> "RAW"
-                        Brand.SD -> "SD"
-                        else -> {}
-                    }
-                    "$brandLabel ${episode.episodeNumber}"
-                } else {
-                    "Show #$showId"
-                }
-            }
-        }
-    }
-
     fun getMatchesForShow(showId: Int) = matches.filter { it.showId == showId }
     fun getMatchesForEpisode(episodeId: Int) = matches.filter {
         it.showId == episodeId && it.showType.toString() == "SHOW"

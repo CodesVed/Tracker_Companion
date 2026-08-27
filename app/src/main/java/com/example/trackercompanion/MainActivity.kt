@@ -4,23 +4,46 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.trackercompanion.data.db.AppDatabase
+import com.example.trackercompanion.data.repository.SettingsRepository
+import com.example.trackercompanion.model.enums.ThemeMode
 import com.example.trackercompanion.navigation.App
 import com.example.trackercompanion.navigation.BottomNavigationBar
+import com.example.trackercompanion.ui.SettingsViewModel
+import com.example.trackercompanion.ui.SettingsViewModelFactory
 import com.example.trackercompanion.ui.theme.TrackerCompanionTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val database = AppDatabase.getInstance(applicationContext)
+        val settingsRepository = SettingsRepository(applicationContext)
+
         setContent {
-            TrackerCompanionTheme {
-                AppEntry()
+            val settingsViewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModelFactory(settingsRepository)
+            )
+            val themeMode by settingsViewModel.themeMode.collectAsState()
+
+            val darkTheme = when (themeMode) {
+                ThemeMode.DARK -> true
+                ThemeMode.LIGHT -> false
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+            }
+
+            TrackerCompanionTheme(darkTheme = darkTheme, dynamicColor = false) {
+                AppEntry(database = database, settingsViewModel = settingsViewModel)
             }
         }
     }

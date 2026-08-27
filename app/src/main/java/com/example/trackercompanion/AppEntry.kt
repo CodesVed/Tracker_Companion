@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.data.db.AppDatabase
 import com.example.trackercompanion.data.db.DatabaseSeeder
 import com.example.trackercompanion.navigation.App
+import com.example.trackercompanion.ui.SettingsViewModel
 import com.example.trackercompanion.ui.theme.Gold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,13 +43,11 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun AppEntry() {
-    val context = LocalContext.current
+fun AppEntry(database: AppDatabase, settingsViewModel: SettingsViewModel) {
     var showSplash by rememberSaveable { mutableStateOf(true) }
-    val database = remember { AppDatabase.getInstance(context.applicationContext) }
 
     Box {
-        App(database = database)
+        App(database = database, settingsViewModel = settingsViewModel)
         LaunchedEffect(Unit) {
             DatabaseSeeder(database).seedIfEmpty()
         }
@@ -70,11 +69,11 @@ fun BrandedSplashScreen(onFinished: () -> Unit) {
         //Fade content in
         contentAlpha.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+            animationSpec = tween(easing = FastOutSlowInEasing)
         )
 
         // Hold for reading
-        delay(500.milliseconds)
+        delay(900.milliseconds)
 
         // Fade whole screen out
         screenAlpha.animateTo(
