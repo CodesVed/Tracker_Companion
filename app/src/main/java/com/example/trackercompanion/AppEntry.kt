@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,12 +33,9 @@ import androidx.compose.ui.unit.sp
 import com.example.trackercompanion.data.db.AppDatabase
 import com.example.trackercompanion.data.db.DatabaseSeeder
 import com.example.trackercompanion.navigation.App
-import com.example.trackercompanion.ui.SettingsViewModel
+import com.example.trackercompanion.ui.settings.SettingsViewModel
 import com.example.trackercompanion.ui.theme.Gold
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable

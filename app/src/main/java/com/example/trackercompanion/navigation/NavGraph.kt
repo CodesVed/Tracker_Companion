@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -26,11 +28,11 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.trackercompanion.data.db.AppDatabase
+import com.example.trackercompanion.data.db.DatabaseSeeder
 import com.example.trackercompanion.data.repository.CalendarRepository
 import com.example.trackercompanion.data.repository.ChampionshipRepository
 import com.example.trackercompanion.data.repository.ShowRepository
 import com.example.trackercompanion.data.repository.WrestlerRepository
-import com.example.trackercompanion.model.CalendarWeek
 import com.example.trackercompanion.model.Contendership
 import com.example.trackercompanion.model.computeStatsForWrestler
 import com.example.trackercompanion.model.enums.Brand
@@ -42,7 +44,7 @@ import com.example.trackercompanion.ui.roster.RosterScreen
 import com.example.trackercompanion.ui.roster.WrestlerDetailScreen
 import com.example.trackercompanion.ui.shows.ShowScreen
 import com.example.trackercompanion.navigation.Routes.*
-import com.example.trackercompanion.ui.SettingsViewModel
+import com.example.trackercompanion.ui.settings.SettingsViewModel
 import com.example.trackercompanion.ui.calendar.AddEditWeekBottomSheet
 import com.example.trackercompanion.ui.calendar.CalendarViewModel
 import com.example.trackercompanion.ui.calendar.CalendarViewModelFactory
@@ -54,12 +56,15 @@ import com.example.trackercompanion.ui.championships.TitleDetailScreen
 import com.example.trackercompanion.ui.roster.AddEditWrestlerScreen
 import com.example.trackercompanion.ui.roster.WrestlerViewModel
 import com.example.trackercompanion.ui.roster.WrestlerViewModelFactory
+import com.example.trackercompanion.ui.settings.ConfirmResetDialog
+import com.example.trackercompanion.ui.settings.SettingsScreen
 import com.example.trackercompanion.ui.shows.AddEpisodeResult
 import com.example.trackercompanion.ui.shows.AddEpisodeScreen
 import com.example.trackercompanion.ui.shows.EpisodeDetailScreen
 import com.example.trackercompanion.ui.shows.ShowSource
 import com.example.trackercompanion.ui.shows.ShowsViewModel
 import com.example.trackercompanion.ui.shows.ShowsViewModelFactory
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -496,6 +501,37 @@ fun App(database: AppDatabase, settingsViewModel: SettingsViewModel) {
                                 showAddEditWeek = false
                                 editingWeekId = null
                             }
+                        )
+                    }
+                }
+
+                composable<Settings> {
+                    val scope = rememberCoroutineScope()
+                    val themeMode by settingsViewModel.themeMode.collectAsState()
+                    var showResetConfirm by rememberSaveable { mutableStateOf(false) }
+
+                    val snackbarHostState = remember { SnackbarHostState() }
+
+                    SettingsScreen(
+                        themeMode = themeMode,
+                        onThemeSelected = settingsViewModel::setThemeMode,
+                        onResetUniverseClick = { showResetConfirm = true },
+                        snackbarHostState = snackbarHostState,
+                        onBackClick = { navController.popBackStack() }
+                    )
+
+                    if (showResetConfirm) {
+                        ConfirmResetDialog(
+                            onConfirm = {
+                                scope.launch {
+                                    DatabaseSeeder(database).resetUniverse()
+                                    showResetConfirm = false
+                                    snackbarHostState.showSnackbar(
+                                        message = "Universe Reset Successful"
+                                    )
+                                }
+                            },
+                            onDismiss = { showResetConfirm = false }
                         )
                     }
                 }

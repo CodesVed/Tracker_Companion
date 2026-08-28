@@ -4,6 +4,8 @@ import com.example.trackercompanion.data.CalendarData
 import com.example.trackercompanion.data.ChampionshipData
 import com.example.trackercompanion.data.ShowData
 import com.example.trackercompanion.data.WrestlerData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DatabaseSeeder(private val database: AppDatabase) {
 
@@ -19,7 +21,9 @@ class DatabaseSeeder(private val database: AppDatabase) {
     }
 
     suspend fun resetUniverse() {
-        database.clearAllTables()
-        seedIfEmpty()
+        withContext(Dispatchers.IO) {
+            database.clearAllTables()
+            seedIfEmpty()
+        }
     }
 }

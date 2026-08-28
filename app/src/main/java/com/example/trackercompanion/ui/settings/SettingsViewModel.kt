@@ -1,4 +1,4 @@
-package com.example.trackercompanion.ui
+package com.example.trackercompanion.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
