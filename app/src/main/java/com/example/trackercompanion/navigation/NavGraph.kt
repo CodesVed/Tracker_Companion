@@ -208,6 +208,8 @@ fun App(database: AppDatabase, settingsViewModel: SettingsViewModel) {
                             stats = stats,
                             matchHistory = matches.filter { wrestler.id in it.participantIds },
                             titleReigns = reigns.filter { wrestler.id in it.holderIds },
+                            episodes = episodes,
+                            ppvEvents = ppvEvents,
                             onEditClick = {
                                 navController.navigate(route = AddEditWrestler(wrestlerId = wrestler.id))
                             },

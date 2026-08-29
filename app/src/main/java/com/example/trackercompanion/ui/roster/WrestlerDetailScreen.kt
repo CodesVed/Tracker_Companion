@@ -1,6 +1,5 @@
 package com.example.trackercompanion.ui.roster
 
-import android.view.RoundedCorner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -59,9 +58,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.trackercompanion.R
 import com.example.trackercompanion.model.MatchStats
-import com.example.trackercompanion.data.ShowData
-import com.example.trackercompanion.data.ShowData.episodes
-import com.example.trackercompanion.data.ShowData.ppvEvents
 import com.example.trackercompanion.data.WrestlerData
 import com.example.trackercompanion.model.Match
 import com.example.trackercompanion.model.PPVEvent
@@ -213,7 +209,13 @@ fun WrestlerDetailScreen(
             emptyMessage = "No matches logged yet."
         ) {
             items(matchHistory) { match ->
-                MatchHistoryRow(match = match, wrestlerId = wrestler?.id ?: -1, wrestlerName = wrestler?.name ?: "")
+                MatchHistoryRow(
+                    match = match,
+                    wrestlerId = wrestler?.id ?: -1,
+                    wrestlerName = wrestler?.name ?: "",
+                    episodes = episodes,
+                    ppvEvents = ppvEvents
+                )
             }
         }
 
@@ -313,7 +315,7 @@ fun EmptyState(message: String) {
 }
 
 @Composable
-fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
+fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String, episodes: List<ShowEpisode>, ppvEvents: List<PPVEvent>) {
     val isWinner = if (match.winnerIds.isNotEmpty()) {
         wrestlerId in match.winnerIds
     } else {
@@ -387,7 +389,7 @@ fun MatchHistoryRow(match: Match, wrestlerId: Int, wrestlerName: String) {
             }
 
             Text(
-                text = getShowLabel(match.showId, match.showType),
+                text = getShowLabel(match.showId, match.showType, episodes, ppvEvents),
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -563,7 +565,7 @@ fun WrestlerDetailPreview() {
     }
 }
 
-fun getShowLabel(showId: Int, showType: Show): String {
+fun getShowLabel(showId: Int, showType: Show, episodes: List<ShowEpisode>, ppvEvents: List<PPVEvent>): String {
     return when (showType) {
         Show.PPV -> ppvEvents.find { it.id == showId }?.name ?: "PPV #${showId}"
         Show.SHOW -> {
@@ -572,7 +574,7 @@ fun getShowLabel(showId: Int, showType: Show): String {
                 val brandLabel = when (episode.brand) {
                     Brand.RAW -> "RAW"
                     Brand.SD -> "SD"
-                    else -> {}
+                    else -> ""
                 }
                 "$brandLabel ${episode.episodeNumber}"
             } else {
