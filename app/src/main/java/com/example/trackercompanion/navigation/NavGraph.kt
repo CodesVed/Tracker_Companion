@@ -235,6 +235,13 @@ fun App(database: AppDatabase, settingsViewModel: SettingsViewModel) {
                             }
                             navController.popBackStack()
                         },
+                        onDelete = {toDelete ->
+                            wrestlerViewModel.deleteWrestler(toDelete.id)
+                            navController.navigate(Roster) {
+                                popUpTo <Roster>{ inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
                         onBack = {
                             navController.popBackStack()
                         }

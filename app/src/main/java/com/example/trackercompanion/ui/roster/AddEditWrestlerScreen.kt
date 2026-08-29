@@ -20,6 +20,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -33,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,7 +70,12 @@ import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEditWrestlerScreen(existing: Wrestler? = null, onSave: (Wrestler)->Unit, onBack: ()->Unit) {
+fun AddEditWrestlerScreen(
+    existing: Wrestler? = null,
+    onSave: (Wrestler) -> Unit,
+    onDelete: (Wrestler) -> Unit,
+    onBack: ()->Unit
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -105,6 +113,8 @@ fun AddEditWrestlerScreen(existing: Wrestler? = null, onSave: (Wrestler)->Unit, 
         }
     }
 
+    var showDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
+
     var nameError by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
@@ -122,6 +132,17 @@ fun AddEditWrestlerScreen(existing: Wrestler? = null, onSave: (Wrestler)->Unit, 
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
+                    }
+                },
+                actions = {
+                    if (isEditMode) {
+                        IconButton(onClick = { showDeleteConfirmation = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete wrestler",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
                 }
             )
@@ -280,6 +301,25 @@ fun AddEditWrestlerScreen(existing: Wrestler? = null, onSave: (Wrestler)->Unit, 
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+
+    if (showDeleteConfirmation && existing != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text(text = "Delete ${existing.name}?") },
+            text = { Text(text = "This removes them from the roster. Past match results and title reigns are kept, showing their name as historical record only. This cannot be undone.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDelete(existing)
+                    showDeleteConfirmation = false
+                }) {
+                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmation = false }) { Text("Cancel") }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -327,6 +367,7 @@ fun AddWrestlerPreview() {
     AddEditWrestlerScreen(
         existing = null,
         onSave = {},
+        onDelete = {},
         onBack = {}
     )
 }
@@ -344,6 +385,7 @@ fun EditWrestlerPreview() {
             imageUrl = "file:///android_asset/images/wrestler_placeholder.webp"
         ),
         onSave = {},
+        onDelete = {},
         onBack = {}
     )
 }
