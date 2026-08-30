@@ -30,6 +30,10 @@ class ShowsViewModel(
         }
     }
 
+    suspend fun addEpisodeAndGetId(showEpisode: ShowEpisode): Int {
+        return showRepository.addEpisode(showEpisode)
+    }
+
     fun updateEpisode(showEpisode: ShowEpisode) {
         viewModelScope.launch {
             showRepository.updateEpisode(showEpisode)
@@ -47,6 +51,10 @@ class ShowsViewModel(
         viewModelScope.launch {
             showRepository.addPPVEvent(ppvEvent)
         }
+    }
+
+    suspend fun addPPVEventAndGetId(ppvEvent: PPVEvent): Int {
+        return showRepository.addPPVEvent(ppvEvent)
     }
 
     fun updatePPVEvent(ppvEvent: PPVEvent) {

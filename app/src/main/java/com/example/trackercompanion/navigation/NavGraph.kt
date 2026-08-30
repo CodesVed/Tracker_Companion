@@ -48,6 +48,7 @@ import com.example.trackercompanion.ui.settings.SettingsViewModel
 import com.example.trackercompanion.ui.calendar.AddEditWeekBottomSheet
 import com.example.trackercompanion.ui.calendar.CalendarViewModel
 import com.example.trackercompanion.ui.calendar.CalendarViewModelFactory
+import com.example.trackercompanion.ui.calendar.WeekSaveResult
 import com.example.trackercompanion.ui.championships.AddContenderBottomSheet
 import com.example.trackercompanion.ui.championships.ChampionshipsViewModel
 import com.example.trackercompanion.ui.championships.ChampionshipsViewModelFactory
@@ -465,6 +466,7 @@ fun App(database: AppDatabase, settingsViewModel: SettingsViewModel) {
                 }
 
                 composable<Calendar> {
+                    val scope = rememberCoroutineScope()
                     var showAddEditWeek by rememberSaveable { mutableStateOf(false) }
                     var editingWeekId by rememberSaveable { mutableStateOf<Int?>(null) }
                     val editingWeek = calendarWeeks.find { it.id == editingWeekId }
@@ -498,11 +500,32 @@ fun App(database: AppDatabase, settingsViewModel: SettingsViewModel) {
                             existing = editingWeek,
                             episodes = episodes,
                             ppvEvents = ppvEvents,
-                            onSave = { saved ->
-                                if (saved.id != 0) {
-                                    calendarViewModel.editWeek(saved)
-                                } else {
-                                    calendarViewModel.addWeek(saved)
+                            onSave = { result ->
+                                when (result) {
+                                    is WeekSaveResult.NoLink -> {
+                                        if (result.week.id != 0) calendarViewModel.editWeek(result.week)
+                                        else calendarViewModel.addWeek(result.week)
+                                    }
+                                    is WeekSaveResult.LinkExisting -> {
+                                        if (result.week.id != 0) calendarViewModel.editWeek(result.week)
+                                        else calendarViewModel.addWeek(result.week)
+                                    }
+                                    is WeekSaveResult.NewEpisode -> {
+                                        scope.launch {
+                                            val newId = showsViewModel.addEpisodeAndGetId(result.episode)
+                                            val linkedWeek = result.week.copy(linkedShowId = newId)
+                                            if (linkedWeek.id != 0) calendarViewModel.editWeek(linkedWeek)
+                                            else calendarViewModel.addWeek(linkedWeek)
+                                        }
+                                    }
+                                    is WeekSaveResult.NewPPV -> {
+                                        scope.launch {
+                                            val newId = showsViewModel.addPPVEventAndGetId(result.ppv)
+                                            val linkedWeek = result.week.copy(linkedPPVId = newId)
+                                            if (linkedWeek.id != 0) calendarViewModel.editWeek(linkedWeek)
+                                            else calendarViewModel.addWeek(linkedWeek)
+                                        }
+                                    }
                                 }
                                 showAddEditWeek = false
                                 editingWeekId = null

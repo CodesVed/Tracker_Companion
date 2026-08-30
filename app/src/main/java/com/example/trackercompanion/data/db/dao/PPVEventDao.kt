@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface PPVEventDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun add(ppvEvent: PPVEvent)
+    suspend fun add(ppvEvent: PPVEvent): Long
 
     @Insert
     suspend fun insertAll(ppvEvents: List<PPVEvent>)

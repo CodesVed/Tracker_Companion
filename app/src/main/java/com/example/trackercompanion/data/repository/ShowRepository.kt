@@ -28,8 +28,8 @@ class ShowRepository(
     }
 
 
-    suspend fun addEpisode(episode: ShowEpisode) {
-        showEpisodeDao.add(episode)
+    suspend fun addEpisode(episode: ShowEpisode): Int {
+        return showEpisodeDao.add(episode).toInt()
     }
 
     suspend fun addMatch(match: Match) {
@@ -56,8 +56,8 @@ class ShowRepository(
         matchDao.delete(match.id)
     }
 
-    suspend fun addPPVEvent(ppvEvent: PPVEvent) {
-        ppvEventDao.add(ppvEvent)
+    suspend fun addPPVEvent(ppvEvent: PPVEvent): Int {
+        return ppvEventDao.add(ppvEvent).toInt()
     }
 
     suspend fun updatePPVEvent(ppvEvent: PPVEvent) {

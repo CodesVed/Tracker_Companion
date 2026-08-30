@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface ShowEpisodeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun add(showEpisode: ShowEpisode)
+    suspend fun add(showEpisode: ShowEpisode): Long
 
     @Insert
     suspend fun insertAll(showEpisodes: List<ShowEpisode>)

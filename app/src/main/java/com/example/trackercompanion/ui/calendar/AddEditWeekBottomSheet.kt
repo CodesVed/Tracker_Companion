@@ -22,6 +22,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,7 +32,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,13 +48,24 @@ import com.example.trackercompanion.model.ShowEpisode
 import com.example.trackercompanion.model.enums.Brand
 import com.example.trackercompanion.ui.roster.DropdownField
 
+sealed class WeekSaveResult {
+    data class NoLink(val week: CalendarWeek): WeekSaveResult()
+    data class LinkExisting(val week: CalendarWeek): WeekSaveResult()
+    data class NewEpisode(val week: CalendarWeek, val episode: ShowEpisode): WeekSaveResult()
+    data class NewPPV(val week: CalendarWeek, val ppv: PPVEvent): WeekSaveResult()
+}
+
+private enum class LinkMode{
+    NONE, EXISTING, NEW
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditWeekBottomSheet(
     existing: CalendarWeek? = null,
     episodes: List<ShowEpisode>,
     ppvEvents: List<PPVEvent>,
-    onSave: (CalendarWeek) -> Unit,
+    onSave: (WeekSaveResult) -> Unit,
     onDelete: ((CalendarWeek) -> Unit)? = null,
     onDismiss: () -> Unit
 ) {
@@ -61,31 +74,64 @@ fun AddEditWeekBottomSheet(
 
     var weekNumStr  by rememberSaveable { mutableStateOf(existing?.weekNumber?.toString() ?: "") }
     var notes       by rememberSaveable { mutableStateOf(existing?.notes ?: "") }
-    var linkToShow  by rememberSaveable { mutableStateOf(existing?.linkedShowId != null || existing?.linkedPPVId != null) }
-    var isPPVLink   by rememberSaveable { mutableStateOf(existing?.linkedPPVId != null) }
 
+    var linkMode by rememberSaveable {
+        mutableStateOf(
+            when {
+                existing?.linkedShowId != null || existing?.linkedPPVId != null -> LinkMode.EXISTING
+                else -> LinkMode.NONE
+            }
+        )
+    }
+
+    var isPPVLink by rememberSaveable { mutableStateOf(existing?.linkedPPVId != null) }
     var selectedEpisode by rememberSaveable { mutableStateOf(episodes.find { it.id == existing?.linkedShowId }) }
     var selectedPPV by rememberSaveable { mutableStateOf(ppvEvents.find { it.id == existing?.linkedPPVId }) }
-    var manualLabel by rememberSaveable { mutableStateOf(
-        if (existing?.linkedShowId == null && existing?.linkedPPVId == null) existing?.showLabel?:""
-        else ""
-    ) }
+
+    var newIsPPV by rememberSaveable { mutableStateOf(false) }
+    var newBrand by rememberSaveable { mutableStateOf(Brand.RAW) }
+    var newEpisodeNumStr by rememberSaveable { mutableStateOf("") }
+    var newPPVName by rememberSaveable { mutableStateOf("") }
+    var newPPVNumStr by rememberSaveable { mutableStateOf("") }
+
+    var manualLabel by rememberSaveable {
+        mutableStateOf(
+            if (existing?.linkedShowId == null && existing?.linkedPPVId == null) existing?.showLabel ?: ""
+            else ""
+        )
+    }
+
+    var linkToShow  by rememberSaveable { mutableStateOf(existing?.linkedShowId != null || existing?.linkedPPVId != null) }
 
     var weekNumError by rememberSaveable { mutableStateOf(false) }
     var labelError    by rememberSaveable { mutableStateOf(false) }
     var showDeleteConfirm by rememberSaveable { mutableStateOf(false) }
 
-    val computedLabel = when {
-        linkToShow && isPPVLink && selectedPPV != null -> selectedPPV!!.name
-        linkToShow && !isPPVLink && selectedEpisode != null -> {
-            val brandLabel = when (selectedEpisode!!.brand) {
-                Brand.RAW -> "RAW"
-                Brand.SD -> "SmackDown"
-                else -> selectedEpisode!!.brand.name
+    val computedLabel = when (linkMode) {
+        LinkMode.EXISTING -> when {
+            isPPVLink && selectedPPV != null -> selectedPPV!!.name
+            !isPPVLink && selectedEpisode != null ->  {
+                val brandLabel = when (selectedEpisode!!.brand) {
+                    Brand.RAW -> "RAW"
+                    Brand.SD -> "Smackdown"
+                    else -> selectedEpisode!!.brand.name
+                }
+                "$brandLabel ${selectedEpisode!!.episodeNumber}"
             }
-            "$brandLabel ${selectedEpisode!!.episodeNumber}"
+            else -> ""
         }
-        else -> manualLabel
+        LinkMode.NEW -> when {
+            newIsPPV -> newPPVName
+            else -> {
+                val brandLabel = when (newBrand) {
+                    Brand.RAW -> "RAW"
+                    Brand.SD -> "Smackdown"
+                    else -> newBrand.name
+                }
+                if (newEpisodeNumStr.isNotBlank()) "$brandLabel $newEpisodeNumStr" else ""
+            }
+        }
+        LinkMode.NONE -> manualLabel
     }
 
     if (showDeleteConfirm) {
@@ -185,106 +231,128 @@ fun AddEditWeekBottomSheet(
 
             HorizontalDivider()
 
-            // ── Link to existing show toggle ───────────────
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text("Link to a Show", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            // ── Mode selector ────────────────────────────
+            Text("This Week's Show", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            SingleChoiceSegmentedButtonRow (modifier = Modifier.fillMaxWidth()) {
+                val modes = listOf(LinkMode.NONE to "No Link", LinkMode.EXISTING to "Existing", LinkMode.NEW to "New Show")
+                modes.forEachIndexed { index, (mode, label) ->
+                    SegmentedButton(
+                        selected = linkMode == mode,
+                        shape = SegmentedButtonDefaults.itemShape(index = index, count = modes.size),
+                        onClick = { linkMode = mode; labelError = false }
+                    ) { Text(label) }
+                }
+            }
+
+            when (linkMode) {
+                LinkMode.EXISTING -> {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Is this a PPV?", fontSize = 14.sp)
+                        Switch(
+                            checked = isPPVLink,
+                            onCheckedChange = { isPPVLink = it; selectedEpisode = null; selectedPPV = null; labelError = false }
+                        )
+                    }
+
+                    if (isPPVLink) {
+                        DropdownField(
+                            label = "Select PPV",
+                            selected = selectedPPV?.name ?: "Select a PPV",
+                            options = ppvEvents.map { it.name },
+                            onOptionsSelected = { name -> selectedPPV = ppvEvents.find { it.name == name }; labelError = false }
+                        )
+                    } else {
+                        val episodeOptions = episodes.map { ep ->
+                            val brandLabel = when (ep.brand) { Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> ep.brand.name }
+                            "$brandLabel ${ep.episodeNumber}"
+                        }
+                        DropdownField(
+                            label = "Select Episode",
+                            selected = selectedEpisode?.let { ep ->
+                                val brandLabel = when (ep.brand) { Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> ep.brand.name }
+                                "$brandLabel ${ep.episodeNumber}"
+                            } ?: "Select an episode",
+                            options = episodeOptions,
+                            onOptionsSelected = { label ->
+                                selectedEpisode = episodes.find { ep ->
+                                    val brandLabel = when (ep.brand) { Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> ep.brand.name }
+                                    "$brandLabel ${ep.episodeNumber}" == label
+                                }
+                                labelError = false
+                            }
+                        )
+                    }
+                }
+
+                LinkMode.NEW -> {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Is this a PPV?", fontSize = 14.sp)
+                        Switch(checked = newIsPPV, onCheckedChange = { newIsPPV = it; labelError = false })
+                    }
+
+                    if (newIsPPV) {
+                        OutlinedTextField(
+                            value = newPPVName,
+                            onValueChange = { newPPVName = it; labelError = false },
+                            label = { Text("PPV Name") },
+                            placeholder = { Text("e.g. Royal Rumble") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = newPPVNumStr,
+                            onValueChange = { newPPVNumStr = it.filter { c -> c.isDigit() } },
+                            label = { Text("PPV Number") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        DropdownField(
+                            label = "Brand",
+                            selected = newBrand.name,
+                            options = listOf(Brand.RAW.name, Brand.SD.name),
+                            onOptionsSelected = { selected -> newBrand = Brand.valueOf(selected); labelError = false }
+                        )
+                        OutlinedTextField(
+                            value = newEpisodeNumStr,
+                            onValueChange = { newEpisodeNumStr = it.filter { c -> c.isDigit() }; labelError = false },
+                            label = { Text("Episode Number") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
                     Text(
-                        text = "Tapping this week will jump straight to that episode/PPV",
+                        text = "This creates a new, empty show — add match details later from the Shows tab.",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
-                Switch(
-                    checked = linkToShow,
-                    onCheckedChange = {
-                        linkToShow = it
-                        labelError = false
-                    }
-                )
-            }
-
-            if (linkToShow) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Is this a PPV?", fontSize = 14.sp)
-                    Switch(
-                        checked = isPPVLink,
-                        onCheckedChange = {
-                            isPPVLink = it
-                            selectedEpisode = null
-                            selectedPPV = null
-                            labelError = false
-                        }
+                LinkMode.NONE -> {
+                    OutlinedTextField(
+                        value = manualLabel,
+                        onValueChange = { manualLabel = it; labelError = false },
+                        label = { Text("Show Label") },
+                        placeholder = { Text("e.g. Off Week") },
+                        isError = labelError,
+                        supportingText = { if (labelError) Text("Show label required", color = MaterialTheme.colorScheme.error) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-
-                if (isPPVLink) {
-                    DropdownField(
-                        label = "Select PPV",
-                        selected = selectedPPV?.name ?: "Select a PPV",
-                        options = ppvEvents.map { it.name },
-                        onOptionsSelected = { name ->
-                            selectedPPV = ppvEvents.find { it.name == name }
-                            labelError = false
-                        }
-                    )
-                } else {
-                    val episodeOptions = episodes.map { ep ->
-                        val brandLabel = when (ep.brand) {
-                            Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> ep.brand.name
-                        }
-                        "$brandLabel ${ep.episodeNumber}"
-                    }
-
-                    DropdownField(
-                        label = "Select Episode",
-                        selected = selectedEpisode?.let { ep ->
-                            val brandLabel = when (ep.brand) {
-                                Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> ep.brand.name
-                            }
-                            "$brandLabel ${ep.episodeNumber}"
-                        } ?: "Select an episode",
-                        options = episodeOptions,
-                        onOptionsSelected = { label ->
-                            selectedEpisode = episodes.find { ep ->
-                                val brandLabel = when (ep.brand) {
-                                    Brand.RAW -> "RAW"; Brand.SD -> "SmackDown"; else -> ep.brand.name
-                                }
-                                "$brandLabel ${ep.episodeNumber}" == label
-                            }
-                            labelError = false
-                        }
-                    )
-                }
-            } else {
-                OutlinedTextField(
-                    value = manualLabel,
-                    onValueChange = {
-                        manualLabel = it
-                        labelError = false
-                    },
-                    label = { Text("Show Label") },
-                    placeholder = { Text("e.g. RAW 12, Off Week, No Way Out") },
-                    isError = labelError,
-                    supportingText = {
-                        if (labelError) Text("Show label required",
-                            color = MaterialTheme.colorScheme.error)
-                    },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
             }
 
-            // ── Theme notes ─────────────────────────────────
             OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
@@ -295,41 +363,67 @@ fun AddEditWeekBottomSheet(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // ── Save button ─────────────────────────────────
             Button(
                 modifier = Modifier.fillMaxWidth().height(52.dp),
                 onClick = {
                     var valid = true
-
                     val weekNum = weekNumStr.trim().toIntOrNull()
-                    if (weekNum == null) {
-                        weekNumError = true
-                        valid = false
-                    }
-
-                    if (computedLabel.isBlank()) {
-                        labelError = true
-                        valid = false
-                    }
-
+                    if (weekNum == null) { weekNumError = true; valid = false }
+                    if (computedLabel.isBlank()) { labelError = true; valid = false }
+                    if (linkMode == LinkMode.NEW && !newIsPPV && newEpisodeNumStr.toIntOrNull() == null) { labelError = true; valid = false }
+                    if (linkMode == LinkMode.NEW && newIsPPV && newPPVNumStr.toIntOrNull() == null) { labelError = true; valid = false }
                     if (!valid) return@Button
 
-                    val saved = CalendarWeek(
-                        id = existing?.id ?: 0,
-                        weekNumber = weekNum!!,
-                        showLabel = computedLabel,
-                        linkedShowId = if (linkToShow && !isPPVLink) selectedEpisode?.id else null,
-                        linkedPPVId = if (linkToShow && isPPVLink) selectedPPV?.id else null,
-                        notes = notes.trim()
-                    )
-                    onSave(saved)
+                    when (linkMode) {
+                        LinkMode.EXISTING -> {
+                            val week = CalendarWeek(
+                                id = existing?.id ?: 0,
+                                weekNumber = weekNum!!,
+                                showLabel = computedLabel,
+                                linkedShowId = if (!isPPVLink) selectedEpisode?.id else null,
+                                linkedPPVId = if (isPPVLink) selectedPPV?.id else null,
+                                notes = notes.trim()
+                            )
+                            onSave(WeekSaveResult.LinkExisting(week))
+                        }
+                        LinkMode.NEW -> {
+                            val week = CalendarWeek(
+                                id = existing?.id ?: 0,
+                                weekNumber = weekNum!!,
+                                showLabel = computedLabel,
+                                linkedShowId = null, // filled in by the caller once the new show's id is known
+                                linkedPPVId = null,
+                                notes = notes.trim()
+                            )
+                            if (newIsPPV) {
+                                val ppv = PPVEvent(id = 0, ppvNumber = newPPVNumStr.toInt(), name = newPPVName.trim(), notes = "")
+                                onSave(WeekSaveResult.NewPPV(week, ppv))
+                            } else {
+                                val episode = ShowEpisode(
+                                    id = 0,
+                                    episodeNumber = newEpisodeNumStr.toInt(),
+                                    brand = newBrand,
+                                    weekNumber = weekNum,
+                                    notes = ""
+                                )
+                                onSave(WeekSaveResult.NewEpisode(week, episode))
+                            }
+                        }
+                        LinkMode.NONE -> {
+                            val week = CalendarWeek(
+                                id = existing?.id ?: 0,
+                                weekNumber = weekNum!!,
+                                showLabel = computedLabel,
+                                linkedShowId = null,
+                                linkedPPVId = null,
+                                notes = notes.trim()
+                            )
+                            onSave(WeekSaveResult.NoLink(week))
+                        }
+                    }
                 }
             ) {
-                Text(
-                    text = if (isEditMode) "Save Changes" else "Add Week",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text(text = if (isEditMode) "Save Changes" else "Add Week", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
