@@ -67,4 +67,12 @@ class ShowRepository(
     suspend fun deletePPVEvent(ppvEvent: PPVEvent) {
         ppvEventDao.delete(ppvEvent.id)
     }
+
+    suspend fun setEpisodeComplete(id: Int, isComplete: Boolean) {
+        showEpisodeDao.setComplete(id, isComplete)
+    }
+
+    suspend fun setPPVComplete(id: Int, isComplete: Boolean) {
+        ppvEventDao.setComplete(id, isComplete)
+    }
 }

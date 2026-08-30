@@ -22,8 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LiveTv
-import androidx.compose.material.icons.filled.SportsMartialArts
-import androidx.compose.material.icons.filled.SportsMma
 import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,7 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -109,11 +106,11 @@ fun DashboardScreen(
             when {
                 week.linkedShowId != null -> {
                     val ep = episodes.find { it.id == week.linkedShowId }
-                    ep != null && !ep.hasMatches(matches)
+                    ep != null && !ep.isComplete
                 }
                 week.linkedPPVId != null -> {
                     val ppv = ppvEvents.find { it.id == week.linkedPPVId }
-                    ppv != null && !ppv.hasMatches(matches)
+                    ppv != null && !ppv.isComplete
                 }
                 else -> false
             }

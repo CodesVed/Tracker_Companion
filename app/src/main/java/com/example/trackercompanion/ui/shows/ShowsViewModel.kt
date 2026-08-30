@@ -70,6 +70,18 @@ class ShowsViewModel(
             showRepository.deleteMatch(match)
         }
     }
+
+    fun toggleEpisodeComplete(episode: ShowEpisode) {
+        viewModelScope.launch {
+            showRepository.setEpisodeComplete(episode.id, !episode.isComplete)
+        }
+    }
+
+    fun togglePPVComplete(episode: PPVEvent) {
+        viewModelScope.launch {
+            showRepository.setPPVComplete(episode.id, !episode.isComplete)
+        }
+    }
 }
 
 class ShowsViewModelFactory(

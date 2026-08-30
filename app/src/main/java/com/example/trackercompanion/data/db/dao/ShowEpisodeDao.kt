@@ -29,4 +29,7 @@ interface ShowEpisodeDao {
 
     @Query("SELECT * FROM ShowEpisode WHERE brand = :brand")
     fun getEpisodesByBrand(brand: String): Flow<List<ShowEpisode>>
+
+    @Query("UPDATE ShowEpisode SET isComplete = :isComplete WHERE id = :id")
+    suspend fun setComplete(id: Int, isComplete: Boolean)
 }

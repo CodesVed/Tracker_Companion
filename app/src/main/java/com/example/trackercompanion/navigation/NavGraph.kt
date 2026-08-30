@@ -311,6 +311,12 @@ fun App(database: AppDatabase, settingsViewModel: SettingsViewModel) {
                             onPPVEdited = { edited ->
                                 showsViewModel.updatePPVEvent(edited)
                             },
+                            onToggleComplete = {
+                                when (showSource) {
+                                    is ShowSource.RegularShow -> showsViewModel.toggleEpisodeComplete(showSource.episode)
+                                    is ShowSource.PPV -> showsViewModel.togglePPVComplete(showSource.event)
+                                }
+                            },
                             onBackClick = {
                                 navController.popBackStack()
                             }

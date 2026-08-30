@@ -40,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -85,6 +86,7 @@ fun EpisodeDetailScreen(
     onMatchDeleted: (Match) -> Unit,
     onEpisodeEdited: (ShowEpisode) -> Unit,
     onPPVEdited: (PPVEvent) -> Unit,
+    onToggleComplete: () -> Unit,
     onBackClick: () -> Unit
 ) {
     var showMatchEntry by rememberSaveable { mutableStateOf(false) }
@@ -128,6 +130,11 @@ fun EpisodeDetailScreen(
 
     val slotOrder = listOf(CardSlot.OPEN, CardSlot.MID, CardSlot.UPPER, CardSlot.MAIN)
     val sortedMatches =  matches.sortedBy { slotOrder.indexOf(it.slot) }
+
+    val isComplete = when (showSource) {
+        is ShowSource.RegularShow -> showSource.episode.isComplete
+        is ShowSource.PPV -> showSource.event.isComplete
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -232,6 +239,21 @@ fun EpisodeDetailScreen(
                             Text(
                                 text = if (matches.size == 1) "match" else "matches",
                                 fontSize = 11.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Switch(
+                                checked = isComplete,
+                                onCheckedChange = { onToggleComplete() }
+                            )
+                            Text(
+                                text = if (isComplete) "Complete" else "In Progress",
+                                fontSize = 10.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -564,6 +586,7 @@ fun EpisodeDetailPreview() {
         onBackClick = {},
         onEpisodeEdited = {},
         onPPVEdited = {},
+        onToggleComplete = {},
         onMatchDeleted = {}
     )
 }

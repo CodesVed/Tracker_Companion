@@ -25,4 +25,7 @@ interface PPVEventDao {
 
     @Query("SELECT * FROM PPVEvent")
     fun getAllPPVEvents(): Flow<List<PPVEvent>>
+
+    @Query("UPDATE PPVEvent SET isComplete = :isComplete WHERE id = :id")
+    suspend fun setComplete(id: Int, isComplete: Boolean)
 }
