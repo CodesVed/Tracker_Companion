@@ -417,7 +417,7 @@ fun MatchCardRow(match: Match, onLongPress: () -> Unit = {}) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(width = 6.dp, height = 72.dp)
+                modifier = Modifier.size(width = 6.dp, height = 94.dp)
             ) {
                 Canvas(
                     modifier = Modifier.fillMaxSize()
@@ -473,6 +473,12 @@ fun MatchCardRow(match: Match, onLongPress: () -> Unit = {}) {
                     text = match.stipulation,
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = match.notes
                 )
             }
 
